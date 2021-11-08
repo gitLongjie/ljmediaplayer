@@ -5,6 +5,7 @@
 
 #include "src/utils.h"
 
+#include "src/log.h"
 #include "src/input/input_media_source_manager.h"
 
 namespace LJMP {
@@ -34,6 +35,11 @@ namespace LJMP {
     }
 
     bool Media::initialize() {
+        log_ = Log::create();
+        if (!log_) {
+            return false;
+        }
+        
         input_media_source_manager_ = Input::InputMediaSourceManager::create();
         if (!input_media_source_manager_->initialize()) {
             return false;
@@ -44,6 +50,8 @@ namespace LJMP {
 
     void Media::uninialize() {
         input_media_source_manager_.reset();
+        
+        log_.reset();
     }
 
 } // namespace LJMP 

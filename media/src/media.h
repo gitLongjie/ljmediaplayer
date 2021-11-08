@@ -6,6 +6,7 @@
 #include "src/lj_defined.h"
 
 namespace LJMP {
+    class Log;
     class MediaSourceManager;
 
     class Media {
@@ -25,6 +26,7 @@ namespace LJMP {
         static Media* getInstance();
         
     private:
+        std::shared_ptr<Log> log_;
         std::shared_ptr<MediaSourceManager> input_media_source_manager_;
     };
 }
