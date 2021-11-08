@@ -17,7 +17,7 @@ namespace LJMP {
         ~Utils() = delete;
         
     public:
-        bool isFileExits(const char* url);
+        static bool isFileExits(const char* url);
     };
 }
 

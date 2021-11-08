@@ -3,6 +3,10 @@
 #include <memory>
 #include <cassert>
 
+#include "src/utils.h"
+
+#include "src/input/input_media_source_manager.h"
+
 namespace LJMP {
     Media* s_media = nullptr;
 
@@ -20,5 +24,26 @@ namespace LJMP {
         return s_media;
     }
 
-    bool Media::openUrl(const char *szUrl) { return false; }
+    bool Media::openUrl(const char *szUrl) {
+        std::shared_ptr<Input::InputMediaSourceManager> media_source_manager =
+        std::dynamic_pointer_cast<Input::InputMediaSourceManager>(input_media_source_manager_);
+        if (media_source_manager) {
+            return media_source_manager->open(szUrl);
+        }
+        return false;
+    }
+
+    bool Media::initialize() {
+        input_media_source_manager_ = Input::InputMediaSourceManager::create();
+        if (!input_media_source_manager_->initialize()) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    void Media::uninialize() {
+        input_media_source_manager_.reset();
+    }
+
 } // namespace LJMP 
