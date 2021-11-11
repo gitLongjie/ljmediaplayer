@@ -16,3 +16,8 @@ message( STATUS "The comipler ${CMAKE_CXX_COMIPLER} has no C++ 11 suport. Please
 endif()
 
 add_subdirectory(media)
+add_subdirectory(test)
+
+if (APPLE)
+add_subdirectory(macos)
+endif ()
