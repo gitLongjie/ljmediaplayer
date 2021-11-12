@@ -6,7 +6,7 @@ namespace LJMP {
 
         FileInput::~FileInput() {}
 
-        bool FileInput::load(const char *szPath) {return false;}
+        bool FileInput::load(const std::string& url) {return false;}
 
         const char* FileInput::protocol() {
             return "file//:";

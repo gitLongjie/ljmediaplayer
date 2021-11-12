@@ -21,15 +21,19 @@ namespace LJMP {
         }
     }
 
-    bool Utils::checkProtocol(const char* url, const char* protocol) {
-        std::string sUrl(url);
-        size_t pos = sUrl.find("//:");
+    bool Utils::checkProtocol(const std::string& url, const char* protocol) {
+        std::string sProtoc = getProtocol(url);
+        return 0 == sProtoc.compare(protocol);
+    }
+
+    std::string Utils::getProtocol(const std::string& url) {
+        size_t pos = url.find("://");
         if (std::string::npos == pos) {
-            return false;
+            return "";
         }
 
-        std::string sProtoc = sUrl.substr(pos);
-        return 0 == sProtoc.compare(protocol);
+        std::string protocol = url.substr(0, pos + 3);
+        return protocol;
     }
 
 } // namespace LJMP

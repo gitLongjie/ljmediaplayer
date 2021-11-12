@@ -10,6 +10,8 @@
 
 #include "src/lj_defined.h"
 
+#include <string>
+
 namespace LJMP {
     class Utils {
         disable_copy(Utils)
@@ -18,7 +20,8 @@ namespace LJMP {
         
     public:
         static bool isFileExits(const char* url);
-        static bool checkProtocol(const char* ur, const char* protocol);
+        static bool checkProtocol(const std::string& ur, const char* protocol);
+        static std::string getProtocol(const std::string& url);
     };
 }
 

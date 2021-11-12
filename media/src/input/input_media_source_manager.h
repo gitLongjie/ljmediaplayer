@@ -6,10 +6,10 @@
 #include <string>
 
 #include "src/media_source_manager.h"
+#include "src/media_source_factory.h"
 
 namespace LJMP {
     namespace Input{
-        class MediaSource;
 
         class InputMediaSourceManager : public MediaSourceManager {
             disable_copy(InputMediaSourceManager)
@@ -23,13 +23,14 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
             
-            bool open(const std::string& szUrl);
+            bool open(const std::string& url) override;
             
         protected:
             InputMediaSourceManager();
 
         private:
-            // std::unordered_map<std::string, std::shared_ptr<MediaSource> >
+            using MediaSourceFactoryList = std::unordered_map<std::string, MediaSourceFactoryPtr >;
+            MediaSourceFactoryList media_source_factory_;
         };
     }
 }

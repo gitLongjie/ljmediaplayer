@@ -63,7 +63,7 @@ namespace LJMP {
           //  return media_source_manager->open(szUrl);
         }
 
-        if (media_source_manager->open(url)) {
+        if (!media_source_manager->open(url)) {
             LOGE("open failed: {}", url);
             errorCallbak(error_code_open_failed, "open failed");
         }

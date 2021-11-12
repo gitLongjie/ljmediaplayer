@@ -2,6 +2,7 @@
 #define src_media_source_h_
 
 #include <memory>
+#include <string>
 
 #include "src/lj_defined.h"
 
@@ -10,7 +11,7 @@ namespace LJMP {
     public:
         virtual ~MediaSource() = default;
 
-        virtual bool load(const char* url) = 0;
+        virtual bool load(const std::string& url) = 0;
 
     protected:
         MediaSource() = default;
