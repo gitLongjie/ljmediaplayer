@@ -17,7 +17,7 @@ namespace LJMP {
         ~Media();
         
         bool initialize();
-        void uninialize();
+        void uninitialize();
         
     public:
         bool openUrl(const char* szUrl);

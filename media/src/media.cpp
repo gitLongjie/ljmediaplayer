@@ -40,17 +40,20 @@ namespace LJMP {
             return false;
         }
         
+        LOG_ENTER;
         input_media_source_manager_ = Input::InputMediaSourceManager::create();
         if (!input_media_source_manager_->initialize()) {
             return false;
         }
-        
+        LOG_LIVE;
         return true;
     }
 
-    void Media::uninialize() {
+    void Media::uninitialize() {
+        LOG_ENTER;
         input_media_source_manager_.reset();
         
+        LOG_LIVE;
         log_.reset();
     }
 

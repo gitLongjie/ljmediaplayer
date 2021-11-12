@@ -28,7 +28,10 @@ link_directories(
     ${CMAKE_BINARY_DIR} 
 )
 
+add_definitions(-DLJ_MEDIA_EXPORT )
+
 add_subdirectory(src)
+add_subdirectory(ljmedia)
 
 function(assign_source_group)
     foreach(_source IN ITEMS ${ARGN})
@@ -50,8 +53,17 @@ function(my_add_executable)
 	add_executable(${ARGV})
 endfunction(my_add_executable)
 
-ADD_LIBRARY(
+function(my_add_library)
+	foreach(_source IN ITEMS ${ARGN})
+		assign_source_group(${_source})
+	endforeach()
+	ADD_LIBRARY(${ARGV})
+endfunction(my_add_library)
+
+
+my_add_library(
     ${PROJECT_NAME}
     SHARED
     ${src_src}
+    ${ljmedia_src}
 )

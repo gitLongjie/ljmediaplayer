@@ -16,6 +16,7 @@ endif()
 include_directories(
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_BINARY_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/../../media
 )
 
 link_directories(
@@ -48,4 +49,12 @@ my_add_executable(
     ${PROJECT_NAME}
     
     ${src_code}
+)
+
+target_link_libraries(${PROJECT_NAME} ljmedia)
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E 
+        copy "${PROJECT_BINARY_DIR}/../../media/Debug/ljmedia.dll" "${PROJECT_BINARY_DIR}/Debug"
 )

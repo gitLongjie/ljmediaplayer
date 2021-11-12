@@ -48,19 +48,19 @@ private:
 }  // namespace LJMP
 
 #define LOGD(format, ...)                                               \
-  SMUnity::Core::Log::GetInstance()->Write(SMUnity::Core::Log::LOG_DEBUG_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
+  LJMP::Log::GetInstance()->Write(LJMP::Log::LOG_DEBUG_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
                             __FILE__, __FUNCTION__, ##__VA_ARGS__)
 #define LOGE(format, ...)                                               \
-  SMUnity::Core::Log::GetInstance()->Write(SMUnity::Core::Log::LOG_ERROR_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
+  LJMP::Log::GetInstance()->Write(LJMP::Log::LOG_ERROR_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
                             __FILE__, __FUNCTION__, ##__VA_ARGS__)
 #define LOGW(format, ...)                                               \
-  SMUnity::Core::Log::GetInstance()->Write(SMUnity::Core::Log::LOG_WARNING_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
+  LJMP::Log::GetInstance()->Write(LJMP::Log::LOG_WARNING_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
                             __FILE__, __FUNCTION__, ##__VA_ARGS__)
 #define LOGI(format, ...)                                               \
-  SMUnity::Core::Log::GetInstance()->Write(SMUnity::Core::Log::LOG_INFO_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
+  LJMP::Log::GetInstance()->Write(LJMP::Log::LOG_INFO_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
                             __FILE__, __FUNCTION__, ##__VA_ARGS__)
 #define LOGC(format, ...)                                             \
-  SMUnity::Core::Log::GetInstance()->Write(SMUnity::Core::Log::LOG_CRITICAL_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
+  LJMP::Log::GetInstance()->Write(LJMP::Log::LOG_CRITICAL_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
                             __FILE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define LOG_ENTER LOGI("enter")
