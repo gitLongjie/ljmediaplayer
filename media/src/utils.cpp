@@ -1,7 +1,10 @@
 #include "src/utils.h"
 
+#include <string>
+
 #ifdef WIN32
 #include <io.h>
+
 #else
 #include <unistd.h>
 #include <fcntl.h>
@@ -16,6 +19,17 @@ namespace LJMP {
         } else {
             return false;
         }
+    }
+
+    bool Utils::checkProtocol(const char* url, const char* protocol) {
+        std::string sUrl(url);
+        size_t pos = sUrl.find("//:");
+        if (std::string::npos == pos) {
+            return false;
+        }
+
+        std::string sProtoc = sUrl.substr(pos);
+        return 0 == sProtoc.compare(protocol);
     }
 
 } // namespace LJMP

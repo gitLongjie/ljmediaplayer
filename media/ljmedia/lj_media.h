@@ -7,7 +7,9 @@
 extern "C" {
 #endif
 
-MEDIA_EXPORT int initialize();
+typedef void(*errorCallback)(int, const char*);
+
+MEDIA_EXPORT int initialize(errorCallback callback);
 MEDIA_EXPORT void uninitialzie();
 
 MEDIA_EXPORT int openUrl(const char* szUrl);

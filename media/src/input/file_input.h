@@ -9,6 +9,8 @@ namespace LJMP {
             disable_copy(FileInput)
 
         public:
+            static const char* protocol();
+        public:
             FileInput();
             ~FileInput() override;
 

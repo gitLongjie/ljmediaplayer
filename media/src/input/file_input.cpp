@@ -7,5 +7,10 @@ namespace LJMP {
         FileInput::~FileInput() {}
 
         bool FileInput::load(const char *szPath) {return false;}
+
+        const char* FileInput::protocol() {
+            return "file//:";
+        }
+
     } // namespace Input
 } // namespace LJMP 

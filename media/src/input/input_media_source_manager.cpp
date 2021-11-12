@@ -1,6 +1,9 @@
 #include "src/input/input_media_source_manager.h"
 
+#include <memory>
+
 #include "src/utils.h"
+#include "src/input/rtsp_media_source.h"
 
 namespace LJMP {
     namespace Input {
@@ -18,6 +21,7 @@ namespace LJMP {
         }
     
         bool InputMediaSourceManager::initialize() {
+            MediaSourceFactoryPtr ptr = std::make_shared<MediaSourceFactoryImpl<RTSPMediaSource> >();
             return true;
         }
     
@@ -25,8 +29,8 @@ namespace LJMP {
             
         }
     
-        bool InputMediaSourceManager::open(const char *szUrl) {
-            if (Utils::isFileExits(szUrl)) {
+        bool InputMediaSourceManager::open(const std::string& url) {
+            if (Utils::isFileExits(url.c_str())) {
                 return false;
             }
             

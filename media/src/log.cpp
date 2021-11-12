@@ -65,7 +65,7 @@ Log::Log() {
 #else
   m_logger->set_level(spdlog::level::err);
 #endif
-  m_logger->set_pattern("%T.%e  %t  [%L]  %v");
+  m_logger->set_pattern("[%Y-%m-%d %T.%e] [%t][%L] %v");
   m_logger->flush_on(spdlog::level::err);
 }
 

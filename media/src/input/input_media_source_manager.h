@@ -2,11 +2,15 @@
 #define src_input_input_medai_source_h_
 
 #include <memory>
+#include <unordered_map>
+#include <string>
 
 #include "src/media_source_manager.h"
 
 namespace LJMP {
     namespace Input{
+        class MediaSource;
+
         class InputMediaSourceManager : public MediaSourceManager {
             disable_copy(InputMediaSourceManager)
             
@@ -19,10 +23,13 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
             
-            bool open(const char* szUrl);
+            bool open(const std::string& szUrl);
             
         protected:
             InputMediaSourceManager();
+
+        private:
+            // std::unordered_map<std::string, std::shared_ptr<MediaSource> >
         };
     }
 }
