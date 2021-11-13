@@ -1,4 +1,4 @@
-#include "src/input/rtsp_media_source.h"
+#include "src/input/rtmp_media_source.h"
 
 #include "src/utils.h"
 #include "src/log.h"
@@ -6,17 +6,18 @@
 namespace LJMP {
     namespace Input {
 
-        static StringList g_protocol = { "rtsp://" };
+        static StringList g_protocol = { "rtmp://", "rtmpt://", "rtmpe://",
+            "rtmpte://", "rtmps://", "rtmpts://", "rtmfp://" };
 
-        RTSPMediaSource::RTSPMediaSource() {
-           LOGI("actor {}", (long long)this);
+        RTMPMediaSource::RTMPMediaSource() {
+            LOGI("actor {}", (long long)this);
         }
 
-        RTSPMediaSource::~RTSPMediaSource() {
-           LOGI("dactor {}", (long long)this);
+        RTMPMediaSource::~RTMPMediaSource() {
+            LOGI("dactor {}", (long long)this);
         }
 
-        bool RTSPMediaSource::checkProtocol(const std::string& protocol) {
+        bool RTMPMediaSource::checkProtocol(const std::string& protocol) {
             LOGI("check protocol: {}", protocol);
 
             const StringList& protos = protocols();
@@ -28,7 +29,7 @@ namespace LJMP {
             return true;
         }
 
-        bool RTSPMediaSource::load(const std::string& url) {
+        bool RTMPMediaSource::load(const std::string& url) {
             LOGI("open url {}", url);
             if (!Utils::checkProtocol(url, protocols())) {
                 LOGE("protocol is not suppot");
@@ -38,7 +39,7 @@ namespace LJMP {
             return true;
         }
 
-        const StringList& RTSPMediaSource::protocols() {
+        const StringList& RTMPMediaSource::protocols() {
             return g_protocol;
         }
 

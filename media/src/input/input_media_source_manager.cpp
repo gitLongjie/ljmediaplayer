@@ -5,6 +5,7 @@
 
 #include "src/utils.h"
 #include "src/input/rtsp_media_source.h"
+#include "src/input/rtmp_media_source.h"
 #include "src/log.h"
 
 namespace LJMP {
@@ -30,6 +31,8 @@ namespace LJMP {
             LOG_ENTER;
 
             MediaSourceFactoryPtr ptr = std::make_shared<MediaSourceFactoryImpl<RTSPMediaSource, RTSPMediaSource::checkProtocol> >();
+            media_source_factory_.emplace_back(ptr);
+            ptr = std::make_shared<MediaSourceFactoryImpl<RTMPMediaSource, RTMPMediaSource::checkProtocol> >();
             media_source_factory_.emplace_back(ptr);
             return true;
         }
