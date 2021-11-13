@@ -26,6 +26,15 @@ namespace LJMP {
         return 0 == sProtoc.compare(protocol);
     }
 
+    bool Utils::checkProtocol(const std::string& url, const StringList& protocols) {
+        std::string protocol = getProtocol(url);
+        auto itor = std::find(protocols.begin(), protocols.end(), protocol);
+        if (protocols.end() == itor) {
+            return false;
+        }
+        return true;
+    }
+
     std::string Utils::getProtocol(const std::string& url) {
         size_t pos = url.find("://");
         if (std::string::npos == pos) {

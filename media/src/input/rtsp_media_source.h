@@ -6,11 +6,12 @@
 
 namespace LJMP {
     namespace Input {
-        class RTSPMediaSource : public LJMP::MediaSource {
+        class RTSPMediaSource : public MediaSource {
             disable_copy(RTSPMediaSource)
 
         public:
-            static const char* protocol();
+            static const StringList& protocols();
+            static bool checkProtocol(const std::string& protocol);
 
         public:
             ~RTSPMediaSource() override;
@@ -19,9 +20,6 @@ namespace LJMP {
 
         protected:
             RTSPMediaSource();
-
-        private:
-            friend class MediaSourceFactoryImpl<RTSPMediaSource>;
         };
     }
 }

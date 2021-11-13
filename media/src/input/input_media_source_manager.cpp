@@ -1,6 +1,7 @@
 #include "src/input/input_media_source_manager.h"
 
 #include <memory>
+#include <functional>
 
 #include "src/utils.h"
 #include "src/input/rtsp_media_source.h"
@@ -28,8 +29,8 @@ namespace LJMP {
         bool InputMediaSourceManager::initialize() {
             LOG_ENTER;
 
-            MediaSourceFactoryPtr ptr = std::make_shared<MediaSourceFactoryImpl<RTSPMediaSource> >();
-            media_source_factory_[RTSPMediaSource::protocol()] = ptr;
+            MediaSourceFactoryPtr ptr = std::make_shared<MediaSourceFactoryImpl<RTSPMediaSource, RTSPMediaSource::checkProtocol> >();
+            media_source_factory_.emplace_back(ptr);
             return true;
         }
     
@@ -43,13 +44,17 @@ namespace LJMP {
             LOG_ENTER;
 
             std::string protocol = Utils::getProtocol(url);
-            auto itor = media_source_factory_.find(protocol);
+            auto itor = std::find_if(media_source_factory_.begin(), media_source_factory_.end(),
+                [=](const auto& item)->bool {
+                    return item->isSupportProtocol(protocol);
+                }
+            );
             if (media_source_factory_.end() == itor) {
                 LOGE("con't not find protocol {}", protocol);
                 return false;
             }
 
-            MediaSourcePtr ptr = itor->second->create();
+            MediaSourcePtr ptr = (*itor)->create();
             if (!ptr) {
                 LOGE("con't create media source");
                 return false;

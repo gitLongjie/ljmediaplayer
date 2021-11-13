@@ -13,10 +13,12 @@ namespace LJMP {
         virtual ~MediaSourceFactory() = default;
 
         virtual MediaSourcePtr create() = 0;
+        virtual bool isSupportProtocol(const std::string& protocol) const = 0;
     };
     using MediaSourceFactoryPtr = std::shared_ptr<MediaSourceFactory>;
 
-    template <class T>
+    typedef bool(*checkProtocol)(const std::string&);
+    template <class T, checkProtocol CP>
     class MediaSourceFactoryImpl : public MediaSourceFactory {
         disable_copy(MediaSourceFactoryImpl)
 
@@ -30,6 +32,10 @@ namespace LJMP {
                 ~Creator() override = default;
             };
             return std::make_shared<Creator>();
+        }
+
+        bool isSupportProtocol(const std::string& protocol) const override {
+            return CP(protocol);
         }
     };
 }

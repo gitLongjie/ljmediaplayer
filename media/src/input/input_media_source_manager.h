@@ -2,7 +2,7 @@
 #define src_input_input_medai_source_h_
 
 #include <memory>
-#include <unordered_map>
+#include <list>
 #include <string>
 
 #include "src/media_source_manager.h"
@@ -29,7 +29,7 @@ namespace LJMP {
             InputMediaSourceManager();
 
         private:
-            using MediaSourceFactoryList = std::unordered_map<std::string, MediaSourceFactoryPtr >;
+            using MediaSourceFactoryList = std::list<MediaSourceFactoryPtr >;
             MediaSourceFactoryList media_source_factory_;
         };
     }

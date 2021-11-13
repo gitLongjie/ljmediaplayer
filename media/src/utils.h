@@ -21,6 +21,7 @@ namespace LJMP {
     public:
         static bool isFileExits(const char* url);
         static bool checkProtocol(const std::string& ur, const char* protocol);
+        static bool checkProtocol(const std::string& ur, const StringList& protocols);
         static std::string getProtocol(const std::string& url);
     };
 }
