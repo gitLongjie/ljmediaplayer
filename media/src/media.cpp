@@ -26,6 +26,7 @@ namespace LJMP {
     Media::~Media() {
         main_task_queue_.stop();
         callback_task_queue_.stop();
+        io_task_queue_->stop();
         s_media = nullptr;
     }
 
@@ -61,7 +62,7 @@ namespace LJMP {
         input_media_source_manager_.reset();
         network_manger_.reset();
 
-        _run_do_unintialize = true;
+        spink_lock_.unlock();
     }
 
     void Media::doOpenUrl(const std::string url, MediaWPtr wThis) {
@@ -115,9 +116,7 @@ namespace LJMP {
         auto task = createTask(std::bind(&Media::doUninitialize, this, shared_from_this()));
         invoke(task);
 
-        while (!_run_do_unintialize) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+        spink_lock_.lock();
     }
 
     void Media::invoke(const TaskPtr& task) {

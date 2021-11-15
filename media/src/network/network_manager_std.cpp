@@ -2,10 +2,19 @@
 
 #include "src/log.h"
 
+#ifdef WIN32
+#include "src/network/win/network_manager_win.h"
+#endif // WIN32
+
+
 namespace LJMP {
     namespace Network {
         
         NetworkManagerPtr NetworkManagerStd::create(TaskQueuePtr taskQueue) {
+#ifdef WIN32
+            return NetworkManagerWin::create(taskQueue);
+#endif // WIN32
+
             struct Creator : public NetworkManagerStd {
                 Creator(TaskQueuePtr taskQueue) : NetworkManagerStd(taskQueue) {}
                 ~Creator() override = default;
@@ -33,6 +42,8 @@ namespace LJMP {
             LOG_ENTER;
             auto task = createTask(std::bind(&NetworkManagerStd::doUninitialize, this, shared_from_this()));
             invoke(task);
+
+            spin_lock_.lock();
         }
 
         void NetworkManagerStd::invoke(const TaskPtr task) {
@@ -67,6 +78,8 @@ namespace LJMP {
             if (!self) {
                 LOGE("self is nullptr");
             }
+
+            spin_lock_.unlock();
         }
 
     }

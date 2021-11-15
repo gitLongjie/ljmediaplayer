@@ -9,6 +9,8 @@
 #include "src/task_queue.h"
 #include "ljmedia/lj_media.h"
 
+#include "src/spin_lock.h"
+
 namespace LJMP {
     class MediaSourceManager;
     class NetworkManager;
@@ -56,6 +58,8 @@ namespace LJMP {
 
         errorCallback error_callback_ = nullptr;
         bool _run_do_unintialize = true;
+
+        SpinLock spink_lock_;
     };
 }
 

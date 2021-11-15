@@ -1,10 +1,11 @@
-#ifndef src_network_network_manager_h_
-#define src_network_network_manager_h_
+#ifndef src_network_network_manager_std_h_
+#define src_network_network_manager_std_h_
 
 #include <memory>
 #include "src/lj_defined.h"
 
 #include "src/network_manager.h"
+#include "src/spin_lock.h"
 #include "src/task_queue.h"
 
 namespace LJMP {
@@ -32,9 +33,10 @@ namespace LJMP {
 
         private:
             TaskQueuePtr io_task_queue_;
+            SpinLock spin_lock_;
         };
     }
 }
 
-#endif // !src_network_network_manager_h_
+#endif // !src_network_network_manager_std_h_
 
