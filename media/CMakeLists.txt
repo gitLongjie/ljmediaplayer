@@ -65,5 +65,5 @@ my_add_library(
     ${PROJECT_NAME}
     SHARED
     ${src_src}
-    ${ljmedia_src}
+    ${src_ljmedia_src}
 )

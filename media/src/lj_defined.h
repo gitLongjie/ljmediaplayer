@@ -10,4 +10,14 @@ using StringList = std::vector<std::string>;
    class_name(const class_name& ) = delete;                 \
    class_name operator= (const class_name& ) = delete;      
 
+#define implate_creator(class_name)                         \
+    struct Creator : public NetworkManager {                \
+        Creator() : NetworkManager() {}                     \
+        ~Creator() override = default;                      \
+    };
+
+#define return_implate_creater()                            \
+    return std::make_shared<Creator>();
+
+
 #endif // ! src_lj_defined_h_

@@ -8,6 +8,7 @@
 
 #include "src/log.h"
 #include "src/input/input_media_source_manager.h"
+#include "src/network/network_manager_std.h"
 #include "ljmedia/error_code.h"
 
 namespace LJMP {
@@ -15,7 +16,8 @@ namespace LJMP {
 
     Media::Media()
         : main_task_queue_("main")
-        , callback_task_queue_("callback") {
+        , callback_task_queue_("callback") 
+        , io_task_queue_(std::make_shared<TaskQueue>("io")) {
         assert(nullptr == s_media);
 
         s_media = this;
@@ -39,15 +41,25 @@ namespace LJMP {
             return;
         }
 
+        network_manger_ = Network::NetworkManagerStd::create(io_task_queue_);
+        if (!network_manger_->initialize()) {
+            return;
+        }
+
         input_media_source_manager_ = Input::InputMediaSourceManager::create();
         if (!input_media_source_manager_->initialize()) {
             return ;
         }
+
     }
 
     void Media::doUninitialize(MediaWPtr wThis) {
         LOG_ENTER;
+
+        input_media_source_manager_->uninitialize();
+        network_manger_->uninitialize();
         input_media_source_manager_.reset();
+        network_manger_.reset();
 
         _run_do_unintialize = true;
     }
