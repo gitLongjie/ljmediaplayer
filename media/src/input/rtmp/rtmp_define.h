@@ -24,6 +24,14 @@
 
 #define	RTMP_CHANNELS	65600
 
+extern const char kRtmp[];
+extern const char kRtmpt[];
+extern const char kRtmps[];
+extern const char kRtmpe[];
+extern const char kRtmfp[];
+extern const char kRtmpte[];
+extern const char kRtmpts[];
+
 
 typedef struct AVal
 {

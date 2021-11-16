@@ -3,6 +3,8 @@
 #include "src/utils.h"
 #include "src/log.h"
 
+#include "src/input/rtmp/rtmp_utils.h"
+
 namespace LJMP {
     namespace Input {
 
@@ -36,6 +38,15 @@ namespace LJMP {
                 return false;
             }
 
+            int protocol = 0;
+            std::string host;
+            short port = 0;
+            std::string app_name;
+            std::string play_path;
+            if (!Rtmp::Utils::parseUrl(url, &protocol, &host, &port, &app_name, &play_path)) {
+                LOGE("{} parese failed", url);
+                return false;
+            }
             return true;
         }
 

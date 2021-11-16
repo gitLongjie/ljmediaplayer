@@ -21,7 +21,7 @@ int main() {
         return -1;
     }
 
-    const char* test = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+    const char* test = "rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp";
     if (0 != openUrl(test)) {
         uninitialzie();
         return -1;
