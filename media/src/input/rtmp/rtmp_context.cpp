@@ -2,6 +2,8 @@
 
 #include "src/log.h"
 #include "src/input/rtmp/rtmp_utils.h"
+#include "src/network/socket.h"
+#include "src/media.h"
 
 namespace LJMP {
     namespace Input {
@@ -28,7 +30,7 @@ namespace LJMP {
             bool RtmpContext::intialize() {
                 LOG_ENTER;
 
-                if (!Rtmp::Utils::parseUrl(url_, &protocol_, &host_, &port_, &app_name_, &play_path_)) {
+                if (!Rtmp::RtmpUtils::parseUrl(url_, &protocol_, &host_, &port_, &app_name_, &play_path_)) {
                     LOGE("{} parese failed", url_);
                     return false;
                 }
@@ -39,7 +41,27 @@ namespace LJMP {
             }
 
             void RtmpContext::uninitialzie() {
+                LOG_ENTER;
 
+                if (channel_) {
+                    channel_.reset();
+                }
+            }
+
+            bool RtmpContext::connectServer() {
+                LOG_ENTER;
+
+                if (channel_) {
+                    
+                }
+
+                Network::SocketPtr s = Network::Socket::create(Network::Socket::Model::TCP);
+                if (!s->connect(host_, port_)) {
+                    LOGE("connect server failed {}", host_);
+                    return false;
+                }
+                channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), s);
+                return true;
             }
 
         }

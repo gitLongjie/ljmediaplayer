@@ -5,7 +5,7 @@
 namespace LJMP {
     namespace Network {
 
-        bool Utils::splitHostPort(const std::string& host_port, std::string* host, short* port) {
+        bool NetworkUtils::splitHostPort(const std::string& host_port, std::string* host, short* port) {
             if (nullptr == host || nullptr == port) {
                 return false;
             }
@@ -26,6 +26,33 @@ namespace LJMP {
                 }
             }
             return true;
+        }
+
+        bool NetworkUtils::fillService(const char* szHost, short port, struct sockaddr_in* service) {
+            if (nullptr == service) {
+                return false;
+            }
+
+            service->sin_addr.s_addr = inet_addr(szHost);
+            if (INADDR_NONE == service->sin_addr.s_addr) {
+                struct hostent* host = gethostbyname(szHost);
+                if (nullptr == host || nullptr == host->h_addr) {
+                    return false;
+                }
+                service->sin_addr = *(struct in_addr*)host->h_addr;
+            }
+
+            service->sin_port = htons(port);
+            return true;
+        }
+
+        int NetworkUtils::getSocketError() {
+#ifdef WIN32
+            return WSAGetLastError();
+#else
+            return errno;
+#endif // WIN32
+
         }
 
     }

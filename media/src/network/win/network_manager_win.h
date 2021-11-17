@@ -9,13 +9,13 @@ namespace LJMP {
             disable_copy(NetworkManagerWin)
 
         public:
-            static NetworkManagerPtr create(TaskQueuePtr taskQueue);
+            static NetworkManagerPtr create(TaskQueuePtr task_queue);
 
         public:
             ~NetworkManagerWin() override;
 
         protected:
-            explicit NetworkManagerWin(TaskQueuePtr taskQueue);
+            explicit NetworkManagerWin(TaskQueuePtr task_queue);
 
             void doInitialize(NetworkManagerWPtr wThis);
             void doUninitialize(NetworkManagerWPtr wThis);

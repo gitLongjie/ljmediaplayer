@@ -10,16 +10,16 @@
 namespace LJMP {
     namespace Network {
 
-        NetworkManagerPtr NetworkManagerWin::create(TaskQueuePtr taskQueue) {
+        NetworkManagerPtr NetworkManagerWin::create(TaskQueuePtr task_queue) {
             struct Creator : public NetworkManagerWin {
-                Creator(TaskQueuePtr taskQueue) : NetworkManagerWin(taskQueue) {}
+                Creator(TaskQueuePtr task_queue) : NetworkManagerWin(task_queue) {}
                 ~Creator() override = default;
             };
-            return std::make_shared<Creator>(taskQueue);
+            return std::make_shared<Creator>(task_queue);
         }
 
-        NetworkManagerWin::NetworkManagerWin(TaskQueuePtr taskQueue)
-            : NetworkManagerStd(taskQueue) {
+        NetworkManagerWin::NetworkManagerWin(TaskQueuePtr task_queue)
+            : NetworkManagerStd(task_queue) {
             LOGI("actor {}", (long long)this);
         }
 

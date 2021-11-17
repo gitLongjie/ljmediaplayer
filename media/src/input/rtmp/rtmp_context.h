@@ -6,6 +6,8 @@
 
 #include "src/lj_defined.h"
 
+#include "src/network/channel.h"
+
 namespace LJMP {
     namespace Input {
         namespace Rtmp {
@@ -21,6 +23,8 @@ namespace LJMP {
                 bool intialize();
                 void uninitialzie();
 
+                bool connectServer();
+
             protected:
                 explicit RtmpContext(const std::string& url);
 
@@ -32,6 +36,8 @@ namespace LJMP {
                 short port_ = 0;
                 std::string app_name_;
                 std::string play_path_;
+
+                Network::ChannelPtr channel_;
             };
 
             using RtmpContextPtr = std::shared_ptr<RtmpContext>;

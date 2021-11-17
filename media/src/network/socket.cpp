@@ -6,17 +6,20 @@
 
 #endif // WIN32
 
+#include "src/log.h"
+#include "src/network/network_utils.h"
+
+#include "src/network/tcp_socket.h"
+
 
 namespace LJMP {
     namespace Network {
 
-        SocketPtr Socket::create(Model model) {
-            struct Createor : public Socket {
-                Createor(Model model) : Socket(model) {}
-                ~Createor() override = default;
-            };
-
-            return std::make_shared<Createor>(model);
+        SocketPtr Socket::create(Socket::Model model) {
+            if (Socket::Model::TCP == model) {
+                return TcpSocket::create();
+            }
+            return nullptr;
         }
 
         Socket::Socket(Model model) 
@@ -35,6 +38,17 @@ namespace LJMP {
             if (-1 != socket_) {
                 ::closesocket(socket_);
             }
+        }
+
+        bool Socket::doConnect(const struct sockaddr& service) {
+            LOG_ENTER;
+
+            if (::connect(socket_, &service, sizeof(sockaddr)) < 0) {
+                LOGE("do connect failed, err = {}", NetworkUtils::getSocketError());
+                return false;
+            }
+
+            return true;
         }
 
     }

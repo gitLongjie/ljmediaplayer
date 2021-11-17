@@ -2,18 +2,20 @@
 
 namespace LJMP {
     namespace Input{
-        FileInput::FileInput() : MediaSource() {}
+        FileInput::FileInput() : MediaSource(nullptr) {}
 
         FileInput::~FileInput() {}
 
-        bool FileInput::open(const std::string& url) {return false;}
-
-        void FileInput::close() {
-
-        }
-
         const char* FileInput::protocol() {
             return "file//:";
+        }
+
+        bool FileInput::doOpen(const std::string& url) {
+            return false;
+        }
+
+        void FileInput::doClose() {
+
         }
 
     } // namespace Input

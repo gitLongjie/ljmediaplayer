@@ -10,11 +10,11 @@
 namespace LJMP {
     namespace Input {
         namespace Rtmp {
-            class Utils {
-                disable_copy(Utils)
+            class RtmpUtils {
+                disable_copy(RtmpUtils)
             public:
-                Utils() = delete;
-                ~Utils() = delete;
+                RtmpUtils() = delete;
+                ~RtmpUtils() = delete;
 
                 static bool parseUrl(const std::string& url, int* protocol, std::string* host, short* port,
                     std::string* app_name, std::string* play_path);

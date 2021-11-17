@@ -23,6 +23,9 @@ namespace LJMP {
         disable_copy(Media)
 
     public:
+        static Media* getInstance();
+
+    public:
         Media();
         ~Media();
         
@@ -37,8 +40,8 @@ namespace LJMP {
     public:
         bool openUrl(const char* szUrl);
 
-    public:
-        static Media* getInstance();
+        TaskQueuePtr getIOTaskQueue() const { return io_task_queue_; }
+        std::shared_ptr<NetworkManager> getNetworkManager() const { return network_manger_; }
 
     protected:
         void doInitialize(MediaWPtr wThis);

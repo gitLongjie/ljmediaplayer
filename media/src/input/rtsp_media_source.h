@@ -16,11 +16,11 @@ namespace LJMP {
         public:
             ~RTSPMediaSource() override;
 
-            bool open(const std::string& url) override;
-            void close() override;
-
         protected:
             RTSPMediaSource();
+
+            bool doOpen(const std::string& url) override;
+            void doClose() override;
         };
     }
 }

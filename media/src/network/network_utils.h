@@ -3,18 +3,26 @@
 
 #include <string>
 
+#if WIN32
+
+#include <winsock.h>
+
+#endif
+
 #include "src/lj_defined.h"
 
 namespace LJMP {
     namespace Network {
-        class Utils {
-            disable_copy(Utils)
+        class NetworkUtils {
+            disable_copy(NetworkUtils)
 
         public:
-            Utils() = delete;
-            ~Utils() = delete;
+            NetworkUtils() = delete;
+            ~NetworkUtils() = delete;
 
             static bool splitHostPort(const std::string& host_port, std::string* host, short* port);
+            static bool fillService(const char* szHost, short port, struct sockaddr_in* service);
+            static int getSocketError();
         };
     }
 }

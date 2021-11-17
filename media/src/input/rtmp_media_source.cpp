@@ -2,6 +2,8 @@
 
 #include "src/utils.h"
 #include "src/log.h"
+#include "src/media.h"
+#include "ljmedia/error_code.h"
 
 namespace LJMP {
     namespace Input {
@@ -9,13 +11,12 @@ namespace LJMP {
         static StringList g_protocol = { "rtmp://", "rtmpt://", "rtmpe://",
             "rtmpte://", "rtmps://", "rtmpts://", "rtmfp://" };
 
-        RTMPMediaSource::RTMPMediaSource() {
+        RTMPMediaSource::RTMPMediaSource() : MediaSource(Media::getInstance()->getIOTaskQueue()) {
             LOGI("actor {}", (long long)this);
         }
 
         RTMPMediaSource::~RTMPMediaSource() {
             LOGI("dactor {}", (long long)this);
-            close();
         }
 
         bool RTMPMediaSource::checkProtocol(const std::string& protocol) {
@@ -30,8 +31,12 @@ namespace LJMP {
             return true;
         }
 
-        bool RTMPMediaSource::open(const std::string& url) {
-            LOGI("open url {}", url);
+        const StringList& RTMPMediaSource::protocols() {
+            return g_protocol;
+        }
+
+
+        bool RTMPMediaSource::doOpen(const std::string& url) {
             if (!Utils::checkProtocol(url, protocols())) {
                 LOGE("protocol is not suppot");
                 return false;
@@ -44,13 +49,19 @@ namespace LJMP {
             rtmp_context_ = Rtmp::RtmpContext::create(url);
             if (!rtmp_context_->intialize()) {
                 LOGE("rtmp conext initialize failed");
+                Media::getInstance()->errorCallbak(error_code_open_failed, "open rtmp failed");
                 return false;
             }
-            
+
+            if (!rtmp_context_->connectServer()) {
+                LOGE("rtmp conext connect server failed");
+                Media::getInstance()->errorCallbak(error_code_netork_connect_failed, "connect server failed");
+                return false;
+            }
             return true;
         }
 
-        void RTMPMediaSource::close() {
+        void RTMPMediaSource::doClose() {
             LOG_ENTER;
 
             if (rtmp_context_) {
@@ -59,9 +70,6 @@ namespace LJMP {
             }
         }
 
-        const StringList& RTMPMediaSource::protocols() {
-            return g_protocol;
-        }
 
     }
 }

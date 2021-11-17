@@ -7,7 +7,7 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
-            bool Utils::parseUrl(const std::string& url, int* protocol, std::string* host, short* port,
+            bool RtmpUtils::parseUrl(const std::string& url, int* protocol, std::string* host, short* port,
                 std::string* app_name, std::string* play_path) {
                 if (nullptr == protocol || nullptr == host || nullptr == port) {
                     LOGE("param is nullptr, protocl={}, host={}, port={}",
@@ -54,7 +54,7 @@ namespace LJMP {
                 }
 
                 std::string host_post = host_port_param.substr(0, pos);
-                LJMP::Network::Utils::splitHostPort(host_post, host, port);
+                LJMP::Network::NetworkUtils::splitHostPort(host_post, host, port);
 
                 size_t port_pos = pos;
                 pos = host_port_param.rfind("/");

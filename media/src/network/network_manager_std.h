@@ -14,7 +14,7 @@ namespace LJMP {
             disable_copy(NetworkManagerStd)
 
         public:
-            static NetworkManagerPtr create(TaskQueuePtr taskQueue);
+            static NetworkManagerPtr create(TaskQueuePtr task_queue);
 
         public:
             ~NetworkManagerStd() override;
@@ -35,6 +35,7 @@ namespace LJMP {
             TaskQueuePtr io_task_queue_;
             SpinLock spin_lock_;
         };
+        using NetworkManagerStdPtr = std::shared_ptr<NetworkManagerStd>;
     }
 }
 
