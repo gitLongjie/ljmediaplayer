@@ -14,7 +14,8 @@ namespace LJMP {
             FileInput();
             ~FileInput() override;
 
-            bool load(const std::string& url) override;
+            bool open(const std::string& url) override;
+            void close() override;
         };
     } // namespace Input
 } // namespace LJMP 

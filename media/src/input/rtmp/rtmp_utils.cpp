@@ -63,8 +63,7 @@ namespace LJMP {
                 }
                 *app_name = host_port_param.substr(port_pos + 1, pos - port_pos - 1);
 
-                size_t param_pos = host_port_param.find("?");
-                *play_path = host_port_param.substr(pos + 1, param_pos);
+                *play_path = host_port_param.substr(pos + 1);
                 
                 return true;
             }

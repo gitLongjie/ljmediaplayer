@@ -63,7 +63,7 @@ namespace LJMP {
                 return false;
             }
             
-            return ptr->load(url);
+            return ptr->open(url);
         }
     }
 }

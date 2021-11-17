@@ -28,7 +28,7 @@ namespace LJMP {
             return true;
         }
 
-        bool RTSPMediaSource::load(const std::string& url) {
+        bool RTSPMediaSource::open(const std::string& url) {
             LOGI("open url {}", url);
             if (!Utils::checkProtocol(url, protocols())) {
                 LOGE("protocol is not suppot");
@@ -36,6 +36,10 @@ namespace LJMP {
             }
 
             return true;
+        }
+
+        void RTSPMediaSource::close() {
+
         }
 
         const StringList& RTSPMediaSource::protocols() {

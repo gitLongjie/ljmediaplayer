@@ -3,8 +3,6 @@
 #include "src/utils.h"
 #include "src/log.h"
 
-#include "src/input/rtmp/rtmp_utils.h"
-
 namespace LJMP {
     namespace Input {
 
@@ -17,6 +15,7 @@ namespace LJMP {
 
         RTMPMediaSource::~RTMPMediaSource() {
             LOGI("dactor {}", (long long)this);
+            close();
         }
 
         bool RTMPMediaSource::checkProtocol(const std::string& protocol) {
@@ -31,23 +30,33 @@ namespace LJMP {
             return true;
         }
 
-        bool RTMPMediaSource::load(const std::string& url) {
+        bool RTMPMediaSource::open(const std::string& url) {
             LOGI("open url {}", url);
             if (!Utils::checkProtocol(url, protocols())) {
                 LOGE("protocol is not suppot");
                 return false;
             }
 
-            int protocol = 0;
-            std::string host;
-            short port = 0;
-            std::string app_name;
-            std::string play_path;
-            if (!Rtmp::Utils::parseUrl(url, &protocol, &host, &port, &app_name, &play_path)) {
-                LOGE("{} parese failed", url);
+            if (rtmp_context_) {
+                rtmp_context_->uninitialzie();
+            }
+
+            rtmp_context_ = Rtmp::RtmpContext::create(url);
+            if (!rtmp_context_->intialize()) {
+                LOGE("rtmp conext initialize failed");
                 return false;
             }
+            
             return true;
+        }
+
+        void RTMPMediaSource::close() {
+            LOG_ENTER;
+
+            if (rtmp_context_) {
+                rtmp_context_->uninitialzie();
+                rtmp_context_.reset();
+            }
         }
 
         const StringList& RTMPMediaSource::protocols() {

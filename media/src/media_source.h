@@ -11,7 +11,8 @@ namespace LJMP {
     public:
         virtual ~MediaSource() = default;
 
-        virtual bool load(const std::string& url) = 0;
+        virtual bool open(const std::string& url) = 0;
+        virtual void close() = 0;
 
     protected:
         MediaSource() = default;
