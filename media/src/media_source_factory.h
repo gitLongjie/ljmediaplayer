@@ -31,7 +31,7 @@ namespace LJMP {
                 Creator() : T() {}
                 ~Creator() override = default;
             };
-            return std::make_shared<Creator>();
+            return std::move(std::make_shared<Creator>());
         }
 
         bool isSupportProtocol(const std::string& protocol) const override {

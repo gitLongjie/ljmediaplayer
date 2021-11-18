@@ -28,6 +28,9 @@ namespace LJMP {
             LOG_ENTER;
 
             struct sockaddr_in service;
+            memset(&service, 0, sizeof(struct sockaddr_in));
+            service.sin_family = AF_INET;
+
             if (!NetworkUtils::fillService(address.c_str(), port, &service)) {
                 LOGE("fill service failed");
                 return false;

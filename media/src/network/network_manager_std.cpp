@@ -33,14 +33,17 @@ namespace LJMP {
         bool NetworkManagerStd::initialize() {
             LOG_ENTER;
 
-            auto task = createTask(std::bind(&NetworkManagerStd::doInitialize, this, shared_from_this()));
+            NetworkManagerWPtr wThis(shared_from_this());
+            auto task = createTask(std::bind(&NetworkManagerStd::doInitialize, this, wThis));
             invoke(task);
             return true;
         }
 
         void NetworkManagerStd::uninitialize() {
             LOG_ENTER;
-            auto task = createTask(std::bind(&NetworkManagerStd::doUninitialize, this, shared_from_this()));
+
+            NetworkManagerWPtr wThis(shared_from_this());
+            auto task = createTask(std::bind(&NetworkManagerStd::doUninitialize, this, wThis));
             invoke(task);
 
             spin_lock_.lock();

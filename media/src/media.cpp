@@ -99,21 +99,25 @@ namespace LJMP {
     }
 
     bool Media::openUrl(const char* szUrl) {
-        auto task = createTask(std::bind(&Media::doOpenUrl, this, szUrl, shared_from_this()));
+        MediaWPtr wThis(shared_from_this());
+        auto task = createTask(std::bind(&Media::doOpenUrl, this, szUrl, wThis));
         invoke(task);
         return true;
     }
 
     bool Media::initialize(errorCallback callback) {
+        MediaWPtr wThis(shared_from_this());
+
         error_callback_ = callback;
-        auto task = createTask(std::bind(&Media::doInitialize, this, shared_from_this()));
+        auto task = createTask(std::bind(&Media::doInitialize, this, wThis));
         invoke(task);
         return true;
     }
 
     void Media::uninitialize() {
+        MediaWPtr wThis(shared_from_this());
         _run_do_unintialize = false;
-        auto task = createTask(std::bind(&Media::doUninitialize, this, shared_from_this()));
+        auto task = createTask(std::bind(&Media::doUninitialize, this, wThis));
         invoke(task);
 
         spink_lock_.lock();
@@ -128,7 +132,8 @@ namespace LJMP {
     }
 
     void Media::errorCallbak(int code, const char* msg) {
-        auto task = createTask(std::bind(&Media::doErrorCallback, this, code, msg, shared_from_this()));
+        MediaWPtr wThis(shared_from_this());
+        auto task = createTask(std::bind(&Media::doErrorCallback, this, code, msg, wThis));
         invoke(task);
     }
 
