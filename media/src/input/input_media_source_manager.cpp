@@ -7,14 +7,16 @@
 #include "src/input/rtsp_media_source.h"
 #include "src/input/rtmp_media_source.h"
 #include "src/log.h"
+#include "src/media.h"
+#include "ljmedia/error_code.h"
 
 namespace LJMP {
     namespace Input {
         InputMediaSourceManager::InputMediaSourceManager() {
             LOGI("actor {}", (long long)this);
         }
-        
-        InputMediaSourceManager::~InputMediaSourceManager() { 
+
+        InputMediaSourceManager::~InputMediaSourceManager() {
             LOGI("dactor {}", (long long)this);
         }
     
@@ -64,11 +66,26 @@ namespace LJMP {
                 return false;
             }
 
-            if (ptr->open(url)) {
-                return true;
+            if (!ptr->open(url)) {
+                Media::getInstance()->errorCallbak(error_code_open_failed, "can't open url=" + url);
+                return false;
             }
-            return false;
-           
+            
+            addMediaSource(url, ptr);
+            return true;
         }
+
+        void InputMediaSourceManager::addMediaSource(const std::string& url, const MediaSourcePtr& media_source) {
+            LOG_ENTER;
+
+            media_sources_[url] = media_source;
+        }
+
+        void InputMediaSourceManager::removeMediaSource(const std::string& url) {
+            LOG_ENTER;
+
+            media_sources_.erase(url);
+        }
+
     }
 }

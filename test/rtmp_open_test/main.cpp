@@ -28,10 +28,10 @@ int main() {
     }
 
     while (!_kbhit()) {
-       //std::cout << "Hit me!!" << std::endl;
+        //std::cout << "Hit me!!" << std::endl;
         Sleep(50);
     }
-    
+
     std::cout << "you input:" << _getch() << std::endl;
 
     uninitialzie();

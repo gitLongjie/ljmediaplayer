@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <list>
+#include <map>
 #include <string>
 
 #include "src/media_source_manager.h"
@@ -28,9 +29,14 @@ namespace LJMP {
         protected:
             InputMediaSourceManager();
 
+            void addMediaSource(const std::string& url, const MediaSourcePtr& media_source);
+            void removeMediaSource(const std::string& url);
+
         private:
             using MediaSourceFactoryList = std::list<MediaSourceFactoryPtr >;
+            using MediaSourceList = std::map<std::string, MediaSourcePtr>;
             MediaSourceFactoryList media_source_factory_;
+            MediaSourceList media_sources_;
         };
     }
 }

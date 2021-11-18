@@ -49,7 +49,6 @@ namespace LJMP {
             rtmp_context_ = Rtmp::RtmpContext::create(url);
             if (!rtmp_context_->intialize()) {
                 LOGE("rtmp conext initialize failed");
-                Media::getInstance()->errorCallbak(error_code_open_failed, "open rtmp failed");
                 return false;
             }
 
