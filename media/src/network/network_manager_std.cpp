@@ -6,6 +6,9 @@
 #include "src/network/win/network_manager_win.h"
 #endif // WIN32
 
+#include "src/network/channel.h"
+#include "src/network/socket.h"
+
 
 namespace LJMP {
     namespace Network {
@@ -67,12 +70,41 @@ namespace LJMP {
             io_task_queue_->push(task, delay);
         }
 
+        void NetworkManagerStd::updateChannel(const std::shared_ptr<Channel>& channel) {
+            LOG_ENTER;
+
+            NetworkManagerWPtr wThis(shared_from_this());
+            if (io_task_queue_->isCurrentThread()) {
+                doUpdateChannel(channel, wThis);
+            }
+            else {
+                auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, wThis));
+                invoke(task);
+            }
+        }
+
+        void NetworkManagerStd::removeChannel(const std::shared_ptr<Channel>& channel) {
+            LOG_ENTER;
+
+            NetworkManagerWPtr wThis(shared_from_this());
+            if (io_task_queue_->isCurrentThread()) {
+                doRemoveChannel(channel, wThis);
+            }
+            else {
+                auto task = createTask(std::bind(&NetworkManagerStd::doRemoveChannel, this, channel, wThis));
+                invoke(task);
+            }
+
+        }
+
         void NetworkManagerStd::doInitialize(NetworkManagerWPtr wThis) {
             LOG_ENTER;
             NetworkManagerPtr self = wThis.lock();
             if (!self) {
                 LOGE("self is nullptr");
             }
+
+
         }
 
         void NetworkManagerStd::doUninitialize(NetworkManagerWPtr wThis) {
@@ -83,6 +115,54 @@ namespace LJMP {
             }
 
             spin_lock_.unlock();
+        }
+
+        void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis) {
+            LOG_ENTER;
+
+            NetworkManagerPtr self(wThis.lock());
+            if (!self) {
+                LOGE("this object is desturcted {}", (long long)this);
+                return;
+            }
+
+            if (!channel) {
+                LOGE("channel is nullptr");
+                return;
+            }
+
+            SocketPtr sc = channel->getSocket();
+            if (!sc) {
+                LOGE("channel is nullptr");
+                return;
+            }
+
+            channels_[sc->getSessionName()] = channel;
+
+        }
+
+        void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis) {
+            LOG_ENTER;
+
+            NetworkManagerPtr self(wThis.lock());
+            if (!self) {
+                LOGE("this object is desturcted {}", (long long)this);
+                return;
+            }
+
+            if (!channel) {
+                LOGE("channel is nullptr");
+                return;
+            }
+
+            SocketPtr sc = channel->getSocket();
+            if (!sc) {
+                LOGE("channel is nullptr");
+                return;
+            }
+
+            sc->close();
+            channels_.erase(sc->getSessionName());
         }
 
     }

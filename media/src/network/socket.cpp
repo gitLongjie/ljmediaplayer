@@ -89,6 +89,15 @@ namespace LJMP {
                 return false;
             }
 
+            struct sockaddr_in sa;
+            int len = sizeof(sa);
+            if (0 == getsockname(socket_, (struct sockaddr*)&sa, &len)) {
+                std::string name = inet_ntoa(sa.sin_addr);
+                short port = ntohs(sa.sin_port);
+
+                seesion_ = name + "_" + std::to_string(port);
+            }
+
             return true;
         }
 

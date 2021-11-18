@@ -33,6 +33,10 @@ namespace LJMP {
             void close();
 
             bool enableNoDelay(bool enable);
+            bool enableBlock(bool enable);
+            bool enableTimeout(bool enable, int time);
+
+            const std::string& getSessionName() const { return seesion_; }
 
         protected:
             Socket(Model model);
@@ -44,6 +48,7 @@ namespace LJMP {
         private:
             Model model_ = Model::Unknow;
             socket_t socket_ = -1;
+            std::string seesion_;
         };
 
         using SocketPtr = std::shared_ptr<Socket>;

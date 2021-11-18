@@ -44,6 +44,7 @@ namespace LJMP {
                 LOG_ENTER;
 
                 if (channel_) {
+                    channel_->disconnect();
                     channel_.reset();
                 }
             }

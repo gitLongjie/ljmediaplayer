@@ -20,7 +20,7 @@ namespace LJMP {
             NetworkManagerStdPtr network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
                 Media::getInstance()->getNetworkManager());
             if (network_manager) {
-            //    network_manager->
+                network_manager->updateChannel(channel);
             }
             return channel;
         }
@@ -34,6 +34,15 @@ namespace LJMP {
 
         Channel::~Channel() {
             LOGI("dctor {}", (long long)this);
+        }
+
+        void Channel::disconnect() {
+            LOG_ENTER;
+            NetworkManagerStdPtr network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
+                Media::getInstance()->getNetworkManager());
+            if (network_manager) {
+                network_manager->removeChannel(shared_from_this());
+            }
         }
 
     }

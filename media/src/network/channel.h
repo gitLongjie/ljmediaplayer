@@ -12,7 +12,7 @@ namespace LJMP {
         class Socket;
         using SocketPtr = std::shared_ptr<Socket>;
 
-        class Channel {
+        class Channel : public std::enable_shared_from_this<Channel> {
             disable_copy(Channel)
 
         public:
@@ -20,6 +20,11 @@ namespace LJMP {
 
         public:
             virtual ~Channel();
+
+            void disconnect();
+
+            SocketPtr getSocket() const { return socket_; }
+
 
         protected:
             Channel(const TaskQueuePtr& task_queue, const SocketPtr& s);
