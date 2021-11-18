@@ -42,6 +42,10 @@ namespace LJMP {
         void InputMediaSourceManager::uninitialize() {
             LOG_ENTER;
 
+            for (const auto& item : media_sources_) {
+                item.second->close();
+            }
+            media_sources_.clear();
             media_source_factory_.clear();
         }
     

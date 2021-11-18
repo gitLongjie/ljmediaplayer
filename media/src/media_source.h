@@ -6,6 +6,7 @@
 
 #include "src/lj_defined.h"
 #include "src/task_queue.h"
+#include "src/spin_lock.h"
 
 namespace LJMP {
     class MediaSource;
@@ -34,6 +35,7 @@ namespace LJMP {
 
     private:
         TaskQueuePtr task_queue_;
+        SpinLock spin_lock_;
     };
 } // namespace LJMP
 

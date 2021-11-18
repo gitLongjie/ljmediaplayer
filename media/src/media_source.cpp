@@ -19,6 +19,8 @@ namespace LJMP {
         MediaSourceWPtr wThis(shared_from_this());
         auto task = createTask(std::bind(&MediaSource::closeSource, this, wThis));
         invoke(task);
+
+        spin_lock_.lock();
     }
 
     void MediaSource::invoke(const TaskPtr& task) {
@@ -58,6 +60,7 @@ namespace LJMP {
         }
 
         doClose();
+        spin_lock_.unlock();
     }
 
 }
