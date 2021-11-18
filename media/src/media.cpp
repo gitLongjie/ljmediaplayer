@@ -131,8 +131,9 @@ namespace LJMP {
         main_task_queue_.push(task, delay);
     }
 
-    void Media::errorCallbak(int code, const char* msg) {
+    void Media::errorCallbak(int code, const std::string& msg) {
         MediaWPtr wThis(shared_from_this());
+        std::string message(msg);
         auto task = createTask(std::bind(&Media::doErrorCallback, this, code, msg, wThis));
         invoke(task);
     }

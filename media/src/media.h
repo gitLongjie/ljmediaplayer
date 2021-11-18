@@ -35,7 +35,7 @@ namespace LJMP {
         void invoke(const TaskPtr& task);
         void invoke(const TaskPtr& task, uint16_t delay);
 
-        void errorCallbak(int code, const char* msg);
+        void errorCallbak(int code, const std::string& msg);
         
     public:
         bool openUrl(const char* szUrl);
