@@ -57,19 +57,17 @@ namespace LJMP {
                 return false;
             }
 
-            bool ret = false;
-            MediaSourceWPtr t;
-            {
-                MediaSourcePtr ptr = (*itor)->create();
-                if (!ptr) {
-                    LOGE("con't create media source");
-                    return false;
-                }
-
-                ret = ptr->open(url);
-                t = ptr;
+            
+            MediaSourcePtr ptr = (*itor)->create();
+            if (!ptr) {
+                LOGE("con't create media source");
+                return false;
             }
-            return ret;
+
+            if (ptr->open(url)) {
+                return true;
+            }
+            return false;
            
         }
     }
