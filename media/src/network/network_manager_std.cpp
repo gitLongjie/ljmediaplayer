@@ -165,5 +165,9 @@ namespace LJMP {
             channels_.erase(sc->getSessionName());
         }
 
+        void NetworkManagerStd::select() {
+            //int t
+        }
+
     }
 }

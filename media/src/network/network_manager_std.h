@@ -41,6 +41,8 @@ namespace LJMP {
             void doUpdateChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
             void doRemoveChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
 
+            void select();
+
         private:
             TaskQueuePtr io_task_queue_;
             SpinLock spin_lock_;
