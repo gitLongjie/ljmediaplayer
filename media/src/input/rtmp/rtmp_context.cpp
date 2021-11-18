@@ -60,6 +60,8 @@ namespace LJMP {
                     LOGE("connect server failed {}", host_);
                     return false;
                 }
+                s->enableNoDelay(true);
+                s->enableTimeout(true, 30);
                 channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), s);
                 return true;
             }

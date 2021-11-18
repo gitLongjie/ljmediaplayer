@@ -32,6 +32,8 @@ namespace LJMP {
             bool isTcp() const { return model_ == Model::TCP; }
             void close();
 
+            bool enableNoDelay(bool enable);
+
         protected:
             Socket(Model model);
 
