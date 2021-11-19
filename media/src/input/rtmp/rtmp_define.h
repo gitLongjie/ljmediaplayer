@@ -24,6 +24,8 @@
 
 #define	RTMP_CHANNELS	65600
 
+#define RTMP_MAX_HEADER_SIZE 18
+
 extern const char kRtmp[];
 extern const char kRtmpt[];
 extern const char kRtmps[];
