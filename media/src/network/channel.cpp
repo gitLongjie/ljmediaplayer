@@ -9,7 +9,7 @@
 namespace LJMP {
     namespace Network {
 
-        ChannelPtr Channel::create(const TaskQueuePtr& task_queue, const SocketPtr& s) {
+        Channel::ChannelPtr Channel::create(const TaskQueuePtr& task_queue, const SocketPtr& s) {
             struct Creator : public Channel {
                 Creator(const TaskQueuePtr& task_queue, const SocketPtr& s)
                     : Channel(task_queue, s){ }
@@ -36,6 +36,13 @@ namespace LJMP {
             LOGI("dctor {}", (long long)this);
         }
 
+        void Channel::setReadCallbackHandle(ReadCallbackHandle read_call_handle) {
+            LOG_ENTER;
+
+            ChannelWPtr wThis(shared_from_this());
+            TaskPtr task = createTask(std::bind(&Channel::doSetCallbackHandle, this, read_call_handle, wThis));
+        }
+
         void Channel::disconnect() {
             LOG_ENTER;
             NetworkManagerStdPtr network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
@@ -51,6 +58,25 @@ namespace LJMP {
                 return;
             }
 
+        }
+
+        void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, ChannelWPtr wThis) {
+            ChannelPtr self(wThis.lock());
+            if (!self) {
+                LOGE("this object is destruct {}", (long long)this);
+                return;
+            }
+
+            read_callback_handle_ = read_call_handle;
+        }
+
+        void Channel::invoke(const TaskPtr task) {
+            if (!task_queue_ || task_queue_->isCurrentThread()) {
+                task->execute();
+                return;
+            }
+
+            task_queue_->push(task);
         }
 
     }

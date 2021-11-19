@@ -37,7 +37,7 @@ namespace LJMP {
                 std::string app_name_;
                 std::string play_path_;
 
-                Network::ChannelPtr channel_;
+                Network::Channel::ChannelPtr channel_;
             };
 
             using RtmpContextPtr = std::shared_ptr<RtmpContext>;
