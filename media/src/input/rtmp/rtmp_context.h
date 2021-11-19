@@ -28,6 +28,8 @@ namespace LJMP {
             protected:
                 explicit RtmpContext(const std::string& url);
 
+                void readCallbackHandle(const Network::SocketPtr& sc);
+
             private:
                 std::string url_;
 

@@ -64,7 +64,14 @@ namespace LJMP {
                 s->enableNoDelay(true);
                 s->enableTimeout(true, 30);
                 channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), s);
+
+                channel_->setReadCallbackHandle(std::bind(&RtmpContext::readCallbackHandle,
+                    this, std::placeholders::_1));
                 return true;
+            }
+
+            void RtmpContext::readCallbackHandle(const Network::SocketPtr& sc) {
+
             }
 
         }

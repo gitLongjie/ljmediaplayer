@@ -58,6 +58,10 @@ namespace LJMP {
                 return;
             }
 
+            if (read_callback_handle_) {
+                read_callback_handle_(socket_);
+            }
+
         }
 
         void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, ChannelWPtr wThis) {
