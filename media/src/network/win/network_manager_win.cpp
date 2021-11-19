@@ -37,6 +37,8 @@ namespace LJMP {
                 Media::getInstance()->errorCallbak(error_code_netork_initialize_failed, "net initialize failed");
                 return;
             }
+
+            NetworkManagerStd::doInitialize(wThis);
         }
 
         void NetworkManagerWin::doUninitialize(NetworkManagerWPtr wThis) {

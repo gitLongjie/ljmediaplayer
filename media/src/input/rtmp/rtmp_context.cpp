@@ -5,6 +5,8 @@
 #include "src/network/socket.h"
 #include "src/media.h"
 
+#include "src/input/rtmp/rtmp_status.h"
+
 namespace LJMP {
     namespace Input {
         namespace Rtmp {
@@ -67,11 +69,15 @@ namespace LJMP {
 
                 channel_->setReadCallbackHandle(std::bind(&RtmpContext::readCallbackHandle,
                     this, std::placeholders::_1));
+
+                rtmp_status_ = RtmpHandShakeStatus::create();
+                rtmp_status_->write(s);
                 return true;
             }
 
             void RtmpContext::readCallbackHandle(const Network::SocketPtr& sc) {
-
+                rtmp_status_->read(sc);
+                rtmp_status_ = rtmp_status_->getNext();
             }
 
         }

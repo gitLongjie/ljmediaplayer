@@ -1,8 +1,10 @@
 #include "src/utils.h"
 
 #include <string>
+#include <time.h>
 
 #ifdef WIN32
+#include <windows.h>
 #include <io.h>
 
 #else
@@ -81,6 +83,16 @@ namespace LJMP {
             p = pos + n;
         }
         return v;
+    }
+
+    unsigned int Utils::getTime() {
+#if WIN32
+        return timeGetTime();
+#else
+        struct tms t;
+        if (!clk_tck) clk_tck = sysconf(_SC_CLK_TCK);
+        return times(&t) * 1000 / clk_tck;
+#endif
     }
 
 } // namespace LJMP

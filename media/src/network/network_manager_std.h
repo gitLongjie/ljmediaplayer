@@ -48,6 +48,7 @@ namespace LJMP {
         private:
             TaskQueuePtr io_task_queue_;
             SpinLock spin_lock_;
+            bool stop_ = true;
 
             using ChannelList = std::map<socket_t, std::shared_ptr<Channel>>;
             ChannelList channels_;

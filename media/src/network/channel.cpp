@@ -41,6 +41,7 @@ namespace LJMP {
 
             ChannelWPtr wThis(shared_from_this());
             TaskPtr task = createTask(std::bind(&Channel::doSetCallbackHandle, this, read_call_handle, wThis));
+            invoke(task);
         }
 
         void Channel::disconnect() {

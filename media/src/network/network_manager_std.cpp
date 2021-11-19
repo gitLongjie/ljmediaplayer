@@ -104,7 +104,8 @@ namespace LJMP {
                 LOGE("self is nullptr");
             }
 
-
+            stop_ = false;
+            select();
         }
 
         void NetworkManagerStd::doUninitialize(NetworkManagerWPtr wThis) {
@@ -113,6 +114,8 @@ namespace LJMP {
             if (!self) {
                 LOGE("self is nullptr");
             }
+
+            stop_ = true;
 
             spin_lock_.unlock();
         }
@@ -166,7 +169,13 @@ namespace LJMP {
         }
 
         void NetworkManagerStd::select() {
-            //int t
+            if (stop_) {
+                LOGI("stop this select");
+                return;
+            }
+            NetworkManagerWPtr wThis(shared_from_this());
+            auto task = createTask(std::bind(&NetworkManagerStd::doSelect, this, wThis));
+            invoke(task);
         }
 
         void NetworkManagerStd::doSelect(NetworkManagerWPtr wThis) {
@@ -176,10 +185,13 @@ namespace LJMP {
                 return;
             }
 
+            int count = static_cast<int>(channels_.size()) + 1;
+
             fd_set reads;
             FD_ZERO(&reads);
+            FD_SET(channels_.begin()->first, &reads);
 
-            int count = static_cast<int>(channels_.size()) + 1;
+           
             timeval timeout = { 0, 1000 };
             int ret = ::select(count, &reads, nullptr, nullptr, &timeout);
             if (ret < 0) {
@@ -192,6 +204,8 @@ namespace LJMP {
                     item.second->handleRead();
                 }
             }
+
+            select();
         }
 
     }

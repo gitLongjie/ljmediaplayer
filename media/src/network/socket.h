@@ -21,7 +21,8 @@ namespace LJMP {
             virtual ~Socket();
 
             virtual bool connect(const std::string& address, short port) = 0;
-            virtual int read(unsigned char* buffer, unsigned int max_len) = 0;
+            virtual int read(char* buffer, unsigned int max_len) = 0;
+            virtual int write(const char* buffer, unsigned int len) = 0;
 
             bool isTcp() const { return model_ == Model::TCP; }
             void close();

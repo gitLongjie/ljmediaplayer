@@ -11,6 +11,9 @@
 namespace LJMP {
     namespace Input {
         namespace Rtmp {
+
+            class RtmpStatus;
+
             class RtmpContext {
                 disable_copy(RtmpContext)
 
@@ -40,6 +43,7 @@ namespace LJMP {
                 std::string play_path_;
 
                 Network::Channel::ChannelPtr channel_;
+                std::shared_ptr<RtmpStatus> rtmp_status_;
             };
 
             using RtmpContextPtr = std::shared_ptr<RtmpContext>;

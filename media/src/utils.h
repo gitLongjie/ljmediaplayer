@@ -26,6 +26,7 @@ namespace LJMP {
         static std::string getProtocol(const std::string& url);
         static std::vector<std::string> split(const std::string& str, const std::string& sp,
             bool ignore_empty = 0, bool split_empty = 0);
+        static unsigned int getTime();
     };
 }
 

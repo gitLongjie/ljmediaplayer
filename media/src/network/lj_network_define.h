@@ -15,6 +15,8 @@ namespace LJMP {
 
         using socket_t = SOCKET;
 
+#define getSockError()	WSAGetLastError()
+
 #endif // WIN32
     }
 }
