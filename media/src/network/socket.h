@@ -4,14 +4,7 @@
 #include <memory>
 
 #include "src/lj_defined.h"
-
-#ifdef WIN32
-
-#include <WinSock2.h>
-
-using socket_t = SOCKET;
-
-#endif // WIN32
+#include "src/network/lj_network_define.h"
 
 namespace LJMP {
     namespace Network {
@@ -28,6 +21,7 @@ namespace LJMP {
             virtual ~Socket();
 
             virtual bool connect(const std::string& address, short port) = 0;
+            virtual int read(unsigned char* buffer, unsigned int max_len) = 0;
 
             bool isTcp() const { return model_ == Model::TCP; }
             void close();
@@ -37,11 +31,10 @@ namespace LJMP {
             bool enableTimeout(bool enable, int time);
 
             const std::string& getSessionName() const { return seesion_; }
+            socket_t getSocket() const { return socket_; }
 
         protected:
             Socket(Model model);
-
-            socket_t getSocket() const { return socket_; }
 
             bool doConnect(const struct sockaddr& service);
 

@@ -1,7 +1,8 @@
 #include "src/network/tcp_socket.h"
 
-#include "src/log.h"
 #include "src/network/network_utils.h"
+#include "src/log.h"
+
 
 namespace LJMP {
     namespace Network {
@@ -40,6 +41,10 @@ namespace LJMP {
                 return false;
             }
             return true;
+        }
+
+        int TcpSocket::read(unsigned char* buffer, unsigned int max_len) {
+           return ::read(getSocket(), buffer, max_len);
         }
 
     }
