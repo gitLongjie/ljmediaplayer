@@ -9,6 +9,7 @@
 #include "src/network_manager.h"
 #include "src/spin_lock.h"
 #include "src/task_queue.h"
+#include "src/network/lj_network_define.h"
 
 namespace LJMP {
     namespace Network {
@@ -42,12 +43,13 @@ namespace LJMP {
             void doRemoveChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
 
             void select();
+            void doSelect(NetworkManagerWPtr wThis);
 
         private:
             TaskQueuePtr io_task_queue_;
             SpinLock spin_lock_;
 
-            using ChannelList = std::map<std::string, std::shared_ptr<Channel>>;
+            using ChannelList = std::map<socket_t, std::shared_ptr<Channel>>;
             ChannelList channels_;
         };
         using NetworkManagerStdPtr = std::shared_ptr<NetworkManagerStd>;

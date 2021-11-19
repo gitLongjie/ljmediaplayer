@@ -137,7 +137,7 @@ namespace LJMP {
                 return;
             }
 
-            channels_[sc->getSessionName()] = channel;
+            channels_[sc->getSocket()] = channel;
 
         }
 
@@ -162,11 +162,36 @@ namespace LJMP {
             }
 
             sc->close();
-            channels_.erase(sc->getSessionName());
+            channels_.erase(sc->getSocket());
         }
 
         void NetworkManagerStd::select() {
             //int t
+        }
+
+        void NetworkManagerStd::doSelect(NetworkManagerWPtr wThis) {
+            NetworkManagerPtr self(wThis.lock());
+            if (!self) {
+                LOGE("this object is destruct {}", (long long)this);
+                return;
+            }
+
+            fd_set reads;
+            FD_ZERO(&reads);
+
+            int count = static_cast<int>(channels_.size()) + 1;
+            timeval timeout = { 0, 1000 };
+            int ret = ::select(count, &reads, nullptr, nullptr, &timeout);
+            if (ret < 0) {
+                LOGE("select end");
+                return;
+            }
+
+            for (const auto& item : channels_) {
+                if (FD_ISSET(item.first, &reads)) {
+                    item.second->handleRead();
+                }
+            }
         }
 
     }

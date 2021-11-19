@@ -29,9 +29,13 @@ namespace LJMP {
         protected:
             Channel(const TaskQueuePtr& task_queue, const SocketPtr& s);
 
+            void handleRead();
+
         private:
             TaskQueuePtr task_queue_;
             SocketPtr socket_;
+
+            friend class NetworkManagerStd;
         };
 
         using ChannelPtr = std::shared_ptr<Channel>;

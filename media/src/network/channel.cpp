@@ -45,5 +45,13 @@ namespace LJMP {
             }
         }
 
+        void Channel::handleRead() {
+            if (!socket_) {
+                disconnect();
+                return;
+            }
+
+        }
+
     }
 }
