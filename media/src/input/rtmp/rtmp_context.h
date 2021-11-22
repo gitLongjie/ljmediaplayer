@@ -14,10 +14,13 @@ namespace LJMP {
 
             class RtmpStatus;
 
-            class RtmpContext {
+            class RtmpContext : public std::enable_shared_from_this<RtmpContext> {
                 disable_copy(RtmpContext)
 
             public:
+                using Ptr = std::shared_ptr<RtmpContext>;
+                using WPtr = std::weak_ptr<RtmpContext>;
+
                 static std::shared_ptr<RtmpContext> create(const std::string& url);
 
             public:
@@ -28,10 +31,14 @@ namespace LJMP {
 
                 bool connectServer();
 
+                void switchStatus(std::shared_ptr<RtmpStatus> status);
+
+                int& numInvokes() { return num_invokes_; }
+                int getProtocol() const { return protocol_; }
+                const std::string& getAppName() const { return app_name_; }
+
             protected:
                 explicit RtmpContext(const std::string& url);
-
-                void readCallbackHandle(const Network::SocketPtr& sc);
 
             private:
                 std::string url_;
@@ -42,11 +49,11 @@ namespace LJMP {
                 std::string app_name_;
                 std::string play_path_;
 
-                Network::Channel::ChannelPtr channel_;
+                Network::Channel::Ptr channel_;
                 std::shared_ptr<RtmpStatus> rtmp_status_;
-            };
 
-            using RtmpContextPtr = std::shared_ptr<RtmpContext>;
+                int num_invokes_ = 0;
+            };
         }
     }
 }

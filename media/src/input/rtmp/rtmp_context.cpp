@@ -11,7 +11,7 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
-            RtmpContextPtr RtmpContext::create(const std::string& url) {
+            RtmpContext::Ptr RtmpContext::create(const std::string& url) {
                 struct Createor : public RtmpContext {
                     explicit Createor(const std::string& url) : RtmpContext(url) {}
                     ~Createor() override = default;
@@ -67,17 +67,21 @@ namespace LJMP {
                 s->enableTimeout(true, 30);
                 channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), s);
 
-                channel_->setReadCallbackHandle(std::bind(&RtmpContext::readCallbackHandle,
-                    this, std::placeholders::_1));
-
-                rtmp_status_ = RtmpHandShakeStatus::create();
-                rtmp_status_->write(s);
+                WPtr wThis(shared_from_this());
+                rtmp_status_ = RtmpHandShakeStatus::create(wThis, channel_);
                 return true;
             }
 
-            void RtmpContext::readCallbackHandle(const Network::SocketPtr& sc) {
-                rtmp_status_->read(sc);
-                rtmp_status_ = rtmp_status_->getNext();
+            void RtmpContext::switchStatus(std::shared_ptr<RtmpStatus> status) {
+                LOG_ENTER;
+
+                if (status != rtmp_status_) {
+                    if (status) {
+                        LOGI("switch to status: {}", status->getName());
+                    }
+                    rtmp_status_ = status;
+                    rtmp_status_->switchToSelf();
+                }
             }
 
         }

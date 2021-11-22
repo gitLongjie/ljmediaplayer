@@ -185,6 +185,11 @@ namespace LJMP {
                 return;
             }
 
+            if (channels_.empty()) {
+                select();
+                return;
+            }
+
             int count = static_cast<int>(channels_.size()) + 1;
 
             fd_set reads;
@@ -192,10 +197,14 @@ namespace LJMP {
             FD_SET(channels_.begin()->first, &reads);
 
            
-            timeval timeout = { 0, 1000 };
+            timeval timeout = { 1, 0 };
             int ret = ::select(count, &reads, nullptr, nullptr, &timeout);
             if (ret < 0) {
                 LOGE("select end");
+                return;
+            }
+            else if (0 == ret) {
+                select();
                 return;
             }
 

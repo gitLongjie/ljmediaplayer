@@ -21,6 +21,8 @@ int main() {
         return -1;
     }
 
+    std::string str = std::string("a", 1);
+
     const char* test = "rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp";
     if (0 != openUrl(test)) {
         uninitialzie();

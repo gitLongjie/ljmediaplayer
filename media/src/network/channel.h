@@ -6,6 +6,7 @@
 
 #include "src/lj_defined.h"
 #include "src/task_queue.h"
+#include "src/data_buffer.h"
 
 namespace LJMP {
     namespace Network {
@@ -16,10 +17,11 @@ namespace LJMP {
             disable_copy(Channel)
 
         public:
-            using ChannelPtr = std::shared_ptr<Channel>;
-            using ChannelWPtr = std::weak_ptr<Channel>;
+            using Ptr = std::shared_ptr<Channel>;
+            using WPtr = std::weak_ptr<Channel>;
 
-            using ReadCallbackHandle = std::function<void(const SocketPtr& sc)>;
+            using ReadCallbackHandle = std::function<void(const Ptr& self)>;
+            using WriteStatusCallback = std::function<void(bool)>;
 
             static std::shared_ptr<Channel> create(const TaskQueuePtr& task_queue, const SocketPtr& s);
 
@@ -27,6 +29,9 @@ namespace LJMP {
             virtual ~Channel();
 
             void setReadCallbackHandle(ReadCallbackHandle read_call_handle);
+
+            int read(DataBuffer::Ptr& data_buffer);
+            bool write(const DataBuffer::Ptr& data_buffer, WriteStatusCallback callback);
 
             void disconnect();
 
@@ -38,7 +43,8 @@ namespace LJMP {
 
             void handleRead();
 
-            void doSetCallbackHandle(ReadCallbackHandle read_call_handle, ChannelWPtr wThis);
+            void doSetCallbackHandle(ReadCallbackHandle read_call_handle, WPtr wThis);
+            void doWrite(const DataBuffer::Ptr data_buffer, WriteStatusCallback callback, WPtr wThis);
 
             void invoke(const TaskPtr task);
 

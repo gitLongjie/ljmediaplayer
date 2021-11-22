@@ -25,7 +25,7 @@ namespace LJMP {
             void doClose();
 
         private:
-            Rtmp::RtmpContextPtr rtmp_context_;
+            Rtmp::RtmpContext::Ptr rtmp_context_;
         };
     }
 }

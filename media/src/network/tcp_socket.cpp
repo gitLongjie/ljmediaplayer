@@ -43,38 +43,40 @@ namespace LJMP {
             return true;
         }
 
-        int TcpSocket::read(char* buffer, unsigned int max_len) {
+        int TcpSocket::read(DataBuffer::Ptr& buffer) {
             socket_t sc = getSocket();
             if (-1 == sc) {
                 LOGE("cont write data sc={}", sc);
                 return 0;
             }
 
-            char* p = buffer;
+            char* p = buffer->getData();
+            int len = buffer->getSize();
             int readed = 0;
             do 
             {
-                int ret = ::recv(sc, p, max_len, 0);
+                int ret = ::recv(sc, p, len, 0);
                 if (ret == -1) {
                    int err = getSockError();
                    LOGE("recv error, err={}", err);
                    return 0;
                 }
                 readed += ret;
-                max_len -= ret;
-            } while (max_len > 0);
+                len -= ret;
+            } while (len > 0);
           
             return readed;
         }
 
-        int TcpSocket::write(const char* buffer, unsigned int len) {
+        int TcpSocket::write(const DataBuffer::Ptr& buffer) {
             socket_t sc = getSocket();
             if (-1 == sc) {
                 LOGE("cont write data sc={}", sc);
                 return 0;
             }
             
-            const char* p = buffer;
+            const char* p = buffer->getData();
+            int len = buffer->getSize();
             int sended = 0;
             do {
                 int ret = ::send(sc, p, len, 0);

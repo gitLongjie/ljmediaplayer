@@ -19,5 +19,12 @@ using StringList = std::vector<std::string>;
 #define return_implate_creater()                            \
     return std::make_shared<Creator>();
 
+template <typename T, typename V>
+inline void invokeCallback(T func, V val) {
+    if (func) {
+        func(val);
+    }
+}
+
 
 #endif // ! src_lj_defined_h_

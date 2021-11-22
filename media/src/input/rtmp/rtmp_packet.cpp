@@ -4,7 +4,7 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
-            RtmpPacket::RtmpPacketPtr RtmpPacket::create() {
+            RtmpPacket::Ptr RtmpPacket::create() {
                 struct Creator : public RtmpPacket {
                     Creator() : RtmpPacket() {}
                     ~Creator() override = default;
@@ -25,24 +25,23 @@ namespace LJMP {
             }
 
             bool RtmpPacket::alloca(unsigned int size) {
-                char* p = nullptr;
                 if (size > SIZE_MAX - RTMP_MAX_HEADER_SIZE) {
                     return false;
                 }
 
-                p = new char[size + RTMP_MAX_HEADER_SIZE];
-                if (nullptr == p) {
+                body_ = DataBuffer::create(size + RTMP_MAX_HEADER_SIZE);
+                if (!body_) {
                     return false;
                 }
 
-                body_ = p + RTMP_MAX_HEADER_SIZE;
+                body_->setOffset(RTMP_MAX_HEADER_SIZE);
                 body_size_ = 0;
+                return true;
             }
 
             void RtmpPacket::free() {
-                if (nullptr != body_) {
-                    char* p = body_ - RTMP_MAX_HEADER_SIZE;
-                    delete[] p;
+                if (body_) {
+                    body_.reset();
                 }
 
                 body_ = nullptr;

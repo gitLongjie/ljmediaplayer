@@ -9,14 +9,14 @@
 namespace LJMP {
     namespace Network {
 
-        Channel::ChannelPtr Channel::create(const TaskQueuePtr& task_queue, const SocketPtr& s) {
+        Channel::Ptr Channel::create(const TaskQueuePtr& task_queue, const SocketPtr& s) {
             struct Creator : public Channel {
                 Creator(const TaskQueuePtr& task_queue, const SocketPtr& s)
                     : Channel(task_queue, s){ }
                 ~Creator() override = default;
             };
 
-            ChannelPtr channel = std::make_shared<Creator>(task_queue, s);
+            Ptr channel = std::make_shared<Creator>(task_queue, s);
             NetworkManagerStdPtr network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
                 Media::getInstance()->getNetworkManager());
             if (network_manager) {
@@ -39,9 +39,24 @@ namespace LJMP {
         void Channel::setReadCallbackHandle(ReadCallbackHandle read_call_handle) {
             LOG_ENTER;
 
-            ChannelWPtr wThis(shared_from_this());
+            WPtr wThis(shared_from_this());
             TaskPtr task = createTask(std::bind(&Channel::doSetCallbackHandle, this, read_call_handle, wThis));
             invoke(task);
+        }
+
+        int Channel::read(DataBuffer::Ptr& data_buffer) {
+            return socket_->read(data_buffer);
+        }
+
+        bool Channel::write(const DataBuffer::Ptr& data_buffer, WriteStatusCallback callback) {
+            if (!socket_) {
+                LOGE("socket is nullptr");
+                return false;
+            }
+            WPtr wThis(shared_from_this());
+            auto task = createTask(std::bind(&Channel::doWrite, this, data_buffer, callback, wThis));
+            invoke(task);
+            return true;
         }
 
         void Channel::disconnect() {
@@ -60,19 +75,36 @@ namespace LJMP {
             }
 
             if (read_callback_handle_) {
-                read_callback_handle_(socket_);
+                read_callback_handle_(shared_from_this());
             }
 
         }
 
-        void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, ChannelWPtr wThis) {
-            ChannelPtr self(wThis.lock());
+        void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, WPtr wThis) {
+            Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct {}", (long long)this);
                 return;
             }
 
             read_callback_handle_ = read_call_handle;
+        }
+
+        void Channel::doWrite(const DataBuffer::Ptr data_buffer, WriteStatusCallback callback, WPtr wThis) {
+            Ptr self(wThis.lock());
+            if (!self) {
+                LOGE("this object is destruct");
+                return;
+            }
+
+            if (!socket_) {
+                LOGE("socket is nulptr");
+                invokeCallback(callback, false);
+                return;
+            }
+
+            int ret = socket_->write(data_buffer);
+            invokeCallback(callback, data_buffer->getSize() == ret);
         }
 
         void Channel::invoke(const TaskPtr task) {
