@@ -12,6 +12,7 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
+            class RtmpLink;
             class RtmpStatus;
 
             class RtmpContext : public std::enable_shared_from_this<RtmpContext> {
@@ -51,6 +52,7 @@ namespace LJMP {
 
                 Network::Channel::Ptr channel_;
                 std::shared_ptr<RtmpStatus> rtmp_status_;
+                std::shared_ptr<RtmpLink> rtmp_link_;
 
                 int num_invokes_ = 0;
             };

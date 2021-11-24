@@ -93,6 +93,27 @@ typedef struct AVal
     int av_len;
 } AVal;
 
-#define AVC(str)	std::string(str,sizeof(str)-1)
+#define AVC(str)	AVal{str,sizeof(str)-1}
+
+struct AMFObjectProperty;
+
+typedef struct AMFObject
+{
+    int o_num;
+    struct AMFObjectProperty* o_props;
+} AMFObject;
+
+typedef struct AMFObjectProperty
+{
+    AVal p_name;
+    AMFDataType p_type;
+    union
+    {
+        double p_number;
+        AVal p_aval;
+        AMFObject p_object;
+    } p_vu;
+    short p_UTCoffset;
+} AMFObjectProperty;
 
 #endif // !src_input_rtmp_define_h_

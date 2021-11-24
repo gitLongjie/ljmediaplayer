@@ -7,65 +7,13 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
-            bool RtmpUtils::parseUrl(const std::string& url, int* protocol, std::string* host, short* port,
-                std::string* app_name, std::string* play_path) {
-                if (nullptr == protocol || nullptr == host || nullptr == port) {
-                    LOGE("param is nullptr, protocl={}, host={}, port={}",
-                        (long long)protocol, (long long)host, (long long)port);
-                    return false;
+            void RtmpUtils::amfAddProp(AMFObject* obj, const AMFObjectProperty* prop) {
+                if (!(obj->o_num & 0x0f)) {
+                    obj->o_props =
+                        (AMFObjectProperty*)realloc(obj->o_props, (obj->o_num + 16) * sizeof(AMFObjectProperty));
                 }
-                *protocol = RTMP_PROTOCOL_RTMP;
-
-                size_t pos = url.find("://");
-                if (std::string::npos == pos) {
-                    LOGE("{} is not rmtp protocol", url);
-                    return false;
-                }
-                {
-                    std::string str_protocol = url.substr(0, pos);
-                    if (str_protocol == kRtmp) {
-                        *protocol = RTMP_PROTOCOL_RTMP;
-                    }
-                    else if (str_protocol == kRtmpt) {
-                        *protocol = RTMP_PROTOCOL_RTMPT;
-                    }
-                    else if (str_protocol == kRtmps) {
-                        *protocol = RTMP_PROTOCOL_RTMPS;
-                    }
-                    else if (str_protocol == kRtmpe) {
-                        *protocol = RTMP_PROTOCOL_RTMPE;
-                    }
-                    else if (str_protocol == kRtmfp) {
-                        *protocol = RTMP_PROTOCOL_RTMFP;
-                    }
-                    else if (str_protocol == kRtmpte) {
-                        *protocol = RTMP_PROTOCOL_RTMPTE;
-                    }
-                    else if (str_protocol == kRtmpts) {
-                        *protocol = RTMP_PROTOCOL_RTMPTS;
-                    }
-                } 
-                
-                std::string host_port_param = url.substr(pos + 3);
-                pos = host_port_param.find("/");
-                if (std::string::npos == pos) {
-                    LOGE("{} is valid", url);
-                    return false;
-                }
-
-                std::string host_post = host_port_param.substr(0, pos);
-                LJMP::Network::NetworkUtils::splitHostPort(host_post, host, port);
-
-                size_t port_pos = pos;
-                pos = host_port_param.rfind("/");
-                if (pos < port_pos) {
-                    pos = port_pos + 1;
-                }
-                *app_name = host_port_param.substr(port_pos + 1, pos - port_pos - 1);
-
-                *play_path = host_port_param.substr(pos + 1);
-                
-                return true;
+                    
+                memcpy(&obj->o_props[obj->o_num++], prop, sizeof(AMFObjectProperty));
             }
 
             char* RtmpUtils::amfEncodeString(char* output, char* outend, const std::string& str) {
@@ -77,12 +25,12 @@ namespace LJMP {
                 if (str.length() < 65536) {
                     *output++ = AMF_STRING;
 
-                    output = amfEncodeInt16(output, outend, str.length());
+                    output = amfEncodeInt16(output, outend, static_cast<short>(str.length()));
                 }
                 else {
                     *output++ = AMF_LONG_STRING;
 
-                    output = amfEncodeInt32(output, outend, str.length());
+                    output = amfEncodeInt32(output, outend, static_cast<int>(str.length()));
                 }
                 memcpy(output, str.c_str(), str.length());
                 output += str.length();
@@ -193,7 +141,7 @@ namespace LJMP {
             char* RtmpUtils::amfEncodeNamedString(char* output, char* outend, const std::string& name, const std::string& value) {
                 if (output + 2 + name.length() > outend)
                     return NULL;
-                output = amfEncodeInt16(output, outend, name.length());
+                output = amfEncodeInt16(output, outend, static_cast<short>(name.length()));
 
                 memcpy(output, name.c_str(), name.length());
                 output += name.length();
@@ -204,7 +152,7 @@ namespace LJMP {
             char* RtmpUtils::amfEncodeNamedNumber(char* output, char* outend, const std::string& name, double dVal) {
                 if (output + 2 + name.length() > outend)
                     return nullptr;
-                output = amfEncodeInt16(output, outend, name.length());
+                output = amfEncodeInt16(output, outend, static_cast<short>(name.length()));
 
                 memcpy(output, name.c_str(), name.length());
                 output += name.length();
@@ -215,7 +163,7 @@ namespace LJMP {
             char* RtmpUtils::amfEncodeNamedBoolean(char* output, char* outend, const std::string& name, int bVal) {
                 if (output + 2 + name.length() > outend)
                     return nullptr;
-                output = amfEncodeInt16(output, outend, name.length());
+                output = amfEncodeInt16(output, outend, static_cast<short>(name.length()));
 
                 memcpy(output, name.c_str(), name.length());
                 output += name.length();

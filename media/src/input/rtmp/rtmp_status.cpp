@@ -11,7 +11,7 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
-#define SAVC(x)	static const std::string av_##x = AVC(#x)
+#define SAVC(x)	static const AVal av_##x = AVC(#x)
 
             SAVC(app);
             SAVC(connect);
@@ -277,26 +277,27 @@ namespace LJMP {
                 char* enc = data_buffer->getOffsetData();
                 char *pend = data_buffer->getData() + data_buffer->getSize();
 
-                enc = RtmpUtils::amfEncodeString(enc, pend, av_connect);
+                enc = RtmpUtils::amfEncodeString(enc, pend, &av_connect);
                 enc = RtmpUtils::amfEncodeNumber(enc, pend, ++rtmp_contxt->numInvokes());
                 *enc++ = AMF_OBJECT;
 
-                enc = RtmpUtils::amfEncodeNamedString(enc, pend, av_app, rtmp_contxt->getAppName());
+                enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_app, rtmp_contxt->getAppName());
                 if (!enc) {
                     return 1;
                 }
                     
                 if (rtmp_contxt->getProtocol() & RTMP_FEATURE_WRITE) {
-                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, av_type, av_nonprivate);
+                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_type, &av_nonprivate);
                     if (!enc)
                         return FALSE;
                 }
 #if 0
-                if (r->Link.flashVer.av_len) {
-                    enc = AMF_EncodeNamedString(enc, pend, &av_flashVer, &r->Link.flashVer);
+                if (rtmp_contxt->getAppName().flashVer.av_len) {
+                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_flashVer, &r->Link.flashVer);
                     if (!enc)
                         return FALSE;
                 }
+
                 if (r->Link.swfUrl.av_len) {
                     enc = AMF_EncodeNamedString(enc, pend, &av_swfUrl, &r->Link.swfUrl);
                     if (!enc)

@@ -1,10 +1,10 @@
 #include "src/input/rtmp/rtmp_context.h"
 
 #include "src/log.h"
-#include "src/input/rtmp/rtmp_utils.h"
 #include "src/network/socket.h"
 #include "src/media.h"
 
+#include "src/input/rtmp/rtmp_link.h"
 #include "src/input/rtmp/rtmp_status.h"
 
 namespace LJMP {
@@ -32,7 +32,11 @@ namespace LJMP {
             bool RtmpContext::intialize() {
                 LOG_ENTER;
 
-                if (!Rtmp::RtmpUtils::parseUrl(url_, &protocol_, &host_, &port_, &app_name_, &play_path_)) {
+                if (rtmp_link_) {
+                    rtmp_link_.reset();
+                }
+                rtmp_link_ = RtmpLink::create();
+                if (!rtmp_link_->parseUrl(url_)) {
                     LOGE("{} parese failed", url_);
                     return false;
                 }
@@ -48,6 +52,10 @@ namespace LJMP {
                 if (channel_) {
                     channel_->disconnect();
                     channel_.reset();
+                }
+
+                if (rtmp_link_) {
+                    rtmp_link_.reset();
                 }
             }
 
