@@ -12,6 +12,30 @@
 namespace LJMP {
     namespace Input {
         namespace Rtmp {
+            const char RTMPProtocolStrings[][7] = {
+              "RTMP",
+              "RTMPT",
+              "RTMPE",
+              "RTMPTE",
+              "RTMPS",
+              "RTMPTS",
+              "",
+              "",
+              "RTMFP"
+            };
+
+            const char RTMPProtocolStringsLower[][7] = {
+              "rtmp",
+              "rtmpt",
+              "rtmpe",
+              "rtmpte",
+              "rtmps",
+              "rtmpts",
+              "",
+              "",
+              "rtmfp"
+            };
+
             enum { OPT_STR = 0, OPT_INT, OPT_BOOL, OPT_CONN };
             static const char* optinfo[] = { "string", "integer", "boolean", "AMF" };
             static const AVal truth[] = {
@@ -109,10 +133,113 @@ namespace LJMP {
             bool RtmpLink::parseUrl(const std::string& url) {
                 LOG_ENTER;
 
-                return false;
+                AVal opt, arg;
+                char* p1, * p2;
+                char *ptr = const_cast<char*>(strchr(url.c_str(), ' '));
+                unsigned int port = 0;
+
+                int len = static_cast<int>(url.length());
+                bool ret = doParseURL(url.c_str(), &link_.protocol_, &link_.host_name_,
+                    &port, &link_.playpath0_, &link_.app_);
+                if (!ret) {
+                    return ret;
+                }
+
+                link_.port_ = port;
+                link_.playpath_ = link_.playpath0_;
+
+                while (ptr) {
+                    *ptr++ = '\0';
+                    p1 = ptr;
+                    p2 = strchr(p1, '=');
+                    if (!p2)
+                        break;
+                    opt.av_val = p1;
+                    opt.av_len = static_cast<int>(p2 - p1);
+                    *p2++ = '\0';
+                    arg.av_val = p2;
+                    ptr = strchr(p2, ' ');
+                    if (ptr) {
+                        *ptr = '\0';
+                        arg.av_len = static_cast<int>(ptr - p2);
+                        /* skip repeated spaces */
+                        while (ptr[1] == ' ')
+                            *ptr++ = '\0';
+                    }
+                    else {
+                        arg.av_len = static_cast<int>(strlen(p2));
+                    }
+
+                    /* unescape */
+                    port = arg.av_len;
+                    for (p1 = p2; port > 0;) {
+                        if (*p1 == '\\') {
+                            unsigned int c;
+                            if (port < 3)
+                                return FALSE;
+                            sscanf(p1 + 1, "%02x", &c);
+                            *p2++ = c;
+                            port -= 3;
+                            p1 += 3;
+                        }
+                        else {
+                            *p2++ = *p1++;
+                            port--;
+                        }
+                    }
+                    arg.av_len = static_cast<int>(p2 - arg.av_val);
+
+                    ret = setOpt(&opt, &arg);
+                    if (!ret)
+                        return ret;
+                }
+
+                if (!link_.tc_url_.av_len) {
+                    link_.tc_url_.av_val = const_cast<char*>(url.c_str());
+                    if (link_.app_.av_len) {
+                        if (link_.app_.av_val < url.c_str() + len) {
+                            /* if app is part of original url, just use it */
+                            link_.tc_url_.av_len = link_.app_.av_len
+                                + static_cast<int>((link_.app_.av_val - url.c_str()));
+                        }
+                        else {
+                            len = link_.host_name_.av_len + link_.app_.av_len +
+                                sizeof("rtmpte://:65535/");
+                            link_.tc_url_.av_val = (char*)malloc(len);
+                            link_.tc_url_.av_len = snprintf(link_.tc_url_.av_val, len,
+                                "%s://%.*s:%d/%.*s",
+                                RTMPProtocolStringsLower[link_.protocol_],
+                                link_.host_name_.av_len, link_.host_name_.av_val,
+                                link_.port_,
+                                link_.app_.av_len, link_.app_.av_val);
+                            link_.lflags_ |= RTMP_LF_FTCU;
+                        }
+                    }
+                    else {
+                        link_.tc_url_.av_len = static_cast<int>(url.length());
+                    }
+                }
+
+#ifdef CRYPTO
+                if ((r->Link.lFlags & RTMP_LF_SWFV) && r->Link.swfUrl.av_len)
+                    RTMP_HashSWF(r->Link.swfUrl.av_val, &r->Link.SWFSize,
+                        (unsigned char*)r->Link.SWFHash, r->Link.swfAge);
+#endif
+
+                socksSetup(&link_.socks_host_);
+
+                if (link_.port_ == 0) {
+                    if (link_.protocol_ & RTMP_FEATURE_SSL)
+                        link_.port_ = 443;
+                    else if (link_.protocol_ & RTMP_FEATURE_HTTP)
+                        link_.port_ = 80;
+                    else
+                        link_.port_ = 1935;
+                }
+                return true;
             }
 
-            bool RtmpLink::parseURL(const char* url, int* protocol, AVal* host, unsigned int* port,
+            bool RtmpLink::doParseURL(const char* url, int* protocol, AVal* host, unsigned int* port,
                 AVal* playpath, AVal* app) {
                 char* p, * end, * col, * ques, * slash;
 
@@ -131,7 +258,7 @@ namespace LJMP {
                 p = (char*)strstr(url, "://");
                 if (!p) {
                     LOGE("RTMP URL: No :// in url!");
-                    return FALSE;
+                    return false;
                 }
                 {
                     int len = (int)(p - url);
@@ -209,7 +336,7 @@ namespace LJMP {
 
                 if (!slash) {
                     LOGW("No application or playpath in URL!");
-                    return TRUE;
+                    return true;
                 }
                 p = slash + 1;
 
@@ -266,7 +393,7 @@ namespace LJMP {
                     parsePlaypath(&av, playpath);
                 }
 
-                return TRUE;
+                return true;
             }
 
             void RtmpLink::parsePlaypath(AVal* in, AVal* out) {
@@ -387,7 +514,7 @@ namespace LJMP {
                 }
             }
 
-            bool RtmpLink::SetOpt(const AVal* opt, AVal* arg) {
+            bool RtmpLink::setOpt(const AVal* opt, AVal* arg) {
                 int i;
                 void* v;
 

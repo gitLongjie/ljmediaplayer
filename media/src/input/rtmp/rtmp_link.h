@@ -84,11 +84,11 @@ namespace LJMP {
                 RtmpLink();
 
             private:
-                bool parseURL(const char* url, int* protocol, AVal* host,
+                bool doParseURL(const char* url, int* protocol, AVal* host,
                     unsigned int* port, AVal* playpath, AVal* app);
                 void parsePlaypath(AVal* in, AVal* out);
                 void socksSetup(AVal* sockshost);
-                bool SetOpt(const AVal* opt, AVal* arg);
+                bool setOpt(const AVal* opt, AVal* arg);
                 bool parseAMF(AMFObject* obj, AVal* av, int* depth);
                 void optUsage();
 
