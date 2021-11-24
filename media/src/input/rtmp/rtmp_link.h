@@ -79,6 +79,8 @@ namespace LJMP {
                 virtual ~RtmpLink();
 
                 bool parseUrl(const std::string& url);
+                Link& getLink() { return link_; }
+                const Link& getLink() const { return link_; }
 
             protected:
                 RtmpLink();
@@ -94,7 +96,6 @@ namespace LJMP {
 
             public:
                 Link link_;
-                friend struct urlopt;
             };
         }
     }

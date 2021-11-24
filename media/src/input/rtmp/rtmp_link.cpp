@@ -123,6 +123,7 @@ namespace LJMP {
 
             RtmpLink::RtmpLink() {
                 LOGI("actor {}", (long long)this);
+                memset(&link_, 0, sizeof(link_));
 
             }
 

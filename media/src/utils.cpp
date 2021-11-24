@@ -14,6 +14,8 @@
 #define Access
 #endif
 
+static std::string emptyStr;
+
 namespace LJMP {
     bool Utils::isFileExits(const char *szPath) {
         if ( 0 == access(szPath, 0)) {
@@ -93,6 +95,10 @@ namespace LJMP {
         if (!clk_tck) clk_tck = sysconf(_SC_CLK_TCK);
         return times(&t) * 1000 / clk_tck;
 #endif
+    }
+
+    const std::string& Utils::emptyString() {
+        return emptyStr;
     }
 
 } // namespace LJMP

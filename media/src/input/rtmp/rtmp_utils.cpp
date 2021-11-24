@@ -171,6 +171,10 @@ namespace LJMP {
                 return amfEncodeBoolean(output, outend, bVal);
             }
 
+            std::string RtmpUtils::avalToString(const AVal& av) {
+                return std::string(av.av_val, av.av_len);
+            }
+
         }
     }
 }

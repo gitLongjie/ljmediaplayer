@@ -39,6 +39,8 @@ namespace LJMP {
                 }
                 static char* amfEncodeNamedNumber(char* output, char* outend, const std::string& name, double dVal);
                 static char* amfEncodeNamedBoolean(char* output, char* outend, const std::string& name, int bVal);
+
+                static std::string avalToString(const AVal& av);
             };
         }
     }

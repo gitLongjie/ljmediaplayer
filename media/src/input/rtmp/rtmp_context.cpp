@@ -4,8 +4,10 @@
 #include "src/network/socket.h"
 #include "src/media.h"
 
+#include "src/utils.h"
 #include "src/input/rtmp/rtmp_link.h"
 #include "src/input/rtmp/rtmp_status.h"
+#include "src/input/rtmp/rtmp_utils.h"
 
 namespace LJMP {
     namespace Input {
@@ -40,8 +42,11 @@ namespace LJMP {
                     LOGE("{} parese failed", url_);
                     return false;
                 }
+
+                const RtmpLink::Link& link = rtmp_link_->getLink();
                 LOGI("protocol={}, host={}, port={}, app_name={}, play_path={}",
-                    protocol_, host_, port_, app_name_, play_path_);
+                    link.protocol_, RtmpUtils::avalToString(link.host_name_), link.port_,
+                    RtmpUtils::avalToString(link.app_), RtmpUtils::avalToString(link.playpath_));
 
                 return true;
             }
@@ -62,13 +67,11 @@ namespace LJMP {
             bool RtmpContext::connectServer() {
                 LOG_ENTER;
 
-                if (channel_) {
-                    
-                }
-
+                const RtmpLink::Link& link = rtmp_link_->getLink();
                 Network::SocketPtr s = Network::Socket::create(Network::Socket::Model::TCP);
-                if (!s->connect(host_, port_)) {
-                    LOGE("connect server failed {}", host_);
+                const std::string ip = RtmpUtils::avalToString(link.host_name_);
+                if (!s->connect(ip, link.port_)) {
+                    LOGE("connect server failed {}", ip);
                     return false;
                 }
                 s->enableNoDelay(true);
@@ -90,6 +93,20 @@ namespace LJMP {
                     rtmp_status_ = status;
                     rtmp_status_->switchToSelf();
                 }
+            }
+
+            int RtmpContext::getProtocol() const {
+                if (!rtmp_link_) {
+                    return -1;
+                }
+                return rtmp_link_->getLink().protocol_;
+            }
+
+            std::string RtmpContext::getAppName() const {
+                if (!rtmp_link_) {
+                    return Utils::emptyString();
+                }
+                return RtmpUtils::avalToString(rtmp_link_->getLink().app_);
             }
 
         }

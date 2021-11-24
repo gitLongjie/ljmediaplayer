@@ -35,20 +35,14 @@ namespace LJMP {
                 void switchStatus(std::shared_ptr<RtmpStatus> status);
 
                 int& numInvokes() { return num_invokes_; }
-                int getProtocol() const { return protocol_; }
-                const std::string& getAppName() const { return app_name_; }
+                int getProtocol() const;
+                std::string getAppName() const;
 
             protected:
                 explicit RtmpContext(const std::string& url);
 
             private:
                 std::string url_;
-
-                int protocol_ = 0;
-                std::string host_;
-                short port_ = 0;
-                std::string app_name_;
-                std::string play_path_;
 
                 Network::Channel::Ptr channel_;
                 std::shared_ptr<RtmpStatus> rtmp_status_;
