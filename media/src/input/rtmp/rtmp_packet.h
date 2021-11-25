@@ -54,6 +54,7 @@ namespace LJMP {
 
                 void setBody(const DataBuffer::Ptr& body) { body_ = body; }
                 DataBuffer::Ptr getBody() const { return body_; }
+                void setBodySize(unsigned int size) { body_size_ = size; }
 
             protected:
                 RtmpPacket();

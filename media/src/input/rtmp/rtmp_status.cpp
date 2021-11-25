@@ -6,6 +6,7 @@
 #include "src/input/rtmp/rtmp_context.h"
 #include "src/input/rtmp/rtmp_packet.h"
 #include "src/input/rtmp/rtmp_utils.h"
+#include "src/input/rtmp/rtmp_link.h"
 
 namespace LJMP {
     namespace Input {
@@ -281,57 +282,69 @@ namespace LJMP {
                 enc = RtmpUtils::amfEncodeNumber(enc, pend, ++rtmp_contxt->numInvokes());
                 *enc++ = AMF_OBJECT;
 
-                enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_app, rtmp_contxt->getAppName());
-                if (!enc) {
-                    return 1;
-                }
-                    
-                if (rtmp_contxt->getProtocol() & RTMP_FEATURE_WRITE) {
-                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_type, &av_nonprivate);
-                    if (!enc)
-                        return FALSE;
-                }
-#if 0
-                if (rtmp_contxt->getAppName().flashVer.av_len) {
-                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_flashVer, &r->Link.flashVer);
-                    if (!enc)
-                        return FALSE;
+                RtmpLink::Ptr rtmp_link = rtmp_contxt->getLink();
+                if (!rtmp_link) {
+                    LOGE("rtmp link is nullptr");
+                    return 0;
                 }
 
-                if (r->Link.swfUrl.av_len) {
-                    enc = AMF_EncodeNamedString(enc, pend, &av_swfUrl, &r->Link.swfUrl);
-                    if (!enc)
-                        return FALSE;
+                const RtmpLink::Link& link = rtmp_link->getLink();
+                enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_app, &link.app_);
+                if (!enc) {
+                    return 0;
                 }
-                if (r->Link.tcUrl.av_len) {
-                    enc = AMF_EncodeNamedString(enc, pend, &av_tcUrl, &r->Link.tcUrl);
+                    
+                if (link.protocol_ & RTMP_FEATURE_WRITE) {
+                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_type, &av_nonprivate);
                     if (!enc)
-                        return FALSE;
+                        return 0;
                 }
-                if (!(r->Link.protocol & RTMP_FEATURE_WRITE)) {
-                    enc = AMF_EncodeNamedBoolean(enc, pend, &av_fpad, FALSE);
+
+                if (link.flash_ver_.av_len) {
+                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_flashVer, &link.flash_ver_);
+                    if (!enc) {
+                        return 0;
+                    }
+                }
+
+                if (link.swf_url_.av_len) {
+                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_swfUrl, &link.swf_url_);
+                    if (!enc) {
+                        return 0;
+                    }
+                }
+                if (link.tc_url_.av_len) {
+                    enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_tcUrl, &link.tc_url_);
+                    if (!enc) {
+                        return false;
+                    }
+                }
+                if (!(link.protocol_ & RTMP_FEATURE_WRITE)) {
+                    enc = RtmpUtils::amfEncodeNamedBoolean(enc, pend, &av_fpad, FALSE);
+                    if (!enc) {
+                        return false;
+                    }
+                    enc = RtmpUtils::amfEncodeNamedNumber(enc, pend, &av_capabilities, 15.0);
+                    if (!enc) {
+                        return false;
+                    }
+                    enc = RtmpUtils::amfEncodeNamedNumber(enc, pend, &av_audioCodecs, rtmp_contxt->getAudioCodecs());
                     if (!enc)
                         return FALSE;
-                    enc = AMF_EncodeNamedNumber(enc, pend, &av_capabilities, 15.0);
+                    enc = RtmpUtils::amfEncodeNamedNumber(enc, pend, &av_videoCodecs, rtmp_contxt->getVideoCodecs());
                     if (!enc)
                         return FALSE;
-                    enc = AMF_EncodeNamedNumber(enc, pend, &av_audioCodecs, r->m_fAudioCodecs);
+                    enc = RtmpUtils::amfEncodeNamedNumber(enc, pend, &av_videoFunction, 1.0);
                     if (!enc)
                         return FALSE;
-                    enc = AMF_EncodeNamedNumber(enc, pend, &av_videoCodecs, r->m_fVideoCodecs);
-                    if (!enc)
-                        return FALSE;
-                    enc = AMF_EncodeNamedNumber(enc, pend, &av_videoFunction, 1.0);
-                    if (!enc)
-                        return FALSE;
-                    if (r->Link.pageUrl.av_len) {
-                        enc = AMF_EncodeNamedString(enc, pend, &av_pageUrl, &r->Link.pageUrl);
+                    if (link.page_url_.av_len) {
+                        enc = RtmpUtils::amfEncodeNamedString(enc, pend, &av_pageUrl, &link.page_url_);
                         if (!enc)
                             return FALSE;
                     }
                 }
-                if (r->m_fEncoding != 0.0 || r->m_bSendEncoding) {	/* AMF0, AMF3 not fully supported yet */
-                    enc = AMF_EncodeNamedNumber(enc, pend, &av_objectEncoding, r->m_fEncoding);
+                if (rtmp_contxt->getEncoding() != 0.0 || rtmp_contxt->getSendEncoding()) {	/* AMF0, AMF3 not fully supported yet */
+                    enc = RtmpUtils::amfEncodeNamedNumber(enc, pend, &av_objectEncoding, rtmp_contxt->getEncoding());
                     if (!enc)
                         return FALSE;
                 }
@@ -342,24 +355,26 @@ namespace LJMP {
                 *enc++ = AMF_OBJECT_END;
 
                 /* add auth string */
-                if (r->Link.auth.av_len) {
-                    enc = AMF_EncodeBoolean(enc, pend, r->Link.lFlags & RTMP_LF_AUTH);
-                    if (!enc)
-                        return FALSE;
-                    enc = AMF_EncodeString(enc, pend, &r->Link.auth);
-                    if (!enc)
-                        return FALSE;
+                if (link.auth_.av_len) {
+                    enc = RtmpUtils::amfEncodeBoolean(enc, pend, link.lflags_ & RTMP_LF_AUTH);
+                    if (!enc) {
+                        return false;
+                    }
+                    enc = RtmpUtils::amfEncodeString(enc, pend, &link.auth_);
+                    if (!enc) {
+                        return false;
+                    }
                 }
-                if (r->Link.extras.o_num) {
+                if (link.extras_.o_num) {
                     int i;
-                    for (i = 0; i < r->Link.extras.o_num; i++) {
-                        enc = AMFProp_Encode(&r->Link.extras.o_props[i], enc, pend);
+                    for (i = 0; i < link.extras_.o_num; i++) {
+                        enc = RtmpUtils::amfPropEncode(&link.extras_.o_props[i], enc, pend);
                         if (!enc)
                             return FALSE;
                     }
                 }
-                packet.m_nBodySize = enc - packet.m_body;
-#endif 
+                packet->setBodySize(static_cast<unsigned int>(enc - packet->getBody()->getData()));
+                rtmp_contxt->sendPacket(packet);
                 return true;
             }
         }

@@ -37,10 +37,15 @@ namespace LJMP {
                     return amfEncodeNamedString(output, outend, std::string(name->av_val, name->av_len),
                         std::string(value->av_val, value->av_len));
                 }
-                static char* amfEncodeNamedNumber(char* output, char* outend, const std::string& name, double dVal);
-                static char* amfEncodeNamedBoolean(char* output, char* outend, const std::string& name, int bVal);
+                static char* amfEncodeNamedNumber(char* output, char* outend, const AVal* name, double dVal);
+                static char* amfEncodeNamedBoolean(char* output, char* outend, const AVal* name, int bVal);
 
                 static std::string avalToString(const AVal& av);
+
+                static char* amfEncode(AMFObject* obj, char* pBuffer, char* pBufEnd);
+                static char* amfEncodeEcmaArray(AMFObject* obj, char* pBuffer, char* pBufEnd);
+                static char* amfEncodeArray(AMFObject* obj, char* pBuffer, char* pBufEnd);
+                static char* amfPropEncode(AMFObjectProperty* prop, char* buffer, char* buffer_end);
             };
         }
     }

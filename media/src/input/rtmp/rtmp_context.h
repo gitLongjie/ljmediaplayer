@@ -14,6 +14,7 @@ namespace LJMP {
 
             class RtmpLink;
             class RtmpStatus;
+            class RtmpPacket;
 
             class RtmpContext : public std::enable_shared_from_this<RtmpContext> {
                 disable_copy(RtmpContext)
@@ -34,12 +35,19 @@ namespace LJMP {
 
                 void switchStatus(std::shared_ptr<RtmpStatus> status);
 
+                bool sendPacket(const std::shared_ptr<RtmpPacket>& packet);
+
                 int& numInvokes() { return num_invokes_; }
-                int getProtocol() const;
-                std::string getAppName() const;
+                const std::shared_ptr<RtmpLink>& getLink() const { return rtmp_link_; }
+                double getAudioCodecs() const { return audioCodecs_; }
+                double getVideoCodecs() const { return videoCodecs_; }
+                double getEncoding() const { return encoding_; }
+                unsigned char getSendEncoding() const { return send_encoding_; }
 
             protected:
                 explicit RtmpContext(const std::string& url);
+
+                void reset();
 
             private:
                 std::string url_;
@@ -49,6 +57,11 @@ namespace LJMP {
                 std::shared_ptr<RtmpLink> rtmp_link_;
 
                 int num_invokes_ = 0;
+                unsigned char send_encoding_ = 0;
+
+                double audioCodecs_ = 1319.0;
+                double videoCodecs_ = 252.0;
+                double encoding_ = 0.0;
             };
         }
     }

@@ -34,6 +34,8 @@ namespace LJMP {
             bool RtmpContext::intialize() {
                 LOG_ENTER;
 
+                reset();
+
                 if (rtmp_link_) {
                     rtmp_link_.reset();
                 }
@@ -95,20 +97,15 @@ namespace LJMP {
                 }
             }
 
-            int RtmpContext::getProtocol() const {
-                if (!rtmp_link_) {
-                    return -1;
-                }
-                return rtmp_link_->getLink().protocol_;
+            bool RtmpContext::sendPacket(const std::shared_ptr<RtmpPacket>& packet) {
+                return false;
             }
 
-            std::string RtmpContext::getAppName() const {
-                if (!rtmp_link_) {
-                    return Utils::emptyString();
-                }
-                return RtmpUtils::avalToString(rtmp_link_->getLink().app_);
+            void RtmpContext::reset() {
+                num_invokes_ = 0;
+                audioCodecs_ = 1319.0;
+                videoCodecs_ = 252.0;
             }
-
         }
     }
 }
