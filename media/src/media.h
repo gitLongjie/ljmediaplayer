@@ -10,6 +10,7 @@
 #include "ljmedia/lj_media.h"
 
 #include "src/spin_lock.h"
+#include "src/thread_pools.h"
 
 namespace LJMP {
     class MediaSourceManager;
@@ -55,6 +56,7 @@ namespace LJMP {
         std::shared_ptr<NetworkManager> network_manger_;
 
     private:
+        ThreadPoolPtr thread_pool_;
         TaskQueue main_task_queue_;
         TaskQueue callback_task_queue_;
         std::shared_ptr<TaskQueue> io_task_queue_;

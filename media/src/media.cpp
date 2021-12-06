@@ -15,7 +15,8 @@ namespace LJMP {
     Media* s_media = nullptr;
 
     Media::Media()
-        : main_task_queue_("main")
+        : thread_pool_(ThreadPool::create(std::thread::hardware_concurrency()))
+        , main_task_queue_("main")
         , callback_task_queue_("callback") 
         , io_task_queue_(std::make_shared<TaskQueue>("io")) {
         assert(nullptr == s_media);
@@ -27,6 +28,7 @@ namespace LJMP {
         main_task_queue_.stop();
         callback_task_queue_.stop();
         io_task_queue_->stop();
+        thread_pool_->stop();
         s_media = nullptr;
     }
 
