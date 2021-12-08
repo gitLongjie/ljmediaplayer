@@ -6,15 +6,18 @@
 
 #include "src/lj_defined.h"
 
+#include "src/media_flv.h"
 #include "src/network/channel.h"
 
+struct RTMP;
+
 namespace LJMP {
+    class MediaSource;
+
     namespace Input {
         namespace Rtmp {
 
-            class RtmpLink;
-            class RtmpStatus;
-            class RtmpPacket;
+            class RtmpReaderStatus;
 
             class RtmpContext : public std::enable_shared_from_this<RtmpContext> {
                 disable_copy(RtmpContext)
@@ -23,7 +26,8 @@ namespace LJMP {
                 using Ptr = std::shared_ptr<RtmpContext>;
                 using WPtr = std::weak_ptr<RtmpContext>;
 
-                static std::shared_ptr<RtmpContext> create(const std::string& url);
+                static std::shared_ptr<RtmpContext> create(std::weak_ptr<MediaSource> media_source,
+                    const std::string& url);
 
             public:
                 virtual ~RtmpContext();
@@ -31,37 +35,36 @@ namespace LJMP {
                 bool intialize();
                 void uninitialzie();
 
-                bool connectServer();
+                void errorCallback(int code, const char* msg);
+                void switchReaderStatus(std::shared_ptr<RtmpReaderStatus> status) { rtmp_reader_status_ = status; }
 
-                void switchStatus(std::shared_ptr<RtmpStatus> status);
-
-                bool sendPacket(const std::shared_ptr<RtmpPacket>& packet);
-
-                int& numInvokes() { return num_invokes_; }
-                const std::shared_ptr<RtmpLink>& getLink() const { return rtmp_link_; }
-                double getAudioCodecs() const { return audioCodecs_; }
-                double getVideoCodecs() const { return videoCodecs_; }
-                double getEncoding() const { return encoding_; }
-                unsigned char getSendEncoding() const { return send_encoding_; }
+                void handleFlvHeader(const FLVHeader& header);
+                void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
 
             protected:
-                explicit RtmpContext(const std::string& url);
+                explicit RtmpContext(std::weak_ptr<MediaSource> media_source, const std::string& url);
 
                 void reset();
 
+                void doConnectServer(std::string url, WPtr wThis);
+                void doConnected(std::shared_ptr<RTMP> rtmp, WPtr wThis);
+
+                void readDataCallback(const Network::Channel::Ptr& channel, WPtr wThis);
+                void doUpdateMedia(bool audio, bool video, WPtr wThis);
+                void doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis);
+
+                void doHandleScrpite(const DataBuffer::Ptr& dadata_bufferta);
+
             private:
+                std::weak_ptr<MediaSource> media_source_;
                 std::string url_;
 
                 Network::Channel::Ptr channel_;
-                std::shared_ptr<RtmpStatus> rtmp_status_;
-                std::shared_ptr<RtmpLink> rtmp_link_;
+                std::shared_ptr<RTMP> rtmp_;
 
-                int num_invokes_ = 0;
-                unsigned char send_encoding_ = 0;
-
-                double audioCodecs_ = 1319.0;
-                double videoCodecs_ = 252.0;
-                double encoding_ = 0.0;
+                std::shared_ptr<RtmpReaderStatus> rtmp_reader_status_;
+                bool is_containe_audio_ = false;
+                bool is_containe_video_ = false;
             };
         }
     }

@@ -19,6 +19,16 @@ namespace LJMP {
             LOGI("dactor {}", (long long)this);
         }
 
+        void RTMPMediaSource::errorCallback(int code, const char* msg) {
+            WPtr wThis(shared_from_this());
+            std::string message(msg);
+            auto task = createTask(std::bind(&RTMPMediaSource::doErrorCallback, this, code, message, wThis));
+            invoke(task);
+            if (error_code_netork_connect_failed == code) {
+                Media::getInstance()->errorCallbak(error_code_netork_connect_failed, "connect server failed");
+            }
+        }
+
         bool RTMPMediaSource::checkProtocol(const std::string& protocol) {
             LOGI("check protocol: {}", protocol);
 
@@ -46,17 +56,12 @@ namespace LJMP {
                 rtmp_context_->uninitialzie();
             }
 
-            rtmp_context_ = Rtmp::RtmpContext::create(url);
+            rtmp_context_ = Rtmp::RtmpContext::create(shared_from_this(), url);
             if (!rtmp_context_->intialize()) {
                 LOGE("rtmp conext initialize failed");
                 return false;
             }
 
-            if (!rtmp_context_->connectServer()) {
-                LOGE("rtmp conext connect server failed");
-                Media::getInstance()->errorCallbak(error_code_netork_connect_failed, "connect server failed");
-                return false;
-            }
             return true;
         }
 
@@ -69,6 +74,20 @@ namespace LJMP {
             }
         }
 
+        void RTMPMediaSource::doErrorCallback(int code, std::string msg, WPtr wThis) {
+            LOGI("code={} message={}", code, msg);
+
+            Media::getInstance()->errorCallbak(code, msg.c_str());
+
+            Ptr self(wThis.lock());
+            if (!self) {
+                LOGE("this object destructed");
+                return;
+            }
+
+            doClose();
+
+        }
 
     }
 }

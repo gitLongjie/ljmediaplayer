@@ -18,11 +18,15 @@ namespace LJMP {
         public:
             ~RTMPMediaSource() override;
 
+            void errorCallback(int, const char*);
+
         protected:
             RTMPMediaSource();
 
             bool doOpen(const std::string& url);
             void doClose();
+
+            void doErrorCallback(int code, std::string msg, WPtr wThis);
 
         private:
             Rtmp::RtmpContext::Ptr rtmp_context_;

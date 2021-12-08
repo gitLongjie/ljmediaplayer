@@ -64,7 +64,7 @@ namespace LJMP {
             }
 
             
-            MediaSourcePtr ptr = (*itor)->create();
+            MediaSource::Ptr ptr = (*itor)->create();
             if (!ptr) {
                 LOGE("con't create media source");
                 return false;
@@ -79,7 +79,7 @@ namespace LJMP {
             return true;
         }
 
-        void InputMediaSourceManager::addMediaSource(const std::string& url, const MediaSourcePtr& media_source) {
+        void InputMediaSourceManager::addMediaSource(const std::string& url, const MediaSource::Ptr& media_source) {
             LOG_ENTER;
 
             media_sources_[url] = media_source;

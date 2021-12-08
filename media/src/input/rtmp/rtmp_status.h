@@ -5,8 +5,7 @@
 
 #include "src/lj_defined.h"
 
-#include "src/data_buffer.h"
-#include "src/network/channel.h"
+#include "src/input/rtmp/rtmp.h"
 
 namespace LJMP {
     namespace Input {
@@ -28,80 +27,65 @@ namespace LJMP {
             public:
                 virtual ~RtmpStatus();
 
-                virtual bool read() = 0;
-                virtual int write() = 0;
-
-                virtual const char* getName() const { return kRtmpStatusUnknown; }
-                void readCallback(const Network::Channel::Ptr& channel, RtmpStatusWPtr wThis);
-
-                virtual void switchToSelf();
-
             protected:
-                explicit RtmpStatus(std::weak_ptr<RtmpContext> rtmp_context, Network::Channel::Ptr channel);
-
-                bool writeInChannel(const DataBuffer::Ptr& buffer);
-                Network::Channel::Ptr getChannel() const { return channel_.lock(); }
+                explicit RtmpStatus(std::weak_ptr<RtmpContext> rtmp_context);
 
                 std::shared_ptr<RtmpContext> getRtmpContext() { return rtmp_context_.lock(); }
                 
-                void writeStatusCallback(bool status, RtmpStatusWPtr wThis);
-
-
             private:
                 std::weak_ptr<RtmpContext> rtmp_context_;
-                Network::Channel::WPtr channel_;
-                bool write_failed_ = false;
             };
 
-
-            class RtmpHandShakeStatus : public RtmpStatus {
-                disable_copy(RtmpHandShakeStatus)
-
-            public:
-                enum { RTMP_SIG_SIZE = 1536 };
-                static RtmpStatus::Ptr create(std::weak_ptr<RtmpContext> rtmp_context,
-                    Network::Channel::Ptr channel);
+            class RtmpReaderStatus : public RtmpStatus {
+                disable_copy(RtmpReaderStatus)
 
             public:
-                ~RtmpHandShakeStatus() override = default;
-
-                bool read() override;
-                int write() override;
-                const char* getName() const override {
-                    return kRtmpStatusHandShake;
-                }
-
-            protected:
-                RtmpHandShakeStatus(std::weak_ptr<RtmpContext> rtmp_context, Network::Channel::Ptr channel);
-
-                int handleShake1Write();
-                int handleShake2Write();
-                bool handleShake1();
-                bool handleShake2();
-
-            private:
-                int hand_shake_count_ = 0;
-                char clientbuf_[RTMP_SIG_SIZE + 1] = { 0 };
-                char serversig_[RTMP_SIG_SIZE] = { 0 };
-            };
-
-            class RtmpConnectStatus : public RtmpStatus {
-                disable_copy(RtmpConnectStatus)
+                using Ptr = std::shared_ptr<RtmpReaderStatus>;
+                using WPtr = std::weak_ptr<RtmpReaderStatus>;
 
             public:
-                static RtmpStatus::Ptr create(std::weak_ptr<RtmpContext> rtmp_context, Network::Channel::Ptr channel);
-
-            public:
-                ~RtmpConnectStatus() override;
-
-                bool read() override;
-                int write() override;
+                ~RtmpReaderStatus() override = default;
                 
-            protected:
-                RtmpConnectStatus(std::weak_ptr<RtmpContext> rtmp_context, Network::Channel::Ptr channel);
+                virtual void read(RTMP* rtmp) = 0;
 
+            protected:
+                explicit RtmpReaderStatus(std::weak_ptr<RtmpContext> rtmp_context);
+            };
+
+
+            class RtmpReadFLVHeaderStatus : public RtmpReaderStatus {
+                disable_copy(RtmpReadFLVHeaderStatus)
+
+            public:
+                static RtmpReaderStatus::Ptr create(std::weak_ptr<RtmpContext> rtmp_context);
+
+            public:
+                ~RtmpReadFLVHeaderStatus() override = default;
+
+                void read(RTMP* rtmp) override;
+
+            protected:
+                explicit RtmpReadFLVHeaderStatus(std::weak_ptr<RtmpContext> rtmp_context);
 
             };
+
+            class RtmpReadFLVTagDataStatus : public RtmpReaderStatus {
+                disable_copy(RtmpReadFLVTagDataStatus)
+
+            public:
+                static RtmpReaderStatus::Ptr create(std::weak_ptr<RtmpContext> rtmp_context);
+
+            public:
+                ~RtmpReadFLVTagDataStatus() override = default;
+
+                void read(RTMP* rtmp) override;
+
+
+            protected:
+                explicit RtmpReadFLVTagDataStatus(std::weak_ptr<RtmpContext> rtmp_context);
+
+            };
+
         }
     }
 }
