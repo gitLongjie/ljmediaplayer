@@ -7,7 +7,7 @@
 namespace LJMP {
     namespace Network {
 
-        SocketPtr TcpSocket::create() {
+        Socket::Ptr TcpSocket::create() {
             struct Creator : public TcpSocket {
                 Creator() : TcpSocket() {}
                 ~Creator() override {}
@@ -16,8 +16,22 @@ namespace LJMP {
             return std::make_shared<Creator>();
         }
 
+        Socket::Ptr TcpSocket::create(socket_t socket) {
+            struct Creator : public TcpSocket {
+                explicit Creator(socket_t socket) : TcpSocket(socket) {}
+                ~Creator() override {}
+            };
+
+            return std::make_shared<Creator>(socket);
+        }
+
         TcpSocket::TcpSocket()
             : Socket(Socket::Model::TCP) {
+
+        }
+
+        TcpSocket::TcpSocket(socket_t socket)
+            : Socket(socket, Socket::Model::TCP) {
 
         }
 

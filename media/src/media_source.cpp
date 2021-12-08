@@ -9,14 +9,14 @@ namespace LJMP {
     MediaSource::MediaSource(const TaskQueuePtr task_queue) : task_queue_(task_queue) {}
 
     bool MediaSource::open(const std::string& url) {
-        MediaSourceWPtr wThis(shared_from_this());
+        WPtr wThis(shared_from_this());
         auto task = createTask(std::bind(&MediaSource::openSource, this, url, wThis));
         invoke(task);
         return true;
     }
 
     void MediaSource::close() {
-        MediaSourceWPtr wThis(shared_from_this());
+        WPtr wThis(shared_from_this());
         auto task = createTask(std::bind(&MediaSource::closeSource, this, wThis));
         invoke(task);
 
@@ -35,9 +35,9 @@ namespace LJMP {
         }
     }
 
-    void MediaSource::openSource(std::string url, MediaSourceWPtr wThis) {
+    void MediaSource::openSource(std::string url, WPtr wThis) {
         LOGI("open url {}", url);
-        MediaSourcePtr self = wThis.lock();
+        Ptr self = wThis.lock();
         if (!self) {
             LOGE("this object is destruct {}", (long long)this);
             std::string msg("open url failed url=");
@@ -52,8 +52,8 @@ namespace LJMP {
         }
     }
 
-    void MediaSource::closeSource(MediaSourceWPtr wThis) {
-        MediaSourcePtr self = wThis.lock();
+    void MediaSource::closeSource(WPtr wThis) {
+        Ptr self = wThis.lock();
         if (!self) {
             LOGE("this object is destruct {}", (long long)this);
             return;

@@ -6,6 +6,7 @@
 
 #include "src/utils.h"
 
+#include "src/thread_pools.h"
 #include "src/log.h"
 #include "src/input/input_media_source_manager.h"
 #include "src/network/network_manager_std.h"

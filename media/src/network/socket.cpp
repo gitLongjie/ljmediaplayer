@@ -17,19 +17,31 @@
 namespace LJMP {
     namespace Network {
 
-        SocketPtr Socket::create(Socket::Model model) {
+        Socket::Ptr Socket::create(Socket::Model model) {
             if (Socket::Model::TCP == model) {
                 return TcpSocket::create();
             }
             return nullptr;
         }
 
-        Socket::Socket(Model model) 
+        Socket::Ptr Socket::create(socket_t socket, Socket::Model model) {
+            if (Socket::Model::TCP == model) {
+                return TcpSocket::create(socket);
+            }
+        }
+
+        Socket::Socket(Model model)
             : model_(model){
             if (Model::TCP == model_) {
                 socket_ = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             }
             
+        }
+
+        Socket::Socket(socket_t socket, Model model)
+            : model_(model)
+            , socket_(socket){
+
         }
 
         Socket::~Socket() {

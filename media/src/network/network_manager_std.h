@@ -42,7 +42,7 @@ namespace LJMP {
             void doUpdateChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
             void doRemoveChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
 
-            void select();
+            void select(unsigned long long dely);
             void doSelect(NetworkManagerWPtr wThis);
 
         private:

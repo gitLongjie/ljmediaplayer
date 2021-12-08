@@ -105,7 +105,7 @@ namespace LJMP {
             }
 
             stop_ = false;
-            select();
+            select(0);
         }
 
         void NetworkManagerStd::doUninitialize(NetworkManagerWPtr wThis) {
@@ -168,14 +168,14 @@ namespace LJMP {
             channels_.erase(sc->getSocket());
         }
 
-        void NetworkManagerStd::select() {
+        void NetworkManagerStd::select(unsigned long long dely) {
             if (stop_) {
                 LOGI("stop this select");
                 return;
             }
             NetworkManagerWPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doSelect, this, wThis));
-            invoke(task);
+            invoke(task, dely);
         }
 
         void NetworkManagerStd::doSelect(NetworkManagerWPtr wThis) {
@@ -186,7 +186,7 @@ namespace LJMP {
             }
 
             if (channels_.empty()) {
-                select();
+                select(10);
                 return;
             }
 
@@ -204,7 +204,7 @@ namespace LJMP {
                 return;
             }
             else if (0 == ret) {
-                select();
+                select(10);
                 return;
             }
 
@@ -214,7 +214,7 @@ namespace LJMP {
                 }
             }
 
-            select();
+            select(0);
         }
 
     }

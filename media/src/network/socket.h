@@ -17,7 +17,10 @@ namespace LJMP {
                 UDP
             };
 
-            static std::shared_ptr<Socket> create(Socket::Model model);
+            using Ptr = std::shared_ptr<Socket>;
+
+            static Ptr create(Socket::Model model);
+            static Ptr create(socket_t socket, Socket::Model model);
         public:
             virtual ~Socket();
 
@@ -36,7 +39,8 @@ namespace LJMP {
             socket_t getSocket() const { return socket_; }
 
         protected:
-            Socket(Model model);
+            explicit Socket(Model model);
+            Socket(socket_t socket, Model model);
 
             bool doConnect(const struct sockaddr& service);
 
@@ -45,8 +49,6 @@ namespace LJMP {
             socket_t socket_ = -1;
             std::string seesion_;
         };
-
-        using SocketPtr = std::shared_ptr<Socket>;
     }
 }
 
