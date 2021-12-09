@@ -10,15 +10,15 @@
 namespace LJMP {
     namespace Network {
 
-        NetworkManagerPtr NetworkManagerWin::create(TaskQueuePtr task_queue) {
+        NetworkManager::Ptr NetworkManagerWin::create(const TaskQueue::Ptr& task_queue) {
             struct Creator : public NetworkManagerWin {
-                Creator(TaskQueuePtr task_queue) : NetworkManagerWin(task_queue) {}
+                Creator(const TaskQueue::Ptr task_queue) : NetworkManagerWin(task_queue) {}
                 ~Creator() override = default;
             };
             return std::make_shared<Creator>(task_queue);
         }
 
-        NetworkManagerWin::NetworkManagerWin(TaskQueuePtr task_queue)
+        NetworkManagerWin::NetworkManagerWin(const TaskQueue::Ptr& task_queue)
             : NetworkManagerStd(task_queue) {
             LOGI("actor {}", (long long)this);
         }
@@ -27,7 +27,7 @@ namespace LJMP {
             LOGI("dctor {}", (long long)this);
         }
 
-        void NetworkManagerWin::doInitialize(NetworkManagerWPtr wThis) {
+        void NetworkManagerWin::doInitialize(WPtr wThis) {
             LOG_ENTER;
 
             LOGI("init network");
@@ -41,10 +41,10 @@ namespace LJMP {
             NetworkManagerStd::doInitialize(wThis);
         }
 
-        void NetworkManagerWin::doUninitialize(NetworkManagerWPtr wThis) {
+        void NetworkManagerWin::doUninitialize(WPtr wThis) {
             LOG_ENTER;
 
-            NetworkManagerPtr self = wThis.lock();
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGW("this object is destruct");
                 return;

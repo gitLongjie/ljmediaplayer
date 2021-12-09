@@ -22,7 +22,8 @@ namespace LJMP {
         : thread_pool_(ThreadPool::create(std::thread::hardware_concurrency()))
         , main_task_queue_("main")
         , callback_task_queue_("callback") 
-        , io_task_queue_(std::make_shared<TaskQueue>("io")) {
+        , media_task_queue_(TaskQueue::create("media"))
+        , io_task_queue_(TaskQueue::create("io")) {
         assert(nullptr == s_media);
 
         s_media = this;
@@ -31,6 +32,7 @@ namespace LJMP {
     Media::~Media() {
         main_task_queue_.stop();
         callback_task_queue_.stop();
+        media_task_queue_->stop();
         io_task_queue_->stop();
         thread_pool_->stop();
         s_media = nullptr;
@@ -89,7 +91,7 @@ namespace LJMP {
             return;
         }
 
-        MediaContext::Ptr media_context = MediaContext::create();
+        MediaContext::Ptr media_context = MediaContext::create(media_task_queue_);
         media_context_manger_->addMediaContext(media_context, url);
 
         media_context->updateMediaSrouce(media_source);
@@ -136,11 +138,11 @@ namespace LJMP {
         spink_lock_.lock();
     }
 
-    void Media::invoke(const TaskPtr& task) {
+    void Media::invoke(const Task::Ptr& task) {
         main_task_queue_.push(task);
     }
 
-    void Media::invoke(const TaskPtr& task, uint16_t delay) {
+    void Media::invoke(const Task::Ptr& task, uint16_t delay) {
         main_task_queue_.push(task, delay);
     }
 

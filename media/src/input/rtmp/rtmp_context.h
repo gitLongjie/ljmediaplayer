@@ -5,6 +5,7 @@
 #include <string>
 
 #include "src/lj_defined.h"
+#include "src/task_queue_object.h"
 
 #include "src/media_flv.h"
 #include "src/network/channel.h"
@@ -19,14 +20,13 @@ namespace LJMP {
 
             class RtmpReaderStatus;
 
-            class RtmpContext : public std::enable_shared_from_this<RtmpContext> {
+            class RtmpContext : public TaskQueueObject {
                 disable_copy(RtmpContext)
 
             public:
                 using Ptr = std::shared_ptr<RtmpContext>;
-                using WPtr = std::weak_ptr<RtmpContext>;
 
-                static std::shared_ptr<RtmpContext> create(std::weak_ptr<MediaSource> media_source,
+                static std::shared_ptr<RtmpContext> create(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source,
                     const std::string& url);
 
             public:
@@ -42,14 +42,15 @@ namespace LJMP {
                 void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
 
             protected:
-                explicit RtmpContext(std::weak_ptr<MediaSource> media_source, const std::string& url);
+                RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source,
+                    const std::string& url);
 
                 void reset();
 
                 void doConnectServer(std::string url, WPtr wThis);
                 void doConnected(std::shared_ptr<RTMP> rtmp, WPtr wThis);
 
-                void readDataCallback(const Network::Channel::Ptr& channel, WPtr wThis);
+                void readDataCallback(WPtr wThis);
                 void doUpdateMedia(bool audio, bool video, WPtr wThis);
                 void doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis);
 

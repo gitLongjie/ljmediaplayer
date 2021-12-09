@@ -28,7 +28,7 @@ namespace LJMP {
                 virtual ~RtmpStatus();
 
             protected:
-                explicit RtmpStatus(std::weak_ptr<RtmpContext> rtmp_context);
+                explicit RtmpStatus(const std::shared_ptr<RtmpContext>& rtmp_context);
 
                 std::shared_ptr<RtmpContext> getRtmpContext() { return rtmp_context_.lock(); }
                 
@@ -49,7 +49,7 @@ namespace LJMP {
                 virtual void read(RTMP* rtmp) = 0;
 
             protected:
-                explicit RtmpReaderStatus(std::weak_ptr<RtmpContext> rtmp_context);
+                explicit RtmpReaderStatus(const std::shared_ptr<RtmpContext>& rtmp_context);
             };
 
 
@@ -57,7 +57,7 @@ namespace LJMP {
                 disable_copy(RtmpReadFLVHeaderStatus)
 
             public:
-                static RtmpReaderStatus::Ptr create(std::weak_ptr<RtmpContext> rtmp_context);
+                static RtmpReaderStatus::Ptr create(const std::shared_ptr<RtmpContext>& rtmp_context);
 
             public:
                 ~RtmpReadFLVHeaderStatus() override = default;
@@ -65,7 +65,7 @@ namespace LJMP {
                 void read(RTMP* rtmp) override;
 
             protected:
-                explicit RtmpReadFLVHeaderStatus(std::weak_ptr<RtmpContext> rtmp_context);
+                explicit RtmpReadFLVHeaderStatus(const std::shared_ptr<RtmpContext>& rtmp_context);
 
             };
 
@@ -73,7 +73,7 @@ namespace LJMP {
                 disable_copy(RtmpReadFLVTagDataStatus)
 
             public:
-                static RtmpReaderStatus::Ptr create(std::weak_ptr<RtmpContext> rtmp_context);
+                static RtmpReaderStatus::Ptr create(const std::shared_ptr<RtmpContext>& rtmp_context);
 
             public:
                 ~RtmpReadFLVTagDataStatus() override = default;
@@ -82,7 +82,7 @@ namespace LJMP {
 
 
             protected:
-                explicit RtmpReadFLVTagDataStatus(std::weak_ptr<RtmpContext> rtmp_context);
+                explicit RtmpReadFLVTagDataStatus(const std::shared_ptr<RtmpContext>& rtmp_context);
 
             };
 

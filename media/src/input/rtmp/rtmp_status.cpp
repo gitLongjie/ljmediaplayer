@@ -10,7 +10,7 @@ namespace LJMP {
     namespace Input {
         namespace Rtmp {
 
-            RtmpStatus::RtmpStatus(std::weak_ptr<RtmpContext> rtmp_context)
+            RtmpStatus::RtmpStatus(const RtmpContext::Ptr& rtmp_context)
                 : rtmp_context_(rtmp_context) {
                 LOGI("actor {}", (long long)this);
 
@@ -21,13 +21,13 @@ namespace LJMP {
             }
 
 
-            RtmpReaderStatus::RtmpReaderStatus(RtmpContext::WPtr rtmp_context) :RtmpStatus(rtmp_context) {
+            RtmpReaderStatus::RtmpReaderStatus(const RtmpContext::Ptr& rtmp_context) :RtmpStatus(rtmp_context) {
 
             }
 
-            RtmpReaderStatus::Ptr RtmpReadFLVHeaderStatus::create(RtmpContext::WPtr rtmp_context) {
+            RtmpReaderStatus::Ptr RtmpReadFLVHeaderStatus::create(const RtmpContext::Ptr& rtmp_context) {
                 struct Creator : public RtmpReadFLVHeaderStatus {
-                    explicit Creator(RtmpContext::WPtr rtmp_context) : RtmpReadFLVHeaderStatus(rtmp_context) {
+                    explicit Creator(const RtmpContext::Ptr& rtmp_context) : RtmpReadFLVHeaderStatus(rtmp_context) {
                     }
                     ~Creator() override = default;
                 };
@@ -36,7 +36,7 @@ namespace LJMP {
                 return self;
             }
 
-            RtmpReadFLVHeaderStatus::RtmpReadFLVHeaderStatus(std::weak_ptr<RtmpContext> rtmp_context)
+            RtmpReadFLVHeaderStatus::RtmpReadFLVHeaderStatus(const RtmpContext::Ptr& rtmp_context)
                 : RtmpReaderStatus(rtmp_context) {
 
             }
@@ -67,9 +67,9 @@ namespace LJMP {
                 context->switchReaderStatus(RtmpReadFLVTagDataStatus::create(context));
             }
 
-            RtmpReaderStatus::Ptr RtmpReadFLVTagDataStatus::create(std::weak_ptr<RtmpContext> rtmp_context) {
+            RtmpReaderStatus::Ptr RtmpReadFLVTagDataStatus::create(const RtmpContext::Ptr& rtmp_context) {
                 struct Creator : public RtmpReadFLVTagDataStatus {
-                    explicit Creator(RtmpContext::WPtr rtmp_context) : RtmpReadFLVTagDataStatus(rtmp_context) {
+                    explicit Creator(const RtmpContext::Ptr& rtmp_context) : RtmpReadFLVTagDataStatus(rtmp_context) {
                     }
                     ~Creator() override = default;
                 };
@@ -78,7 +78,7 @@ namespace LJMP {
                 return self;
             }
 
-            RtmpReadFLVTagDataStatus::RtmpReadFLVTagDataStatus(std::weak_ptr<RtmpContext> rtmp_context)
+            RtmpReadFLVTagDataStatus::RtmpReadFLVTagDataStatus(const RtmpContext::Ptr& rtmp_context)
                 : RtmpReaderStatus(rtmp_context) {
 
             }

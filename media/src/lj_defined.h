@@ -26,5 +26,11 @@ inline void invokeCallback(T func, V val) {
     }
 }
 
+enum class CodecType {
+    Audio_AAC,
+
+    Video_X264,
+};
+
 
 #endif // ! src_lj_defined_h_

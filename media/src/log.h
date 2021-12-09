@@ -63,6 +63,9 @@ private:
   LJMP::Log::GetInstance()->Write(LJMP::Log::LogLevel::LOG_CRITICAL_MESSAGE, "FILE:{}, FUNCTION:{},"##format, \
                             __FILE__, __FUNCTION__, ##__VA_ARGS__)
 
+#define LOG_CREATER LOGI("actor {}", (long long)this)
+#define LOG_DESTRUCT LOGI("dactor {}", (long long)this)
+
 #define LOG_ENTER LOGI("enter")
 #define LOG_LIVE LOGI("live")
 

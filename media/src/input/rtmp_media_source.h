@@ -20,6 +20,8 @@ namespace LJMP {
 
             void errorCallback(int, const char*);
 
+            void onHandleScripte(const DataBuffer::Ptr& data_buffer);
+
         protected:
             RTMPMediaSource();
 

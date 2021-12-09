@@ -5,6 +5,17 @@
 #include "src/media.h"
 #include "ljmedia/error_code.h"
 
+#include "src/input/rtmp/rtmp_utils.h"
+
+static const char kAudioDatarate[] = "audiodatarate";
+static const char kAudioChannel[] = "audiochannel";
+static const char kAudioCodecId[] = "audiocodecid";
+
+static const char kVideoFramerate[] = "framerate";
+static const char kVideoWidth[] = "width";
+static const char kVideoHeight[] = "height";
+static const char kVideoCodecId[] = "videocodecid";
+
 namespace LJMP {
     namespace Input {
 
@@ -56,7 +67,8 @@ namespace LJMP {
                 rtmp_context_->uninitialzie();
             }
 
-            rtmp_context_ = Rtmp::RtmpContext::create(shared_from_this(), url);
+            RTMPMediaSource::Ptr self = std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this());
+            rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), self, url);
             if (!rtmp_context_->intialize()) {
                 LOGE("rtmp conext initialize failed");
                 return false;
@@ -79,15 +91,50 @@ namespace LJMP {
 
             Media::getInstance()->errorCallbak(code, msg.c_str());
 
-            Ptr self(wThis.lock());
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object destructed");
                 return;
             }
 
             doClose();
-
         }
+
+        void RTMPMediaSource::onHandleScripte(const DataBuffer::Ptr& data_buffer) {
+            const char* data = data_buffer->getData();
+            const unsigned int data_length = data_buffer->getSize();
+            int audio_rate = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kAudioDatarate, sizeof(kAudioDatarate)));
+            int audio_channel = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kAudioChannel, sizeof(kAudioChannel)));
+            int audio_code_id = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kAudioCodecId, sizeof(kAudioCodecId)));
+            LOGI("audio rate={} audio_channel={} audio code id= {}", audio_rate, audio_channel, audio_code_id);
+
+            int video_frame = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kVideoFramerate, sizeof(kVideoFramerate)));
+            int video_width = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kVideoWidth, sizeof(kVideoWidth)));
+            int video_height = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kVideoHeight, sizeof(kVideoHeight)));
+            int video_code_id = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+                data, data_length, kVideoCodecId, sizeof(kVideoCodecId)));
+            LOGI("video frame={} video width={} video height={} video code id= {}", video_frame, video_width,
+                video_height, video_code_id);
+
+            MediaContext::Ptr context = getMediaSource();
+            if (!context) {
+                LOGE("media context is nullptr");
+                return;
+            }
+            audio_code_id = audio_code_id ? audio_code_id : static_cast<int>(CodecType::Audio_AAC);
+            video_code_id = video_code_id ? video_code_id : static_cast<int>(CodecType::Video_X264);
+            MediaConfig config = { audio_rate, audio_channel, audio_code_id,
+                video_width, video_height, video_frame, video_code_id};
+            context->updateMediaConfig(config);
+        }
+
+
 
     }
 }
