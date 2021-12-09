@@ -9,6 +9,7 @@
 #include "src/spin_lock.h"
 
 namespace LJMP {
+    class MediaContext;
 
     class MediaSource : public std::enable_shared_from_this<MediaSource> {
     public:
@@ -16,6 +17,9 @@ namespace LJMP {
         using WPtr = std::weak_ptr<MediaSource>;
     public:
         virtual ~MediaSource() = default;
+        void setMediaContext(std::weak_ptr<MediaContext> media_contxt) {
+            media_context_ = media_contxt;
+        }
 
         bool open(const std::string& url);
         void close();
@@ -36,6 +40,8 @@ namespace LJMP {
     private:
         TaskQueuePtr task_queue_;
         SpinLock spin_lock_;
+
+        std::weak_ptr<MediaContext> media_context_;
     };
 } // namespace LJMP
 

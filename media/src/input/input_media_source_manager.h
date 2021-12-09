@@ -24,7 +24,7 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
             
-            bool open(const std::string& url) override;
+            MediaSource::Ptr getMediaSource(const std::string& url) override;
             
         protected:
             InputMediaSourceManager();

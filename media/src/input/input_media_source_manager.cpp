@@ -49,9 +49,7 @@ namespace LJMP {
             media_source_factory_.clear();
         }
     
-        bool InputMediaSourceManager::open(const std::string& url) {
-            LOG_ENTER;
-
+        MediaSource::Ptr InputMediaSourceManager::getMediaSource(const std::string& url) {
             std::string protocol = Utils::getProtocol(url);
             auto itor = std::find_if(media_source_factory_.begin(), media_source_factory_.end(),
                 [=](const auto& item)->bool {
@@ -60,24 +58,54 @@ namespace LJMP {
             );
             if (media_source_factory_.end() == itor) {
                 LOGE("con't not find protocol {}", protocol);
-                return false;
+                return nullptr;
             }
 
-            
-            MediaSource::Ptr ptr = (*itor)->create();
-            if (!ptr) {
+
+            MediaSource::Ptr media_source = (*itor)->create();
+            if (!media_source) {
                 LOGE("con't create media source");
-                return false;
+                return nullptr;
             }
-
-            if (!ptr->open(url)) {
-                Media::getInstance()->errorCallbak(error_code_open_failed, "can't open url=" + url);
-                return false;
-            }
-            
-            addMediaSource(url, ptr);
-            return true;
+            return media_source;
         }
+// 
+//             if (!ptr->open(url)) {
+//                 Media::getInstance()->errorCallbak(error_code_open_failed, "can't open url=" + url);
+//                 return false;
+//             }
+// 
+//         }
+// 
+//         bool InputMediaSourceManager::open(const std::string& url) {
+//             LOG_ENTER;
+// 
+//             std::string protocol = Utils::getProtocol(url);
+//             auto itor = std::find_if(media_source_factory_.begin(), media_source_factory_.end(),
+//                 [=](const auto& item)->bool {
+//                     return item->isSupportProtocol(protocol);
+//                 }
+//             );
+//             if (media_source_factory_.end() == itor) {
+//                 LOGE("con't not find protocol {}", protocol);
+//                 return false;
+//             }
+// 
+//             
+//             MediaSource::Ptr ptr = (*itor)->create();
+//             if (!ptr) {
+//                 LOGE("con't create media source");
+//                 return false;
+//             }
+// 
+//             if (!ptr->open(url)) {
+//                 Media::getInstance()->errorCallbak(error_code_open_failed, "can't open url=" + url);
+//                 return false;
+//             }
+//             
+//             addMediaSource(url, ptr);
+//             return true;
+//         }
 
         void InputMediaSourceManager::addMediaSource(const std::string& url, const MediaSource::Ptr& media_source) {
             LOG_ENTER;

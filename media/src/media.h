@@ -15,6 +15,7 @@ namespace LJMP {
     class MediaSourceManager;
     class NetworkManager;
     class ThreadPool;
+    class MediaContextManager;
 
     class Media;
     using MediaPtr = std::shared_ptr<Media>;
@@ -55,6 +56,7 @@ namespace LJMP {
     private:
         std::shared_ptr<MediaSourceManager> input_media_source_manager_;
         std::shared_ptr<NetworkManager> network_manger_;
+        std::shared_ptr<MediaContextManager> media_context_manger_;
 
     private:
         std::shared_ptr<ThreadPool> thread_pool_;

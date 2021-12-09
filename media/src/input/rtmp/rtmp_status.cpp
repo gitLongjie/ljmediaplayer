@@ -58,7 +58,7 @@ namespace LJMP {
                     context->errorCallback(error_code_read_network_data_failed, "read network data failed");
                     return;
                 }
-                long long duration = rtmp->m_fDuration * 1000000;
+                long long duration = static_cast<long long>(rtmp->m_fDuration * 1000000);
                 std::string path(rtmp->Link.playpath.av_val, rtmp->Link.playpath.av_len);
                 LOGI("path={}, a={}, v={}, duration={} seconds", path, flvHeader.isContainsAudio(),
                     flvHeader.isContainsVideo(), duration / 1000000);

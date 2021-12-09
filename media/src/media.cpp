@@ -4,13 +4,16 @@
 #include <cassert>
 #include <chrono>
 
+#include "ljmedia/error_code.h"
+
 #include "src/utils.h"
 
 #include "src/thread_pools.h"
 #include "src/log.h"
 #include "src/input/input_media_source_manager.h"
 #include "src/network/network_manager_std.h"
-#include "ljmedia/error_code.h"
+#include "src/media_context.h"
+#include "src/media_context_manager.h"
 
 namespace LJMP {
     Media* s_media = nullptr;
@@ -47,18 +50,22 @@ namespace LJMP {
 
         network_manger_ = Network::NetworkManagerStd::create(io_task_queue_);
         if (!network_manger_->initialize()) {
+            LOGE("net work manager initialize failed");
             return;
         }
 
         input_media_source_manager_ = Input::InputMediaSourceManager::create();
         if (!input_media_source_manager_->initialize()) {
+            LOGE("media source manager initialize failed");
             return ;
         }
 
+        media_context_manger_ = MediaContextManager::create();
     }
 
     void Media::doUninitialize(MediaWPtr wThis) {
         LOG_ENTER;
+        media_context_manger_.reset();
 
         input_media_source_manager_->uninitialize();
         network_manger_->uninitialize();
@@ -70,19 +77,22 @@ namespace LJMP {
 
     void Media::doOpenUrl(const std::string url, MediaWPtr wThis) {
         LOG_ENTER;
-        std::shared_ptr<Input::InputMediaSourceManager> media_source_manager =
-            std::dynamic_pointer_cast<Input::InputMediaSourceManager>(input_media_source_manager_);
-        if (!media_source_manager) {
-            LOGE("media source manager is nullptr");
-            errorCallbak(error_code_open_failed, "open failed");
+        if (media_context_manger_->isContain(url)) {
+            errorCallbak(error_code_opened, "open failed");
             return;
-          //  return media_source_manager->open(szUrl);
         }
 
-        if (!media_source_manager->open(url)) {
-            LOGE("open failed: {}", url);
+        MediaSource::Ptr media_source = input_media_source_manager_->getMediaSource(url);
+        if (nullptr == media_source) {
+            LOGE("get media source failed : {}", url);
             errorCallbak(error_code_open_failed, "open failed");
+            return;
         }
+
+        MediaContext::Ptr media_context = MediaContext::create();
+        media_context_manger_->addMediaContext(media_context, url);
+
+        media_context->updateMediaSrouce(media_source);
        // return false;
     }
 
