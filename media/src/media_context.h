@@ -40,8 +40,12 @@ namespace LJMP {
     protected:
         explicit MediaContext(const TaskQueue::Ptr& task_queue);
 
+        void onUpdateMediaConfig(const MediaConfig config, WPtr wThis);
+
     private:
         std::shared_ptr<MediaSource> media_source_;
+
+        MediaConfig media_config_;
     };
 }
 

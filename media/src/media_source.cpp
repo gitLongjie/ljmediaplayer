@@ -6,7 +6,7 @@
 
 namespace LJMP {
 
-    MediaSource::MediaSource(const TaskQueue::Ptr task_queue) : TaskQueueObject(task_queue) {
+    MediaSource::MediaSource(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue) {
         LOG_CREATER;
     }
 

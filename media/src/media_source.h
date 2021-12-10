@@ -27,7 +27,7 @@ namespace LJMP {
         void updateMediaConfig();
 
     protected:
-        explicit MediaSource(const TaskQueue::Ptr task_queue);
+        explicit MediaSource(const TaskQueue::Ptr& task_queue);
 
         virtual bool doOpen(const std::string& url) = 0;
         virtual void doClose() = 0;
