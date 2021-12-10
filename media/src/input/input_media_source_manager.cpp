@@ -12,21 +12,16 @@
 
 namespace LJMP {
     namespace Input {
+        std::shared_ptr<InputMediaSourceManager> InputMediaSourceManager::create() {
+            return createPtr<InputMediaSourceManager>();
+        }
+
         InputMediaSourceManager::InputMediaSourceManager() {
             LOGI("actor {}", (long long)this);
         }
 
         InputMediaSourceManager::~InputMediaSourceManager() {
             LOGI("dactor {}", (long long)this);
-        }
-    
-        std::shared_ptr<InputMediaSourceManager> InputMediaSourceManager::create() {
-            struct InputMediaSourceManagerCreator : public InputMediaSourceManager {
-                InputMediaSourceManagerCreator() : InputMediaSourceManager() {}
-                ~InputMediaSourceManagerCreator() = default;
-            };
-            
-            return std::make_shared<InputMediaSourceManagerCreator>();
         }
     
         bool InputMediaSourceManager::initialize() {

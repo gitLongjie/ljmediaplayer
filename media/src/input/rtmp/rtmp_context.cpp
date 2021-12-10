@@ -34,13 +34,7 @@ namespace LJMP {
 
             RtmpContext::Ptr RtmpContext::create(const TaskQueue::Ptr& task_queue,
                 std::weak_ptr<MediaSource> media_source, const std::string& url) {
-                struct Createor : public RtmpContext {
-                    explicit Createor(const TaskQueue::Ptr& task_queue,
-                        std::weak_ptr<MediaSource> media_source, const std::string& url)
-                        : RtmpContext(task_queue, media_source, url) {}
-                    ~Createor() override = default;
-                };
-                return std::make_shared<Createor>(task_queue, media_source, url);
+                return createPtr<RtmpContext>(task_queue, media_source, url);
             }
 
             RtmpContext::RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source, const std::string& url)

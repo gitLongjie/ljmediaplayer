@@ -6,12 +6,7 @@
 namespace LJMP {
 
     MediaContextManager::Ptr MediaContextManager::create() {
-        struct Creator : public MediaContextManager {
-            Creator() : MediaContextManager() {}
-            ~Creator() override = default;
-        };
-
-        return std::make_shared<Creator>();
+        return createPtr<MediaContextManager>();
     }
 
     bool MediaContextManager::addMediaContext(const MediaContext::Ptr& media_contxt, const std::string& url) {

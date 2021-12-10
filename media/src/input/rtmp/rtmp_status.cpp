@@ -26,14 +26,7 @@ namespace LJMP {
             }
 
             RtmpReaderStatus::Ptr RtmpReadFLVHeaderStatus::create(const RtmpContext::Ptr& rtmp_context) {
-                struct Creator : public RtmpReadFLVHeaderStatus {
-                    explicit Creator(const RtmpContext::Ptr& rtmp_context) : RtmpReadFLVHeaderStatus(rtmp_context) {
-                    }
-                    ~Creator() override = default;
-                };
-
-                Ptr self = std::make_shared<Creator>(rtmp_context);
-                return self;
+                return createPtr<RtmpReadFLVHeaderStatus>(rtmp_context);
             }
 
             RtmpReadFLVHeaderStatus::RtmpReadFLVHeaderStatus(const RtmpContext::Ptr& rtmp_context)
@@ -68,14 +61,7 @@ namespace LJMP {
             }
 
             RtmpReaderStatus::Ptr RtmpReadFLVTagDataStatus::create(const RtmpContext::Ptr& rtmp_context) {
-                struct Creator : public RtmpReadFLVTagDataStatus {
-                    explicit Creator(const RtmpContext::Ptr& rtmp_context) : RtmpReadFLVTagDataStatus(rtmp_context) {
-                    }
-                    ~Creator() override = default;
-                };
-
-                Ptr self = std::make_shared<Creator>(rtmp_context);
-                return self;
+                return createPtr<RtmpReadFLVTagDataStatus>(rtmp_context);
             }
 
             RtmpReadFLVTagDataStatus::RtmpReadFLVTagDataStatus(const RtmpContext::Ptr& rtmp_context)

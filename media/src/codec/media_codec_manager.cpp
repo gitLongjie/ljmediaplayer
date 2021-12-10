@@ -10,12 +10,7 @@
 
 namespace LJMP {
     CodecManager::Ptr CodecManager::create(const TaskQueue::Ptr& task_queue) {
-        struct Creator : public Ecodec::MediaEcodecManager {
-            Creator(const TaskQueue::Ptr& task_queue) : Ecodec::MediaEcodecManager(task_queue) {}
-            ~Creator() override = default;
-        };
-
-        return std::make_shared<Creator>(task_queue);
+        return createPtr<Ecodec::MediaEcodecManager>(task_queue);
     }
 
     namespace Ecodec {
