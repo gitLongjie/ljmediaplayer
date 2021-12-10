@@ -18,6 +18,8 @@ namespace LJMP {
     public:
         ~MediaSourceChannel() override;
 
+        void updateConfig(const MediaConfig& config);
+
     protected:
         MediaSourceChannel(const std::shared_ptr<MediaSource>& media_source,
             const TaskQueue::Ptr& task_queue);

@@ -11,17 +11,6 @@ namespace LJMP {
     class MediaChannel;
     class MediaCodec;
 
-    struct MediaConfig {
-        int audio_sample;
-        int audio_channel;
-        int audio_codec_id;
-
-        int video_width;
-        int video_height;
-        int video_frame;
-        int vidoe_codec_id;
-    };
-
     class MediaContext : public TaskQueueObject {
         disable_copy(MediaContext)
 

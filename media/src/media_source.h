@@ -32,9 +32,7 @@ namespace LJMP {
         virtual bool doOpen(const std::string& url) = 0;
         virtual void doClose() = 0;
 
-        std::shared_ptr<MediaChannel> getMediaChannel() const {
-            return std::dynamic_pointer_cast<MediaChannel>(media_channel_.lock());
-        }
+        std::shared_ptr<MediaChannel> getMediaChannel() const; 
 
     private:
         void openSource(std::string url, WPtr wThis);

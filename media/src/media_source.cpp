@@ -3,6 +3,7 @@
 #include "src/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
+#include "src/media_channel.h"
 
 namespace LJMP {
 
@@ -33,6 +34,11 @@ namespace LJMP {
 
         spin_lock_.lock();
     }
+
+    std::shared_ptr<LJMP::MediaChannel> MediaSource::getMediaChannel() const {
+        return std::dynamic_pointer_cast<MediaChannel>(media_channel_.lock());
+    }
+
 
     void MediaSource::openSource(std::string url, WPtr wThis) {
         LOGI("open url {}", url);

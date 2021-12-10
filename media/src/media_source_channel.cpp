@@ -18,4 +18,10 @@ namespace LJMP {
 
     }
 
+    void MediaSourceChannel::updateConfig(const MediaConfig& config) {
+        if (callback_func_) {
+            callback_func_(DataType::Script, static_cast<void*>(const_cast<MediaConfig*>(&config)));
+        }
+    }
+
 }

@@ -124,8 +124,8 @@ namespace LJMP {
             LOGI("video frame={} video width={} video height={} video code id= {}", video_frame, video_width,
                 video_height, video_code_id);
 
-            MediaContext::Ptr context = getMediaSource();
-            if (!context) {
+            MediaSourceChannel::Ptr channel = std::dynamic_pointer_cast<MediaSourceChannel>(getMediaChannel());
+            if (!channel) {
                 LOGE("media context is nullptr");
                 return;
             }
@@ -133,7 +133,7 @@ namespace LJMP {
             video_code_id = video_code_id ? video_code_id : static_cast<int>(CodecType::Video_X264);
             MediaConfig config = { audio_rate, audio_channel, audio_code_id,
                 video_width, video_height, video_frame, video_code_id};
-            context->updateMediaConfig(config);
+            channel->updateConfig(config);
         }
 
 
