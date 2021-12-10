@@ -4,7 +4,7 @@
 #include "src/media_source.h"
 
 namespace LJMP {
-    MediaSourceChannel::Ptr create(const MediaSource::Ptr& media_source, const TaskQueue::Ptr& task_queue) {
+    MediaSourceChannel::Ptr MediaSourceChannel::create(const MediaSource::Ptr& media_source, const TaskQueue::Ptr& task_queue) {
         return createPtr<MediaSourceChannel>(media_source, task_queue);
     }
 

@@ -5,9 +5,10 @@
 
 #include "src/lj_defined.h"
 #include "src/task_queue_object.h"
+#include "src/media_channel.h"
 
 namespace LJMP {
-    class MediaSource;
+    class MediaChannel;
     class MediaCodec;
 
     struct MediaConfig {
@@ -32,9 +33,7 @@ namespace LJMP {
     public:
         ~MediaContext() override;
 
-        void updateMediaSrouce(const std::shared_ptr<MediaSource>& media_source) {
-            media_source_ = media_source;
-        }
+        void updateMediaChannel(const MediaChannel::Ptr& media_channel);
 
         void updateMediaConfig(const MediaConfig& config);
 
@@ -42,9 +41,11 @@ namespace LJMP {
         explicit MediaContext(const TaskQueue::Ptr& task_queue);
 
         void onUpdateMediaConfig(const MediaConfig config, WPtr wThis);
+        void channelCallback(MediaChannel::DataType type, void* data);
+        void onChannelCallback(MediaChannel::DataType type, void* data, WPtr wThis);
 
     private:
-        std::shared_ptr<MediaSource> media_source_;
+        MediaChannel::Ptr media_channel_;
         std::shared_ptr<MediaCodec> media_codec_;
 
         MediaConfig media_config_;

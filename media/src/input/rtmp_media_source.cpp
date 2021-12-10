@@ -3,6 +3,7 @@
 #include "src/utils.h"
 #include "src/log.h"
 #include "src/media.h"
+#include "src/media_source_channel.h"
 #include "ljmedia/error_code.h"
 
 #include "src/input/rtmp/rtmp_utils.h"

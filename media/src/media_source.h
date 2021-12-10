@@ -8,17 +8,17 @@
 #include "src/task_queue_object.h"
 #include "src/spin_lock.h"
 
-#include "src/media_context.h"
-
 namespace LJMP {
+    class MediaChannel;
+
     class MediaSource : public TaskQueueObject {
     public:
         using Ptr = std::shared_ptr<MediaSource>;
 
     public:
         ~MediaSource() override;
-        void setMediaContext(MediaContext::WPtr media_contxt) {
-            media_context_ = media_contxt;
+        void setMediaChannel(std::weak_ptr<MediaChannel> media_channel) {
+            media_channel_ = media_channel;
         }
 
         bool start();
@@ -32,8 +32,8 @@ namespace LJMP {
         virtual bool doOpen(const std::string& url) = 0;
         virtual void doClose() = 0;
 
-        MediaContext::Ptr getMediaSource() const {
-            return std::dynamic_pointer_cast<MediaContext>(media_context_.lock());
+        std::shared_ptr<MediaChannel> getMediaChannel() const {
+            return std::dynamic_pointer_cast<MediaChannel>(media_channel_.lock());
         }
 
     private:
@@ -43,7 +43,7 @@ namespace LJMP {
     private:
         SpinLock spin_lock_;
 
-        MediaContext::WPtr media_context_;
+        std::weak_ptr<MediaChannel> media_channel_;
         const std::string url_;
     };
 } // namespace LJMP
