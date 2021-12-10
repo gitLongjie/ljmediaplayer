@@ -91,12 +91,13 @@ namespace LJMP {
             return;
         }
 
-        if (!media_source->open(url)) {
+        if (!media_source->start()) {
             LOGE("open url faied : {}", url);
             errorCallbak(error_code_open_failed, "open failed");
             return;
         }
 
+        //MediaChannel::Ptr;
         MediaContext::Ptr media_context = MediaContext::create(media_task_queue_);
         media_context_manger_->addMediaContext(media_context, url);
 

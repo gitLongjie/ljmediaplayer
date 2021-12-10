@@ -23,7 +23,7 @@ namespace LJMP {
             void onHandleScripte(const DataBuffer::Ptr& data_buffer);
 
         protected:
-            RTMPMediaSource();
+            explicit RTMPMediaSource(const std::string& url);
 
             bool doOpen(const std::string& url);
             void doClose();

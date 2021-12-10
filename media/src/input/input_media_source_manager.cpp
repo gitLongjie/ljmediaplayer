@@ -43,7 +43,7 @@ namespace LJMP {
             LOG_ENTER;
 
             for (const auto& item : media_sources_) {
-                item.second->close();
+                item.second->stop();
             }
             media_sources_.clear();
             media_source_factory_.clear();
@@ -62,7 +62,7 @@ namespace LJMP {
             }
 
 
-            MediaSource::Ptr media_source = (*itor)->create();
+            MediaSource::Ptr media_source = (*itor)->create(url);
             if (!media_source) {
                 LOGE("con't create media source");
                 return nullptr;

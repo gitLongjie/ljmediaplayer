@@ -21,13 +21,13 @@ namespace LJMP {
             media_context_ = media_contxt;
         }
 
-        bool open(const std::string& url);
-        void close();
+        bool start();
+        void stop();
 
         void updateMediaConfig();
 
     protected:
-        explicit MediaSource(const TaskQueue::Ptr& task_queue);
+        explicit MediaSource(const std::string& url, const TaskQueue::Ptr& task_queue);
 
         virtual bool doOpen(const std::string& url) = 0;
         virtual void doClose() = 0;
@@ -44,6 +44,7 @@ namespace LJMP {
         SpinLock spin_lock_;
 
         MediaContext::WPtr media_context_;
+        const std::string url_;
     };
 } // namespace LJMP
 

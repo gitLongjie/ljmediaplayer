@@ -6,7 +6,8 @@
 
 namespace LJMP {
 
-    MediaSource::MediaSource(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, false) {
+    MediaSource::MediaSource(const std::string& url, const TaskQueue::Ptr& task_queue)
+        : TaskQueueObject(task_queue, false), url_(url){
         LOG_CREATER;
     }
 
@@ -14,14 +15,18 @@ namespace LJMP {
         LOG_DESTRUCT;
     }
 
-    bool MediaSource::open(const std::string& url) {
+    bool MediaSource::start() {
+        if (url_.empty()) {
+            LOGE("url is empty");
+            return false;
+        }
         WPtr wThis(shared_from_this());
-        auto task = createTask(std::bind(&MediaSource::openSource, this, url, wThis));
+        auto task = createTask(std::bind(&MediaSource::openSource, this, url_, wThis));
         invoke(task);
         return true;
     }
 
-    void MediaSource::close() {
+    void MediaSource::stop() {
         WPtr wThis(shared_from_this());
         auto task = createTask(std::bind(&MediaSource::closeSource, this, wThis));
         invoke(task);

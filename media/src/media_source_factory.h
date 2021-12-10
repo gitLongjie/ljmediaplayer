@@ -12,7 +12,7 @@ namespace LJMP {
         MediaSourceFactory() = default;
         virtual ~MediaSourceFactory() = default;
 
-        virtual MediaSource::Ptr create() = 0;
+        virtual MediaSource::Ptr create(const std::string& url) = 0;
         virtual bool isSupportProtocol(const std::string& protocol) const = 0;
     };
     using MediaSourceFactoryPtr = std::shared_ptr<MediaSourceFactory>;
@@ -26,12 +26,12 @@ namespace LJMP {
         MediaSourceFactoryImpl() = default;
         ~MediaSourceFactoryImpl() override = default;
 
-        MediaSource::Ptr create() override {
+        MediaSource::Ptr create(const std::string& url) override {
             struct Creator : public T {
-                Creator() : T() {}
+                Creator(const std::string& url) : T(url) {}
                 ~Creator() override = default;
             };
-            return std::move(std::make_shared<Creator>());
+            return std::move(std::make_shared<Creator>(url));
         }
 
         bool isSupportProtocol(const std::string& protocol) const override {

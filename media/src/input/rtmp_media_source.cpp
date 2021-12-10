@@ -22,12 +22,13 @@ namespace LJMP {
         static StringList g_protocol = { "rtmp://", "rtmpt://", "rtmpe://",
             "rtmpte://", "rtmps://", "rtmpts://", "rtmfp://" };
 
-        RTMPMediaSource::RTMPMediaSource() : MediaSource(Media::getInstance()->getIOTaskQueue()) {
-            LOGI("actor {}", (long long)this);
+        RTMPMediaSource::RTMPMediaSource(const std::string& url)
+            : MediaSource(url, Media::getInstance()->getIOTaskQueue()) {
+            LOG_CREATER;
         }
 
         RTMPMediaSource::~RTMPMediaSource() {
-            LOGI("dactor {}", (long long)this);
+            LOG_DESTRUCT;
         }
 
         void RTMPMediaSource::errorCallback(int code, const char* msg) {
