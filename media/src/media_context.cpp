@@ -14,7 +14,7 @@ namespace LJMP {
     }
 
     MediaContext::MediaContext(const TaskQueue::Ptr& task_queue)
-        : TaskQueueObject(task_queue) {
+        : TaskQueueObject(task_queue, false) {
         LOG_CREATER;
     }
 

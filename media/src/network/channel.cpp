@@ -26,7 +26,7 @@ namespace LJMP {
         }
 
         Channel::Channel(const TaskQueue::Ptr& task_queue, const SocketPtr& s)
-            : TaskQueueObject(task_queue)
+            : TaskQueueObject(task_queue, false)
             , socket_(s){
             LOGI("actor {}", (long long)this);
             

@@ -29,6 +29,7 @@ link_directories(
 )
 
 add_definitions(-DLJ_MEDIA_EXPORT )
+add_definitions(-DNO_CRYPTO)
 
 add_subdirectory(src)
 add_subdirectory(ljmedia)

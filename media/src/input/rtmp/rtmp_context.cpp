@@ -44,7 +44,7 @@ namespace LJMP {
             }
 
             RtmpContext::RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source, const std::string& url)
-                : TaskQueueObject(task_queue)
+                : TaskQueueObject(task_queue, false)
                 , media_source_(media_source)
                 , url_(url){
                 LOGI("actor {} url={}", (long long)this, url);

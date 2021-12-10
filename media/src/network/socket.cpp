@@ -28,6 +28,7 @@ namespace LJMP {
             if (Socket::Model::TCP == model) {
                 return TcpSocket::create(socket);
             }
+            return nullptr;
         }
 
         Socket::Socket(Model model)

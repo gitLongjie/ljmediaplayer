@@ -8,6 +8,7 @@
 
 namespace LJMP {
     class MediaSource;
+    class MediaCodec;
 
     struct MediaConfig {
         int audio_sample;
@@ -44,6 +45,7 @@ namespace LJMP {
 
     private:
         std::shared_ptr<MediaSource> media_source_;
+        std::shared_ptr<MediaCodec> media_codec_;
 
         MediaConfig media_config_;
     };

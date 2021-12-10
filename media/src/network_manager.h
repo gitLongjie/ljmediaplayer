@@ -19,7 +19,7 @@ namespace LJMP {
         virtual void uninitialize() = 0;
 
     protected:
-        explicit NetworkManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue) {}
+        explicit NetworkManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, false) {}
     };
 }
 
