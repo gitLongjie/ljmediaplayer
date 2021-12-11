@@ -8,11 +8,6 @@ namespace LJMP {
         disable_copy(MediaChannel)
 
     public:
-        enum class DataType {
-            Script
-        };
-
-    public:
         using Ptr = std::shared_ptr<MediaChannel>;
         using callbackFunc = std::function<void(DataType type, void* data)>;
 

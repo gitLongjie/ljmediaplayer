@@ -62,8 +62,8 @@ int main() {
     std::string str = std::string("a", 1);
     unsigned int n = sizeof(FLVTagHeader);
     //const char* test = "rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp";
-    //const char* test = "rtmp://ns8.indexforce.com/home/mystream";
-    const char* test = "rtmp://10.74.26.28:1935/live/home";
+    const char* test = "rtmp://ns8.indexforce.com/home/mystream";
+    //const char* test = "rtmp://10.74.26.28:1935/live/home";
     if (0 != openUrl(test)) {
         uninitialzie();
         return -1;

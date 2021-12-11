@@ -9,20 +9,20 @@
 #include "src/spin_lock.h"
 
 namespace LJMP {
-    class MediaChannel;
+    class MediaSourceChannel;
 
     class MediaSource : public TaskQueueObject {
     public:
         using Ptr = std::shared_ptr<MediaSource>;
+        using callbackFunc = std::function<void(DataType type, void* data)>;
 
     public:
         ~MediaSource() override;
-        void setMediaChannel(std::weak_ptr<MediaChannel> media_channel) {
-            media_channel_ = media_channel;
-        }
 
         bool start();
         void stop();
+
+        void setCallbackFunc(callbackFunc callback);
 
         void updateMediaConfig();
 
@@ -32,17 +32,21 @@ namespace LJMP {
         virtual bool doOpen(const std::string& url) = 0;
         virtual void doClose() = 0;
 
-        std::shared_ptr<MediaChannel> getMediaChannel() const; 
+
+        callbackFunc getCallbackFunc() const {
+            return callback_func_;
+        }
 
     private:
         void openSource(std::string url, WPtr wThis);
         void closeSource(WPtr wThis);
+        void onSetCallbackFunc(callbackFunc callback, WPtr wThis);
 
     private:
         SpinLock spin_lock_;
-
-        std::weak_ptr<MediaChannel> media_channel_;
         const std::string url_;
+
+        callbackFunc callback_func_ = nullptr;
     };
 } // namespace LJMP
 

@@ -15,6 +15,8 @@
 #include "src/media_context.h"
 #include "src/media_context_manager.h"
 #include "src/media_source_channel.h"
+#include "src/media_codec_channel.h"
+#include "src/media_channel_factory.h"
 
 namespace LJMP {
     Media* s_media = nullptr;
@@ -92,7 +94,10 @@ namespace LJMP {
             return;
         }
 
-        MediaChannel::Ptr media_source_channel = MediaSourceChannel::create(media_source, media_task_queue_);
+        MediaChannelFactory media_channel_factory;
+        MediaSourceChannel::Ptr media_source_channel = media_channel_factory.createMediaSrouceChannel(media_source, media_task_queue_);
+        MediaCodecChannel::Ptr media_codec_channel = media_channel_factory.createMediaCodecChannel(media_task_queue_);
+        media_codec_channel->bindMediaSourceChannel(media_source_channel);
         //MediaChannel::Ptr;
         MediaContext::Ptr media_context = MediaContext::create(media_task_queue_);
         media_context_manger_->addMediaContext(media_context, url);

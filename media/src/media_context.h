@@ -30,8 +30,6 @@ namespace LJMP {
         explicit MediaContext(const TaskQueue::Ptr& task_queue);
 
         void onUpdateMediaConfig(const MediaConfig config, WPtr wThis);
-        void channelCallback(MediaChannel::DataType type, void* data);
-        void onChannelCallback(MediaChannel::DataType type, void* data, WPtr wThis);
 
     private:
         MediaChannel::Ptr media_channel_;

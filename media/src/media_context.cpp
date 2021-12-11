@@ -24,9 +24,6 @@ namespace LJMP {
             LOGE("media channel is nullptr");
             return;
         }
-
-        media_channel_->setCallbackFunc(std::bind(&MediaContext::channelCallback, this,
-            std::placeholders::_1, std::placeholders::_2));
     }
 
     void MediaContext::updateMediaConfig(const MediaConfig& config) {
@@ -50,22 +47,6 @@ namespace LJMP {
         }
 
         media_config_ = config;
-    }
-
-    void MediaContext::channelCallback(MediaChannel::DataType type, void* data) {
-        switch (type) {
-        case MediaChannel::DataType::Script: {
-            MediaConfig* config = reinterpret_cast<MediaConfig*>(data);
-            updateMediaConfig(*config);
-        }
-            break;
-        default:
-            break;
-        }
-    }
-
-    void MediaContext::onChannelCallback(MediaChannel::DataType type, void* data, WPtr wThis) {
-
     }
 
 }

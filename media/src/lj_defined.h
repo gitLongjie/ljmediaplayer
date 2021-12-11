@@ -28,6 +28,10 @@ inline void invokeCallback(T func, V val) {
     }
 }
 
+enum class DataType {
+    Script
+};
+
 enum class CodecType {
     Audio_AAC,
 

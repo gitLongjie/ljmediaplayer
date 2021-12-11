@@ -35,10 +35,18 @@ namespace LJMP {
         spin_lock_.lock();
     }
 
-    std::shared_ptr<LJMP::MediaChannel> MediaSource::getMediaChannel() const {
-        return std::dynamic_pointer_cast<MediaChannel>(media_channel_.lock());
-    }
+    void MediaSource::setCallbackFunc(callbackFunc callback) {
+        LOG_ENTER;
 
+        WPtr wThis(shared_from_this());
+        if (isCurrentThread()) {
+            onSetCallbackFunc(callback, wThis);
+            return;
+        }
+
+        auto task = createTask(std::bind(&MediaSource::onSetCallbackFunc, this, callback, wThis));
+        invoke(task);
+    }
 
     void MediaSource::openSource(std::string url, WPtr wThis) {
         LOGI("open url {}", url);
@@ -66,6 +74,18 @@ namespace LJMP {
 
         doClose();
         spin_lock_.unlock();
+    }
+
+    void MediaSource::onSetCallbackFunc(callbackFunc callback, WPtr wThis) {
+        LOG_ENTER;
+
+        TaskQueueObject::Ptr self(wThis.lock());
+        if (!self) {
+            LOGE("this object is destruct");
+            return;
+        }
+
+        callback_func_ = callback;
     }
 
 }
