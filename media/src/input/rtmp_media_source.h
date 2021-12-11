@@ -4,6 +4,8 @@
 #include "src/media_source.h"
 #include "src/media_source_factory.h"
 
+#include "src/input/rtmp/rtmp_context.h"
+
 namespace LJMP {
     namespace Input {
         class RTMPMediaSource : public MediaSource {
@@ -16,10 +18,14 @@ namespace LJMP {
         public:
             ~RTMPMediaSource() override;
 
-            bool load(const std::string& url) override;
-
         protected:
             RTMPMediaSource();
+
+            bool doOpen(const std::string& url);
+            void doClose();
+
+        private:
+            Rtmp::RtmpContext::Ptr rtmp_context_;
         };
     }
 }

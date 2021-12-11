@@ -8,7 +8,7 @@ namespace LJMP {
 
         static StringList g_protocol = { "rtsp://" };
 
-        RTSPMediaSource::RTSPMediaSource() {
+        RTSPMediaSource::RTSPMediaSource() : MediaSource(nullptr) {
            LOGI("actor {}", (long long)this);
         }
 
@@ -28,18 +28,21 @@ namespace LJMP {
             return true;
         }
 
-        bool RTSPMediaSource::load(const std::string& url) {
+        const StringList& RTSPMediaSource::protocols() {
+            return g_protocol;
+        }
+
+        bool RTSPMediaSource::doOpen(const std::string& url) {
             LOGI("open url {}", url);
             if (!Utils::checkProtocol(url, protocols())) {
                 LOGE("protocol is not suppot");
                 return false;
             }
-
             return true;
         }
 
-        const StringList& RTSPMediaSource::protocols() {
-            return g_protocol;
+        void RTSPMediaSource::doClose() {
+
         }
 
     }

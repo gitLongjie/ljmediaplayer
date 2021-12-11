@@ -8,6 +8,7 @@
 
 #include "src/log.h"
 #include "src/input/input_media_source_manager.h"
+#include "src/network/network_manager_std.h"
 #include "ljmedia/error_code.h"
 
 namespace LJMP {
@@ -15,7 +16,8 @@ namespace LJMP {
 
     Media::Media()
         : main_task_queue_("main")
-        , callback_task_queue_("callback") {
+        , callback_task_queue_("callback") 
+        , io_task_queue_(std::make_shared<TaskQueue>("io")) {
         assert(nullptr == s_media);
 
         s_media = this;
@@ -24,6 +26,7 @@ namespace LJMP {
     Media::~Media() {
         main_task_queue_.stop();
         callback_task_queue_.stop();
+        io_task_queue_->stop();
         s_media = nullptr;
     }
 
@@ -39,17 +42,27 @@ namespace LJMP {
             return;
         }
 
+        network_manger_ = Network::NetworkManagerStd::create(io_task_queue_);
+        if (!network_manger_->initialize()) {
+            return;
+        }
+
         input_media_source_manager_ = Input::InputMediaSourceManager::create();
         if (!input_media_source_manager_->initialize()) {
             return ;
         }
+
     }
 
     void Media::doUninitialize(MediaWPtr wThis) {
         LOG_ENTER;
-        input_media_source_manager_.reset();
 
-        _run_do_unintialize = true;
+        input_media_source_manager_->uninitialize();
+        network_manger_->uninitialize();
+        input_media_source_manager_.reset();
+        network_manger_.reset();
+
+        spink_lock_.unlock();
     }
 
     void Media::doOpenUrl(const std::string url, MediaWPtr wThis) {
@@ -86,26 +99,28 @@ namespace LJMP {
     }
 
     bool Media::openUrl(const char* szUrl) {
-        auto task = createTask(std::bind(&Media::doOpenUrl, this, szUrl, shared_from_this()));
+        MediaWPtr wThis(shared_from_this());
+        auto task = createTask(std::bind(&Media::doOpenUrl, this, szUrl, wThis));
         invoke(task);
         return true;
     }
 
     bool Media::initialize(errorCallback callback) {
+        MediaWPtr wThis(shared_from_this());
+
         error_callback_ = callback;
-        auto task = createTask(std::bind(&Media::doInitialize, this, shared_from_this()));
+        auto task = createTask(std::bind(&Media::doInitialize, this, wThis));
         invoke(task);
         return true;
     }
 
     void Media::uninitialize() {
+        MediaWPtr wThis(shared_from_this());
         _run_do_unintialize = false;
-        auto task = createTask(std::bind(&Media::doUninitialize, this, shared_from_this()));
+        auto task = createTask(std::bind(&Media::doUninitialize, this, wThis));
         invoke(task);
 
-        while (!_run_do_unintialize) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+        spink_lock_.lock();
     }
 
     void Media::invoke(const TaskPtr& task) {
@@ -116,8 +131,10 @@ namespace LJMP {
         main_task_queue_.push(task, delay);
     }
 
-    void Media::errorCallbak(int code, const char* msg) {
-        auto task = createTask(std::bind(&Media::doErrorCallback, this, code, msg, shared_from_this()));
+    void Media::errorCallbak(int code, const std::string& msg) {
+        MediaWPtr wThis(shared_from_this());
+        std::string message(msg);
+        auto task = createTask(std::bind(&Media::doErrorCallback, this, code, msg, wThis));
         invoke(task);
     }
 

@@ -83,4 +83,6 @@ private:
     std::thread::id m_currentId = std::this_thread::get_id();
 };
 
+using TaskQueuePtr = std::shared_ptr<TaskQueue>;
+
 #endif // src_task_queue_h_

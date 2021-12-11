@@ -65,5 +65,13 @@ my_add_library(
     ${PROJECT_NAME}
     SHARED
     ${src_src}
-    ${ljmedia_src}
+    ${src_ljmedia_src}
 )
+
+if (WIN32)
+target_link_libraries(
+	${PROJECT_NAME}
+	ws2_32
+    Winmm
+)
+endif (WIN32)

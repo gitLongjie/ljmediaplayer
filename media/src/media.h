@@ -9,8 +9,11 @@
 #include "src/task_queue.h"
 #include "ljmedia/lj_media.h"
 
+#include "src/spin_lock.h"
+
 namespace LJMP {
     class MediaSourceManager;
+    class NetworkManager;
 
     class Media;
     using MediaPtr = std::shared_ptr<Media>;
@@ -18,6 +21,9 @@ namespace LJMP {
 
     class Media : public std::enable_shared_from_this<Media> {
         disable_copy(Media)
+
+    public:
+        static Media* getInstance();
 
     public:
         Media();
@@ -29,13 +35,13 @@ namespace LJMP {
         void invoke(const TaskPtr& task);
         void invoke(const TaskPtr& task, uint16_t delay);
 
-        void errorCallbak(int code, const char* msg);
+        void errorCallbak(int code, const std::string& msg);
         
     public:
         bool openUrl(const char* szUrl);
 
-    public:
-        static Media* getInstance();
+        TaskQueuePtr getIOTaskQueue() const { return io_task_queue_; }
+        std::shared_ptr<NetworkManager> getNetworkManager() const { return network_manger_; }
 
     protected:
         void doInitialize(MediaWPtr wThis);
@@ -46,13 +52,17 @@ namespace LJMP {
         
     private:
         std::shared_ptr<MediaSourceManager> input_media_source_manager_;
+        std::shared_ptr<NetworkManager> network_manger_;
 
     private:
         TaskQueue main_task_queue_;
         TaskQueue callback_task_queue_;
+        std::shared_ptr<TaskQueue> io_task_queue_;
 
         errorCallback error_callback_ = nullptr;
         bool _run_do_unintialize = true;
+
+        SpinLock spink_lock_;
     };
 }
 

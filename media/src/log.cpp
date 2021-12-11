@@ -23,23 +23,23 @@ void Log::SetLogWriteCallback(LogWriteCallback callback) {
 
 void Log::Write(LogLevel logLevel, const std::string& log) {
   switch (logLevel) {
-    case LOG_WARNING_MESSAGE:
+  case LogLevel::LOG_WARNING_MESSAGE:
       m_logger->warn(log);
       break;
-    case LOG_DEBUG_MESSAGE:
+  case LogLevel::LOG_DEBUG_MESSAGE:
       m_logger->debug(log);
       break;
-    case LOG_ERROR_MESSAGE:
+  case LogLevel::LOG_ERROR_MESSAGE:
       m_logger->error(log);
       break;
-    case LOG_INFO_MESSAGE:
+  case LogLevel::LOG_INFO_MESSAGE:
       m_logger->info(log);
       break;
     default:
       break;
   }
 
-  if (nullptr != m_logWirateCallback) m_logWirateCallback(logLevel, log);
+  if (nullptr != m_logWirateCallback) m_logWirateCallback(static_cast<int>(logLevel), log);
 }
 
 

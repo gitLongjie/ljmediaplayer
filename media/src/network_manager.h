@@ -1,38 +1,23 @@
-#ifndef src_input_input_medai_source_h_
-#define src_input_input_medai_source_h_
+#ifndef src_network_manager_h_
+#define src_network_manager_h_
 
 #include <memory>
 #include <list>
 #include <string>
 
-#include "src/media_source_manager.h"
-#include "src/media_source_factory.h"
+#include "src/lj_defined.h"
 
 namespace LJMP {
-    namespace Input{
+    class NetworkManager : public std::enable_shared_from_this<NetworkManager> {
+    public:
+        virtual ~NetworkManager() = default;
 
-        class InputMediaSourceManager : public MediaSourceManager {
-            disable_copy(InputMediaSourceManager)
-            
-        public:
-            static std::shared_ptr<InputMediaSourceManager> create();
+        virtual bool initialize() = 0;
+        virtual void uninitialize() = 0;
+    };
 
-        public:
-            ~InputMediaSourceManager() override;
-            
-            bool initialize() override;
-            void uninitialize() override;
-            
-            bool open(const std::string& url) override;
-            
-        protected:
-            InputMediaSourceManager();
-
-        private:
-            using MediaSourceFactoryList = std::list<MediaSourceFactoryPtr >;
-            MediaSourceFactoryList media_source_factory_;
-        };
-    }
+    using NetworkManagerPtr = std::shared_ptr<NetworkManager>;
+    using NetworkManagerWPtr = std::weak_ptr<NetworkManager>;
 }
 
-#endif // !src_input_input_medai_source_h_
+#endif

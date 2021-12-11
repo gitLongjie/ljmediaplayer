@@ -21,17 +21,19 @@ int main() {
         return -1;
     }
 
-    const char* test = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+    std::string str = std::string("a", 1);
+
+    const char* test = "rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp";
     if (0 != openUrl(test)) {
         uninitialzie();
         return -1;
     }
 
     while (!_kbhit()) {
-       //std::cout << "Hit me!!" << std::endl;
+        //std::cout << "Hit me!!" << std::endl;
         Sleep(50);
     }
-    
+
     std::cout << "you input:" << _getch() << std::endl;
 
     uninitialzie();
