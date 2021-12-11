@@ -14,7 +14,7 @@ namespace LJMP {
         ~MediaCodec() override;
 
     protected:
-        explicit MediaCodec();
+        explicit MediaCodec(const TaskQueue::Ptr& task_queue);
     };
 }
 
