@@ -19,7 +19,7 @@ namespace LJMP {
         virtual void uninitialize() = 0;
 
     protected:
-        explicit CodecManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, true){}
+        explicit CodecManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, false){}
     };
 }
 #endif // !src_codec_codec_manager
