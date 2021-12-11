@@ -131,6 +131,10 @@ namespace LJMP {
             }
             audio_code_id = audio_code_id ? audio_code_id : static_cast<int>(CodecType::Audio_AAC);
             video_code_id = video_code_id ? video_code_id : static_cast<int>(CodecType::Video_X264);
+            if (video_code_id == 7) {
+                video_code_id = static_cast<int>(CodecType::Video_X264);
+            }
+
             MediaConfig config = { audio_rate, audio_channel, audio_code_id,
                 video_width, video_height, video_frame, video_code_id};
             callback(DataType::Script, &config);
