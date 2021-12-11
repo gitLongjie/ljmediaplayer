@@ -9,7 +9,8 @@ namespace LJMP {
             disable_copy(TcpSocket)
 
         public:
-            static std::shared_ptr<Socket> create();
+            static Socket::Ptr create();
+            static Socket::Ptr create(socket_t socket);
 
         public:
             ~TcpSocket() override;
@@ -20,6 +21,7 @@ namespace LJMP {
 
         protected:
             TcpSocket();
+            TcpSocket(socket_t socket);
         };
     }
 }

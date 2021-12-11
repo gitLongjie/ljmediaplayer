@@ -5,7 +5,7 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_queue.h"
+#include "src/task_queue_object.h"
 #include "src/data_buffer.h"
 
 namespace LJMP {
@@ -13,17 +13,16 @@ namespace LJMP {
         class Socket;
         using SocketPtr = std::shared_ptr<Socket>;
 
-        class Channel : public std::enable_shared_from_this<Channel> {
+        class Channel : public TaskQueueObject {
             disable_copy(Channel)
 
         public:
             using Ptr = std::shared_ptr<Channel>;
-            using WPtr = std::weak_ptr<Channel>;
 
-            using ReadCallbackHandle = std::function<void(const Ptr& self)>;
+            using ReadCallbackHandle = std::function<void()>;
             using WriteStatusCallback = std::function<void(bool)>;
 
-            static std::shared_ptr<Channel> create(const TaskQueuePtr& task_queue, const SocketPtr& s);
+            static Channel::Ptr create(const TaskQueue::Ptr& task_queue, const SocketPtr& s);
 
         public:
             virtual ~Channel();
@@ -39,17 +38,14 @@ namespace LJMP {
 
 
         protected:
-            Channel(const TaskQueuePtr& task_queue, const SocketPtr& s);
+            Channel(const TaskQueue::Ptr& task_queue, const SocketPtr& s);
 
             void handleRead();
 
             void doSetCallbackHandle(ReadCallbackHandle read_call_handle, WPtr wThis);
             void doWrite(const DataBuffer::Ptr data_buffer, WriteStatusCallback callback, WPtr wThis);
 
-            void invoke(const TaskPtr task);
-
         private:
-            TaskQueuePtr task_queue_;
             SocketPtr socket_;
 
             ReadCallbackHandle read_callback_handle_;

@@ -24,17 +24,17 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
             
-            bool open(const std::string& url) override;
+            MediaSource::Ptr getMediaSource(const std::string& url) override;
             
         protected:
             InputMediaSourceManager();
 
-            void addMediaSource(const std::string& url, const MediaSourcePtr& media_source);
+            void addMediaSource(const std::string& url, const MediaSource::Ptr& media_source);
             void removeMediaSource(const std::string& url);
 
         private:
             using MediaSourceFactoryList = std::list<MediaSourceFactoryPtr >;
-            using MediaSourceList = std::map<std::string, MediaSourcePtr>;
+            using MediaSourceList = std::map<std::string, MediaSource::Ptr>;
             MediaSourceFactoryList media_source_factory_;
             MediaSourceList media_sources_;
         };

@@ -101,4 +101,8 @@ namespace LJMP {
         return emptyStr;
     }
 
+    unsigned long Utils::ntohl(unsigned long netlong) {
+        return ::ntohl(netlong);
+    }
+
 } // namespace LJMP

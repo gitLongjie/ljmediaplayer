@@ -8,7 +8,7 @@ namespace LJMP {
 
         static StringList g_protocol = { "rtsp://" };
 
-        RTSPMediaSource::RTSPMediaSource() : MediaSource(nullptr) {
+        RTSPMediaSource::RTSPMediaSource(const std::string& url) : MediaSource(url, nullptr) {
            LOGI("actor {}", (long long)this);
         }
 

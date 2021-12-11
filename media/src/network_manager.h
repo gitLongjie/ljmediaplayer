@@ -7,17 +7,22 @@
 
 #include "src/lj_defined.h"
 
+#include "src/task_queue_object.h"
+
 namespace LJMP {
-    class NetworkManager : public std::enable_shared_from_this<NetworkManager> {
+    class NetworkManager : public TaskQueueObject {
+    public:
+        using Ptr = std::shared_ptr<NetworkManager>;
+
     public:
         virtual ~NetworkManager() = default;
 
         virtual bool initialize() = 0;
         virtual void uninitialize() = 0;
-    };
 
-    using NetworkManagerPtr = std::shared_ptr<NetworkManager>;
-    using NetworkManagerWPtr = std::weak_ptr<NetworkManager>;
+    protected:
+        explicit NetworkManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, false) {}
+    };
 }
 
 #endif

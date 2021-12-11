@@ -3,41 +3,46 @@
 #include "src/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
+#include "src/media_channel.h"
 
 namespace LJMP {
 
-    MediaSource::MediaSource(const TaskQueuePtr task_queue) : task_queue_(task_queue) {}
+    MediaSource::MediaSource(const std::string& url, const TaskQueue::Ptr& task_queue)
+        : TaskQueueObject(task_queue, false), url_(url){
+        LOG_CREATER;
+    }
 
-    bool MediaSource::open(const std::string& url) {
-        MediaSourceWPtr wThis(shared_from_this());
-        auto task = createTask(std::bind(&MediaSource::openSource, this, url, wThis));
+    MediaSource::~MediaSource() {
+        LOG_DESTRUCT;
+    }
+
+    bool MediaSource::start() {
+        if (url_.empty()) {
+            LOGE("url is empty");
+            return false;
+        }
+        WPtr wThis(shared_from_this());
+        auto task = createTask(std::bind(&MediaSource::openSource, this, url_, wThis));
         invoke(task);
         return true;
     }
 
-    void MediaSource::close() {
-        MediaSourceWPtr wThis(shared_from_this());
+    void MediaSource::stop() {
+        WPtr wThis(shared_from_this());
         auto task = createTask(std::bind(&MediaSource::closeSource, this, wThis));
         invoke(task);
 
         spin_lock_.lock();
     }
 
-    void MediaSource::invoke(const TaskPtr& task) {
-        if (task_queue_) {
-            task_queue_->push(task);
-        }
+    std::shared_ptr<LJMP::MediaChannel> MediaSource::getMediaChannel() const {
+        return std::dynamic_pointer_cast<MediaChannel>(media_channel_.lock());
     }
 
-    void MediaSource::invoke(const TaskPtr& task, uint16_t delay) {
-        if (task_queue_) {
-            task_queue_->push(task, delay);
-        }
-    }
 
-    void MediaSource::openSource(std::string url, MediaSourceWPtr wThis) {
+    void MediaSource::openSource(std::string url, WPtr wThis) {
         LOGI("open url {}", url);
-        MediaSourcePtr self = wThis.lock();
+        TaskQueueObject::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct {}", (long long)this);
             std::string msg("open url failed url=");
@@ -52,8 +57,8 @@ namespace LJMP {
         }
     }
 
-    void MediaSource::closeSource(MediaSourceWPtr wThis) {
-        MediaSourcePtr self = wThis.lock();
+    void MediaSource::closeSource(WPtr wThis) {
+        TaskQueueObject::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct {}", (long long)this);
             return;

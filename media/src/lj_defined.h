@@ -1,6 +1,7 @@
 #ifndef src_lj_defined_h_
 #define src_lj_defined_h_
 
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -10,14 +11,15 @@ using StringList = std::vector<std::string>;
    class_name(const class_name& ) = delete;                 \
    class_name operator= (const class_name& ) = delete;      
 
-#define implate_creator(class_name)                         \
-    struct Creator : public NetworkManager {                \
-        Creator() : NetworkManager() {}                     \
-        ~Creator() override = default;                      \
+template <class T, typename... Args>
+std::shared_ptr<T> createPtr(Args&&... args) {
+    struct Creator : public T {
+        Creator(Args&&... args) : T(std::forward<Args>(args)...) {}
+        ~Creator() override {}
     };
 
-#define return_implate_creater()                            \
-    return std::make_shared<Creator>();
+    return std::make_shared<Creator>(std::forward<Args>(args)...);
+}
 
 template <typename T, typename V>
 inline void invokeCallback(T func, V val) {
@@ -26,5 +28,21 @@ inline void invokeCallback(T func, V val) {
     }
 }
 
+enum class CodecType {
+    Audio_AAC,
+
+    Video_X264,
+};
+
+struct MediaConfig {
+    int audio_sample;
+    int audio_channel;
+    int audio_codec_id;
+
+    int video_width;
+    int video_height;
+    int video_frame;
+    int vidoe_codec_id;
+};
 
 #endif // ! src_lj_defined_h_

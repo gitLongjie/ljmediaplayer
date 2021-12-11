@@ -5,37 +5,44 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_queue.h"
+#include "src/task_queue_object.h"
 #include "src/spin_lock.h"
 
 namespace LJMP {
-    class MediaSource;
-    using MediaSourcePtr = std::shared_ptr<MediaSource>;
-    using MediaSourceWPtr = std::weak_ptr<MediaSource>;
+    class MediaChannel;
 
-    class MediaSource : public std::enable_shared_from_this<MediaSource> {
+    class MediaSource : public TaskQueueObject {
     public:
-        virtual ~MediaSource() = default;
+        using Ptr = std::shared_ptr<MediaSource>;
 
-        bool open(const std::string& url);
-        void close();
+    public:
+        ~MediaSource() override;
+        void setMediaChannel(std::weak_ptr<MediaChannel> media_channel) {
+            media_channel_ = media_channel;
+        }
+
+        bool start();
+        void stop();
+
+        void updateMediaConfig();
 
     protected:
-        MediaSource(const TaskQueuePtr task_queue);
-
-        void invoke(const TaskPtr& task);
-        void invoke(const TaskPtr& task, uint16_t delay);
+        explicit MediaSource(const std::string& url, const TaskQueue::Ptr& task_queue);
 
         virtual bool doOpen(const std::string& url) = 0;
         virtual void doClose() = 0;
 
-    private:
-        void openSource(std::string url, MediaSourceWPtr wThis);
-        void closeSource(MediaSourceWPtr wThis);
+        std::shared_ptr<MediaChannel> getMediaChannel() const; 
 
     private:
-        TaskQueuePtr task_queue_;
+        void openSource(std::string url, WPtr wThis);
+        void closeSource(WPtr wThis);
+
+    private:
         SpinLock spin_lock_;
+
+        std::weak_ptr<MediaChannel> media_channel_;
+        const std::string url_;
     };
 } // namespace LJMP
 

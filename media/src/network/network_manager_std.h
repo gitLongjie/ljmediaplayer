@@ -19,7 +19,7 @@ namespace LJMP {
             disable_copy(NetworkManagerStd)
 
         public:
-            static NetworkManagerPtr create(TaskQueuePtr task_queue);
+            static NetworkManagerStd::Ptr create(const TaskQueue::Ptr& task_queue);
 
         public:
             ~NetworkManagerStd() override;
@@ -27,33 +27,29 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
 
-            void invoke(const TaskPtr task);
-            void invoke(const TaskPtr task, uint16_t delay);
-
             void updateChannel(const std::shared_ptr<Channel>& channel);
             void removeChannel(const std::shared_ptr<Channel>& channel);
 
         protected:
-            explicit NetworkManagerStd(TaskQueuePtr taskQueue);
+            explicit NetworkManagerStd(const TaskQueue::Ptr& taskQueue);
 
-            virtual void doInitialize(NetworkManagerWPtr wThis);
-            virtual void doUninitialize(NetworkManagerWPtr wThis);
+            virtual void doInitialize(WPtr wThis);
+            virtual void doUninitialize(WPtr wThis);
 
-            void doUpdateChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
-            void doRemoveChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis);
+            void doUpdateChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
+            void doRemoveChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
 
-            void select();
-            void doSelect(NetworkManagerWPtr wThis);
+            void select(unsigned long long dely);
+            void doSelect(WPtr wThis);
 
         private:
-            TaskQueuePtr io_task_queue_;
             SpinLock spin_lock_;
             bool stop_ = true;
 
             using ChannelList = std::map<socket_t, std::shared_ptr<Channel>>;
             ChannelList channels_;
         };
-        using NetworkManagerStdPtr = std::shared_ptr<NetworkManagerStd>;
+        
     }
 }
 

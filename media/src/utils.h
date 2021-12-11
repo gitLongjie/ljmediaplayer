@@ -29,6 +29,8 @@ namespace LJMP {
         static unsigned int getTime();
 
         static const std::string& emptyString();
+
+        static unsigned long ntohl(unsigned long netlong);
     };
 }
 

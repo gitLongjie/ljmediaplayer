@@ -11,7 +11,7 @@ namespace LJMP {
         public:
             static const char* protocol();
         public:
-            FileInput();
+            explicit FileInput(const std::string& url);
             ~FileInput() override;
 
         protected:

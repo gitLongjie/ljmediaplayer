@@ -9,15 +9,15 @@
 namespace LJMP {
     namespace Network {
 
-        Channel::Ptr Channel::create(const TaskQueuePtr& task_queue, const SocketPtr& s) {
+        Channel::Ptr Channel::create(const TaskQueue::Ptr& task_queue, const SocketPtr& s) {
             struct Creator : public Channel {
-                Creator(const TaskQueuePtr& task_queue, const SocketPtr& s)
+                Creator(const TaskQueue::Ptr& task_queue, const SocketPtr& s)
                     : Channel(task_queue, s){ }
                 ~Creator() override = default;
             };
 
             Ptr channel = std::make_shared<Creator>(task_queue, s);
-            NetworkManagerStdPtr network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
+            std::shared_ptr<NetworkManagerStd> network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
                 Media::getInstance()->getNetworkManager());
             if (network_manager) {
                 network_manager->updateChannel(channel);
@@ -25,8 +25,8 @@ namespace LJMP {
             return channel;
         }
 
-        Channel::Channel(const TaskQueuePtr& task_queue, const SocketPtr& s)
-            : task_queue_(task_queue)
+        Channel::Channel(const TaskQueue::Ptr& task_queue, const SocketPtr& s)
+            : TaskQueueObject(task_queue, false)
             , socket_(s){
             LOGI("actor {}", (long long)this);
             
@@ -40,7 +40,7 @@ namespace LJMP {
             LOG_ENTER;
 
             WPtr wThis(shared_from_this());
-            TaskPtr task = createTask(std::bind(&Channel::doSetCallbackHandle, this, read_call_handle, wThis));
+            Task::Ptr task = createTask(std::bind(&Channel::doSetCallbackHandle, this, read_call_handle, wThis));
             invoke(task);
         }
 
@@ -61,10 +61,10 @@ namespace LJMP {
 
         void Channel::disconnect() {
             LOG_ENTER;
-            NetworkManagerStdPtr network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
+            std::shared_ptr<NetworkManagerStd> network_manager = std::dynamic_pointer_cast<NetworkManagerStd>(
                 Media::getInstance()->getNetworkManager());
             if (network_manager) {
-                network_manager->removeChannel(shared_from_this());
+                network_manager->removeChannel(std::dynamic_pointer_cast<Channel>(shared_from_this()));
             }
         }
 
@@ -75,13 +75,13 @@ namespace LJMP {
             }
 
             if (read_callback_handle_) {
-                read_callback_handle_(shared_from_this());
+                read_callback_handle_();
             }
 
         }
 
         void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, WPtr wThis) {
-            Ptr self(wThis.lock());
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct {}", (long long)this);
                 return;
@@ -91,7 +91,7 @@ namespace LJMP {
         }
 
         void Channel::doWrite(const DataBuffer::Ptr data_buffer, WriteStatusCallback callback, WPtr wThis) {
-            Ptr self(wThis.lock());
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct");
                 return;
@@ -105,15 +105,6 @@ namespace LJMP {
 
             int ret = socket_->write(data_buffer);
             invokeCallback(callback, data_buffer->getSize() == ret);
-        }
-
-        void Channel::invoke(const TaskPtr task) {
-            if (!task_queue_ || task_queue_->isCurrentThread()) {
-                task->execute();
-                return;
-            }
-
-            task_queue_->push(task);
         }
 
     }

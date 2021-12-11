@@ -14,6 +14,9 @@ void setStdThreadName(std::thread* thread, const char* szName);
 
 class Task {
 public:
+    using Ptr = std::shared_ptr<Task>;
+
+public:
     virtual ~Task(void) = default;
     virtual void execute(void) = 0;
     //    virtual bool operator>(std::shared_ptr<Task>& other) = 0;
@@ -43,20 +46,23 @@ private:
     C m_pCallback;
 };
 
-using TaskPtr = std::shared_ptr<Task>;
-
 template <class F, class C = std::function<void(void)>>
-TaskPtr createTask(F function, C callback = nullptr) {
+Task::Ptr createTask(F function, C callback = nullptr) {
     return std::make_shared<TaskImpl<F, C>>(function, callback);
 }
 
 class TaskQueue {
 public:
+    using Ptr = std::shared_ptr<TaskQueue>;
+    using WPtr = std::weak_ptr<TaskQueue>;
+    static Ptr create(const char* name);
+
+public:
     TaskQueue(const char* szName);
     ~TaskQueue();
 
-    void push(TaskPtr task);
-    void push(TaskPtr task, uint16_t delay);
+    void push(Task::Ptr task);
+    void push(Task::Ptr task, uint16_t delay);
 
     bool isCurrentThread() const;
 
@@ -64,16 +70,16 @@ public:
 
 private:
     void                  dispatch();
-    TaskPtr popNormalTask();
-    TaskPtr popDelayTask();
+    Task::Ptr popNormalTask();
+    Task::Ptr popDelayTask();
 
 private:
     std::atomic_bool             m_terminated;
     std::unique_ptr<std::thread> m_thread;
 
-    using NormalListTask = std::queue<TaskPtr>;
+    using NormalListTask = std::queue<Task::Ptr>;
     using DelayListTask =
-        std::map<std::chrono::high_resolution_clock::time_point, TaskPtr>;
+        std::map<std::chrono::high_resolution_clock::time_point, Task::Ptr>;
 
     std::mutex              m_mutex;
     std::condition_variable m_condition_variable;
@@ -82,7 +88,5 @@ private:
 
     std::thread::id m_currentId = std::this_thread::get_id();
 };
-
-using TaskQueuePtr = std::shared_ptr<TaskQueue>;
 
 #endif // src_task_queue_h_

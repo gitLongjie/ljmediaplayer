@@ -54,6 +54,10 @@ void setStdThreadName(std::thread* thread, const char* szName) {
     SetWindowsThreadName(thread, szName);
 }
 
+TaskQueue::Ptr TaskQueue::create(const char* name) {
+    return std::make_shared<TaskQueue>(name);
+}
+
 TaskQueue::TaskQueue(const char* szName)
     : m_terminated(false) {
     m_thread.reset(new std::thread([this]() { dispatch(); }));
@@ -65,7 +69,7 @@ TaskQueue::~TaskQueue() {
    // stop();
 }
 
-void TaskQueue::push(TaskPtr task) {
+void TaskQueue::push(Task::Ptr task) {
     if (m_terminated) {
         return;
     }
@@ -74,7 +78,7 @@ void TaskQueue::push(TaskPtr task) {
     m_condition_variable.notify_one();
 }
 
-void TaskQueue::push(TaskPtr task, uint16_t delay) {
+void TaskQueue::push(Task::Ptr task, uint16_t delay) {
     if (m_terminated) {
         return;
     }
@@ -118,7 +122,7 @@ void TaskQueue::dispatch() {
     }
 }
 
-TaskPtr TaskQueue::popNormalTask() {
+Task::Ptr TaskQueue::popNormalTask() {
     std::unique_lock<std::mutex> lock(m_mutex);
     if (m_normalListTask.empty()) {
         return nullptr;
@@ -129,7 +133,7 @@ TaskPtr TaskQueue::popNormalTask() {
     return task;
 }
 
-TaskPtr TaskQueue::popDelayTask() {
+Task::Ptr TaskQueue::popDelayTask() {
     std::unique_lock<std::mutex> lock(m_mutex);
     if (!m_delayListTask.empty()) {
         auto begin = m_delayListTask.begin();

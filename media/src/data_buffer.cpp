@@ -3,12 +3,7 @@
 namespace LJMP {
 
     DataBuffer::Ptr DataBuffer::create(unsigned int size) {
-        struct Creator : public DataBuffer {
-            explicit Creator(unsigned int size) : DataBuffer(size) {}
-            ~Creator() override = default;
-        };
-
-        return std::make_shared<Creator>(size);
+        return createPtr<DataBuffer>(size);
     }
 
     DataBuffer::Ptr DataBuffer::create(const char* data, unsigned int size) {

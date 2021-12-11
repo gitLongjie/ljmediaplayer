@@ -14,6 +14,8 @@
 namespace LJMP {
     class MediaSourceManager;
     class NetworkManager;
+    class ThreadPool;
+    class MediaContextManager;
 
     class Media;
     using MediaPtr = std::shared_ptr<Media>;
@@ -32,16 +34,17 @@ namespace LJMP {
         bool initialize(errorCallback callback);
         void uninitialize();
 
-        void invoke(const TaskPtr& task);
-        void invoke(const TaskPtr& task, uint16_t delay);
+        void invoke(const Task::Ptr& task);
+        void invoke(const Task::Ptr& task, uint16_t delay);
 
         void errorCallbak(int code, const std::string& msg);
         
     public:
         bool openUrl(const char* szUrl);
 
-        TaskQueuePtr getIOTaskQueue() const { return io_task_queue_; }
+        TaskQueue::Ptr getIOTaskQueue() const { return io_task_queue_; }
         std::shared_ptr<NetworkManager> getNetworkManager() const { return network_manger_; }
+        std::shared_ptr<ThreadPool> getThreadPool() const { return thread_pool_; }
 
     protected:
         void doInitialize(MediaWPtr wThis);
@@ -53,10 +56,13 @@ namespace LJMP {
     private:
         std::shared_ptr<MediaSourceManager> input_media_source_manager_;
         std::shared_ptr<NetworkManager> network_manger_;
+        std::shared_ptr<MediaContextManager> media_context_manger_;
 
     private:
+        std::shared_ptr<ThreadPool> thread_pool_;
         TaskQueue main_task_queue_;
         TaskQueue callback_task_queue_;
+        TaskQueue::Ptr media_task_queue_;
         std::shared_ptr<TaskQueue> io_task_queue_;
 
         errorCallback error_callback_ = nullptr;

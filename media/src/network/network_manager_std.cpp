@@ -13,30 +13,30 @@
 namespace LJMP {
     namespace Network {
         
-        NetworkManagerPtr NetworkManagerStd::create(TaskQueuePtr task_queue) {
+        NetworkManager::Ptr NetworkManagerStd::create(const TaskQueue::Ptr& task_queue) {
 #ifdef WIN32
             return NetworkManagerWin::create(task_queue);
 #endif // WIN32
 
             struct Creator : public NetworkManagerStd {
-                Creator(TaskQueuePtr task_queue) : NetworkManagerStd(task_queue) {}
+                Creator(const TaskQueue::Ptr& task_queue) : NetworkManagerStd(task_queue) {}
                 ~Creator() override = default;
             };
             return std::make_shared<Creator>(task_queue);
         }
 
-        NetworkManagerStd::NetworkManagerStd(TaskQueuePtr task_queue) : io_task_queue_(task_queue) {
-            LOGI("actor {}", (long long)this);
+        NetworkManagerStd::NetworkManagerStd(const TaskQueue::Ptr& task_queue) : NetworkManager(task_queue) {
+            LOG_CREATER;
         }
 
         NetworkManagerStd::~NetworkManagerStd() {
-            LOGI("dctor {}", (long long)this);
+            LOG_DESTRUCT;
         }
 
         bool NetworkManagerStd::initialize() {
             LOG_ENTER;
 
-            NetworkManagerWPtr wThis(shared_from_this());
+            WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doInitialize, this, wThis));
             invoke(task);
             return true;
@@ -45,74 +45,47 @@ namespace LJMP {
         void NetworkManagerStd::uninitialize() {
             LOG_ENTER;
 
-            NetworkManagerWPtr wThis(shared_from_this());
+            WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doUninitialize, this, wThis));
             invoke(task);
 
             spin_lock_.lock();
         }
 
-        void NetworkManagerStd::invoke(const TaskPtr task) {
-            if (!task || !io_task_queue_) {
-                LOGE("task is nullptr or io task queeu is nullptr, task={}, queue={}",
-                    nullptr == task, nullptr == io_task_queue_);
-                return;
-            }
-            io_task_queue_->push(task);
-        }
-
-        void NetworkManagerStd::invoke(const TaskPtr task, uint16_t delay) {
-            if (!task || !io_task_queue_) {
-                LOGE("task is nullptr or io task queeu is nullptr, task={}, queue={}",
-                    nullptr == task, nullptr == io_task_queue_);
-                return;
-            }
-            io_task_queue_->push(task, delay);
-        }
-
         void NetworkManagerStd::updateChannel(const std::shared_ptr<Channel>& channel) {
             LOG_ENTER;
 
-            NetworkManagerWPtr wThis(shared_from_this());
-            if (io_task_queue_->isCurrentThread()) {
-                doUpdateChannel(channel, wThis);
-            }
-            else {
-                auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, wThis));
-                invoke(task);
-            }
+            WPtr wThis(shared_from_this());
+            auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, wThis));
+            invoke(task);
         }
 
         void NetworkManagerStd::removeChannel(const std::shared_ptr<Channel>& channel) {
             LOG_ENTER;
 
-            NetworkManagerWPtr wThis(shared_from_this());
-            if (io_task_queue_->isCurrentThread()) {
-                doRemoveChannel(channel, wThis);
-            }
-            else {
-                auto task = createTask(std::bind(&NetworkManagerStd::doRemoveChannel, this, channel, wThis));
-                invoke(task);
-            }
-
+            WPtr wThis(shared_from_this());
+            auto task = createTask(std::bind(&NetworkManagerStd::doRemoveChannel, this, channel, wThis));
+            invoke(task);
         }
 
-        void NetworkManagerStd::doInitialize(NetworkManagerWPtr wThis) {
+        void NetworkManagerStd::doInitialize(WPtr wThis) {
             LOG_ENTER;
-            NetworkManagerPtr self = wThis.lock();
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("self is nullptr");
+                return;
             }
 
             stop_ = false;
-            select();
+            select(0);
         }
 
-        void NetworkManagerStd::doUninitialize(NetworkManagerWPtr wThis) {
+        void NetworkManagerStd::doUninitialize(WPtr wThis) {
             LOG_ENTER;
-            NetworkManagerPtr self = wThis.lock();
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("self is nullptr");
+                return;
             }
 
             stop_ = true;
@@ -120,10 +93,10 @@ namespace LJMP {
             spin_lock_.unlock();
         }
 
-        void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis) {
+        void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
             LOG_ENTER;
 
-            NetworkManagerPtr self(wThis.lock());
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is desturcted {}", (long long)this);
                 return;
@@ -144,10 +117,10 @@ namespace LJMP {
 
         }
 
-        void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, NetworkManagerWPtr wThis) {
+        void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
             LOG_ENTER;
 
-            NetworkManagerPtr self(wThis.lock());
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is desturcted {}", (long long)this);
                 return;
@@ -168,25 +141,25 @@ namespace LJMP {
             channels_.erase(sc->getSocket());
         }
 
-        void NetworkManagerStd::select() {
+        void NetworkManagerStd::select(unsigned long long dely) {
             if (stop_) {
                 LOGI("stop this select");
                 return;
             }
-            NetworkManagerWPtr wThis(shared_from_this());
+            WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doSelect, this, wThis));
-            invoke(task);
+            invoke(task, dely);
         }
 
-        void NetworkManagerStd::doSelect(NetworkManagerWPtr wThis) {
-            NetworkManagerPtr self(wThis.lock());
+        void NetworkManagerStd::doSelect(WPtr wThis) {
+            TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct {}", (long long)this);
                 return;
             }
 
             if (channels_.empty()) {
-                select();
+                select(10);
                 return;
             }
 
@@ -204,7 +177,7 @@ namespace LJMP {
                 return;
             }
             else if (0 == ret) {
-                select();
+                select(10);
                 return;
             }
 
@@ -214,7 +187,7 @@ namespace LJMP {
                 }
             }
 
-            select();
+            select(0);
         }
 
     }

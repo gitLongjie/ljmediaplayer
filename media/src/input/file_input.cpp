@@ -2,7 +2,7 @@
 
 namespace LJMP {
     namespace Input{
-        FileInput::FileInput() : MediaSource(nullptr) {}
+        FileInput::FileInput(const std::string& url) : MediaSource(url, nullptr) {}
 
         FileInput::~FileInput() {}
 
