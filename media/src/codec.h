@@ -9,10 +9,12 @@ namespace LJMP {
 
     public:
         using Ptr = std::shared_ptr<MediaCodec>;
-        static Ptr create();
 
     public:
-        virtual t
+        ~MediaCodec() override;
+
+    protected:
+        explicit MediaCodec();
     };
 }
 
