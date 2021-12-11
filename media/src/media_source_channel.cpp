@@ -49,6 +49,20 @@ namespace LJMP {
         }
     }
 
+    bool MediaSourceChannel::start() {
+        LOG_ENTER;
+
+        WPtr wThis(shared_from_this());
+        if (isCurrentThread()) {
+            onStart(wThis);
+        }
+        else {
+            auto task = createTask(std::bind(&MediaSourceChannel::onStart, this, wThis));
+            invoke(task);
+        }
+        return true;
+    }
+
     void MediaSourceChannel::reciveData(DataType data_type, void* data, WPtr wThis) {
         TaskQueueObject::Ptr self(wThis.lock());
         if (!self) {
@@ -122,8 +136,25 @@ namespace LJMP {
         }
 
         for (auto& item : list_data_recives_) {
-            item->onUpdateScripte(*(config.get()));
+            item->onUpdateScripte(config);
         }
+    }
+
+    void MediaSourceChannel::onStart(WPtr wThis) {
+        LOG_ENTER;
+
+        TaskQueueObject::Ptr self(wThis.lock());
+        if (!self) {
+            LOGE("this object is destruct");
+            return;
+        }
+
+        if (!media_source_) {
+            LOGE("media source is nullptr");
+            return;
+        }
+
+        media_source_->start();
     }
 
 }

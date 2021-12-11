@@ -18,7 +18,18 @@ namespace LJMP {
         LOG_DESTRUCT;
     }
 
-    void MediaCodecChannel::onUpdateScripte(const MediaConfig& config) {
+    void MediaCodecChannel::onUpdateScripte(const std::shared_ptr<MediaConfig>& config) {
+        LOG_ENTER;
+
+        WPtr wThis(shared_from_this());
+        if (isCurrentThread()) {
+            onHandleScript(config, wThis);
+        }
+        else {
+            auto task = createTask(std::bind(&MediaCodecChannel::onHandleScript, this, config, wThis));
+            invoke(task);
+        }
+        
     }
     
     void MediaCodecChannel::bindMediaSourceChannel(const MediaSourceChannel::Ptr& source_channel) {
@@ -35,5 +46,15 @@ namespace LJMP {
             return;
         }
         source_channel->registDataRecive(data_recive);
+    }
+
+    void MediaCodecChannel::onHandleScript(const std::shared_ptr<MediaConfig> config, WPtr wThis) {
+        LOG_ENTER;
+
+        TaskQueueObject::Ptr self(wThis.lock());
+        if (!self) {
+            LOGE("this object is nullptr");
+            return;
+        }
     }
 }

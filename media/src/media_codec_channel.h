@@ -17,13 +17,15 @@ namespace LJMP {
     public:
         ~MediaCodecChannel() override;
 
-        void onUpdateScripte(const MediaConfig& config) override;
+        void onUpdateScripte(const std::shared_ptr<MediaConfig>& config) override;
 
     public:
         void bindMediaSourceChannel(const std::shared_ptr<MediaSourceChannel>& source_channel);
 
     protected:
         explicit MediaCodecChannel(const TaskQueue::Ptr& task_queue);
+
+        void onHandleScript(const std::shared_ptr<MediaConfig> config, WPtr wThis);
     };
 }
 

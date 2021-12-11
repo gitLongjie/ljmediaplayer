@@ -98,9 +98,11 @@ namespace LJMP {
         MediaSourceChannel::Ptr media_source_channel = media_channel_factory.createMediaSrouceChannel(media_source, media_task_queue_);
         MediaCodecChannel::Ptr media_codec_channel = media_channel_factory.createMediaCodecChannel(media_task_queue_);
         media_codec_channel->bindMediaSourceChannel(media_source_channel);
-        //MediaChannel::Ptr;
+        
         MediaContext::Ptr media_context = MediaContext::create(media_task_queue_);
         media_context_manger_->addMediaContext(media_context, url);
+
+        media_source_channel->start();
 
         media_context->updateMediaChannel(media_source_channel);
        // return false;

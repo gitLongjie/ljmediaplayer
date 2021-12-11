@@ -21,6 +21,7 @@ namespace LJMP {
 
         void registDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive>& data_recive);
         void unregistDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive>& data_recive);
+        bool start();
 
         void reciveData(DataType data_type, void* data, WPtr wThis);
 
@@ -32,6 +33,8 @@ namespace LJMP {
         void onUnregistDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive> data_recive, WPtr wThis);
 
         void onUpdateScript(const std::shared_ptr<MediaConfig>& config, WPtr wThis);
+
+        void onStart(WPtr wThis);
 
     private:
         std::shared_ptr<MediaSource> media_source_;

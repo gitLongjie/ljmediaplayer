@@ -10,7 +10,7 @@ namespace LJMP {
     public:
         virtual ~MediaSourceChannelDataRecive() = default;
 
-        virtual void onUpdateScripte(const MediaConfig& config) = 0;
+        virtual void onUpdateScripte(const std::shared_ptr<MediaConfig>& config) = 0;
 
     protected:
         MediaSourceChannelDataRecive() = default;
