@@ -1,4 +1,4 @@
-#include "src/codec.h"
+#include "src/media_codec.h"
 
 #include "src/log.h"
 

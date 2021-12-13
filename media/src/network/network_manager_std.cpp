@@ -1,5 +1,7 @@
 #include "src/network/network_manager_std.h"
 
+#include <vector>
+
 #include "src/log.h"
 
 #ifdef WIN32
@@ -181,10 +183,15 @@ namespace LJMP {
                 return;
             }
 
+            std::vector<std::shared_ptr<Channel> > temp;
             for (const auto& item : channels_) {
                 if (FD_ISSET(item.first, &reads)) {
-                    item.second->handleRead();
+                    temp.emplace_back(item.second);
                 }
+            }
+
+            for (const auto& item : temp) {
+                item->handleRead();
             }
 
             select(0);

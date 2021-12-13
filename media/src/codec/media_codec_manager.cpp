@@ -12,13 +12,18 @@
 
 
 namespace LJMP {
-    CodecManager::Ptr CodecManager::create(const TaskQueue::Ptr& task_queue) {
+    MediaCodecManager::Ptr MediaCodecManager::create(const TaskQueue::Ptr& task_queue) {
         return createPtr<Codec::MediaCodecManager>(task_queue);
+    }
+
+    static long long codec_index_ = 0;
+    long long MediaCodecManager::getCodecIndex() {
+        return codec_index_++;
     }
 
     namespace Codec {
         
-        MediaCodecManager::MediaCodecManager(const TaskQueue::Ptr& task_queue) : CodecManager(task_queue) {
+        MediaCodecManager::MediaCodecManager(const TaskQueue::Ptr& task_queue) : LJMP::MediaCodecManager(task_queue) {
             LOG_CREATER;
         }
 
@@ -30,7 +35,7 @@ namespace LJMP {
             LOG_ENTER;
 
             CodecType type = MediaCodecX264::getType();
-            CodecFactory::Ptr factory = std::make_shared<CodecFactoryImpl<MediaCodecX264> >(type);
+            MediaCodecFactory::Ptr factory = std::make_shared<MediaCodecFactoryImpl<MediaCodecX264> >(type);
             addFactory(factory);
 
             return true;
@@ -42,7 +47,7 @@ namespace LJMP {
             
         }
 
-        CodecFactory::Ptr MediaCodecManager::getCodecFactory(CodecType type) const {
+        MediaCodecFactory::Ptr MediaCodecManager::getCodecFactory(CodecType type) const {
             LOG_ENTER;
 
             const auto itor = factory_list_.find(type);
@@ -53,7 +58,7 @@ namespace LJMP {
             return itor->second;
         }
 
-        void MediaCodecManager::addFactory(const CodecFactory::Ptr& factory) {
+        void MediaCodecManager::addFactory(const MediaCodecFactory::Ptr& factory) {
             LOG_ENTER;
 
             if (!factory) {

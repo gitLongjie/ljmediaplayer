@@ -16,6 +16,7 @@ namespace LJMP {
     class NetworkManager;
     class ThreadPool;
     class MediaContextManager;
+    class MediaCodecManager;
 
     class Media;
     using MediaPtr = std::shared_ptr<Media>;
@@ -45,6 +46,7 @@ namespace LJMP {
         TaskQueue::Ptr getIOTaskQueue() const { return io_task_queue_; }
         std::shared_ptr<NetworkManager> getNetworkManager() const { return network_manger_; }
         std::shared_ptr<ThreadPool> getThreadPool() const { return thread_pool_; }
+        std::shared_ptr<MediaCodecManager> getMediaCodecManager() const { return media_codec_manager_; }
 
     protected:
         void doInitialize(MediaWPtr wThis);
@@ -57,6 +59,7 @@ namespace LJMP {
         std::shared_ptr<MediaSourceManager> input_media_source_manager_;
         std::shared_ptr<NetworkManager> network_manger_;
         std::shared_ptr<MediaContextManager> media_context_manger_;
+        std::shared_ptr<MediaCodecManager> media_codec_manager_;
 
     private:
         std::shared_ptr<ThreadPool> thread_pool_;

@@ -33,6 +33,7 @@ enum class DataType {
 };
 
 enum class CodecType {
+    Unknown,
     Audio_AAC,
 
     Video_X264,

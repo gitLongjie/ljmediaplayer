@@ -2,7 +2,7 @@
 #define src_codec_media_codec_x264_h_
 
 #include "src/lj_defined.h"
-#include "src/codec.h"
+#include "src/media_codec.h"
 
 namespace LJMP {
     namespace Codec {

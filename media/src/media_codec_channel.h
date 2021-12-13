@@ -7,6 +7,8 @@
 namespace LJMP {
     class MediaSourceChannel;
 
+    class MediaCodec;
+
     class MediaCodecChannel : public MediaChannel, public MediaSourceChannelDataRecive {
         disable_copy(MediaCodecChannel)
 
@@ -26,6 +28,11 @@ namespace LJMP {
         explicit MediaCodecChannel(const TaskQueue::Ptr& task_queue);
 
         void onHandleScript(const std::shared_ptr<MediaConfig> config, WPtr wThis);
+
+        std::shared_ptr<MediaCodec> createMediaCodec(CodecType type);
+
+    private:
+        std::shared_ptr<MediaCodec> vidoe_codec_;
     };
 }
 

@@ -17,6 +17,7 @@
 #include "src/media_source_channel.h"
 #include "src/media_codec_channel.h"
 #include "src/media_channel_factory.h"
+#include "src/media_codec_manager.h"
 
 namespace LJMP {
     Media* s_media = nullptr;
@@ -53,6 +54,13 @@ namespace LJMP {
             return;
         }
 
+        media_codec_manager_ = MediaCodecManager::create(media_task_queue_);
+        if (!media_codec_manager_) {
+            LOGE("code manager is nullptr");
+            return;
+        }
+        media_codec_manager_->initialize();
+
         network_manger_ = Network::NetworkManagerStd::create(io_task_queue_);
         if (!network_manger_->initialize()) {
             LOGE("net work manager initialize failed");
@@ -72,6 +80,11 @@ namespace LJMP {
         LOG_ENTER;
         media_context_manger_.reset();
 
+        if (media_codec_manager_) {
+            media_codec_manager_->uninitialize();
+            media_codec_manager_->destory();
+            media_codec_manager_.reset();
+        }
         input_media_source_manager_->uninitialize();
         network_manger_->uninitialize();
         input_media_source_manager_.reset();

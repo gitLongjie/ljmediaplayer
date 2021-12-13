@@ -5,12 +5,12 @@
 #include <map>
 #include <string>
 
-#include "src/codec_manager.h"
+#include "src/media_codec_manager.h"
 
 namespace LJMP {
     namespace Codec{
 
-        class MediaCodecManager : public CodecManager {
+        class MediaCodecManager : public LJMP::MediaCodecManager {
             disable_copy(MediaCodecManager)
 
         public:
@@ -19,16 +19,16 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
 
-            CodecFactory::Ptr getCodecFactory(CodecType type) const override;
+            MediaCodecFactory::Ptr getCodecFactory(CodecType type) const override;
             
         protected:
             explicit MediaCodecManager(const TaskQueue::Ptr& ptr);
 
         private:
-            void addFactory(const CodecFactory::Ptr& factory);
+            void addFactory(const MediaCodecFactory::Ptr& factory);
 
         private:
-            using FactoryLists = std::map<CodecType, CodecFactory::Ptr >;
+            using FactoryLists = std::map<CodecType, MediaCodecFactory::Ptr >;
             FactoryLists factory_list_;
         };
     }

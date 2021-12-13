@@ -9,24 +9,24 @@
 namespace LJMP {
     class MediaCodec;
 
-    class CodecFactory {
+    class MediaCodecFactory {
 
     public:
-        using Ptr = std::shared_ptr<CodecFactory>;
+        using Ptr = std::shared_ptr<MediaCodecFactory>;
 
     public:
-        virtual ~CodecFactory() = default;
+        virtual ~MediaCodecFactory() = default;
         virtual CodecType getCodeType() const = 0;
         virtual std::shared_ptr<MediaCodec> create(const TaskQueue::Ptr& task_queue) = 0;
     };
 
     template <typename T>
-    class CodecFactoryImpl : public CodecFactory {
-        disable_copy(CodecFactoryImpl)
+    class MediaCodecFactoryImpl : public MediaCodecFactory {
+        disable_copy(MediaCodecFactoryImpl)
 
     public:
-        explicit CodecFactoryImpl(CodecType code_type) :code_type_(code_type_){}
-        ~CodecFactoryImpl() override {}
+        explicit MediaCodecFactoryImpl(CodecType code_type) :code_type_(code_type){}
+        ~MediaCodecFactoryImpl() override {}
 
         CodecType getCodeType() const override { return code_type_; }
         std::shared_ptr<MediaCodec> create(const TaskQueue::Ptr& task_queue) {
