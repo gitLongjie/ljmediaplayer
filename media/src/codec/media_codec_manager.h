@@ -2,36 +2,34 @@
 #define src_codec_medai_codec_manager_h_
 
 #include <memory>
-#include <list>
 #include <map>
 #include <string>
 
 #include "src/codec_manager.h"
-#include "src/media_source_factory.h"
 
 namespace LJMP {
-    namespace Ecodec{
+    namespace Codec{
 
-        class MediaEcodecManager : public CodecManager {
-            disable_copy(MediaEcodecManager)
+        class MediaCodecManager : public CodecManager {
+            disable_copy(MediaCodecManager)
 
         public:
-            ~MediaEcodecManager() override;
+            ~MediaCodecManager() override;
             
             bool initialize() override;
             void uninitialize() override;
+
+            CodecFactory::Ptr getCodecFactory(CodecType type) const override;
             
         protected:
-            explicit MediaEcodecManager(const TaskQueue::Ptr& ptr);
-
-            void addMediaSource(const std::string& url, const MediaSource::Ptr& media_source);
-            void removeMediaSource(const std::string& url);
+            explicit MediaCodecManager(const TaskQueue::Ptr& ptr);
 
         private:
-            using MediaSourceFactoryList = std::list<MediaSourceFactoryPtr >;
-            using MediaSourceList = std::map<std::string, MediaSource::Ptr>;
-            MediaSourceFactoryList media_source_factory_;
-            MediaSourceList media_sources_;
+            void addFactory(const CodecFactory::Ptr& factory);
+
+        private:
+            using FactoryLists = std::map<CodecType, CodecFactory::Ptr >;
+            FactoryLists factory_list_;
         };
     }
 }

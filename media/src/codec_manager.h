@@ -3,6 +3,8 @@
 
 #include "src/task_queue_object.h"
 
+#include "src/codec_factory.h"
+
 namespace LJMP {
 
     class CodecManager : public TaskQueueObject {
@@ -17,6 +19,7 @@ namespace LJMP {
 
         virtual bool initialize() = 0;
         virtual void uninitialize() = 0;
+        virtual CodecFactory::Ptr getCodecFactory(CodecType type) const = 0;
 
     protected:
         explicit CodecManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, false){}
