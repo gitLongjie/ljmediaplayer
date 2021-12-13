@@ -69,6 +69,8 @@ private:
 #define LOG_ENTER LOGI("enter")
 #define LOG_LIVE LOGI("live")
 
+#define LOG_OBJECT_DESTORYED LOGE("this object is destoryed {}", (long long)this)
+
 using LogPtr = std::shared_ptr<LJMP::Log>;
 
 #endif // !src_log_h_
