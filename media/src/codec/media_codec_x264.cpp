@@ -1,5 +1,7 @@
 #include "src/codec/media_codec_x264.h"
 
+#include <x264/include/x264.h>
+
 #include "src/log.h"
 
 namespace LJMP {
