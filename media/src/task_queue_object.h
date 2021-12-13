@@ -5,6 +5,7 @@
 
 #include "src/lj_defined.h"
 #include "src/task_queue.h"
+#include "src/spin_lock.h"
 
 namespace LJMP {
     class TaskQueueObjectImpl;
@@ -18,6 +19,7 @@ namespace LJMP {
 
     public:
         virtual ~TaskQueueObject();
+        void destory();
 
     protected:
         TaskQueueObject(const TaskQueue::Ptr& task_queue, bool own_thread);
@@ -28,8 +30,16 @@ namespace LJMP {
 
         TaskQueue::Ptr getTaskQueue() const;
 
+    protected:
+        virtual void onDestory();
+
+    private:
+        void onDestroyImpl(WPtr wThis);
+
     private:
         std::unique_ptr<TaskQueueObjectImpl> impl_;
+        SpinLock spink_lock_;
+        
     };
 }
 
