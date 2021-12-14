@@ -4,6 +4,8 @@
 #include "src/lj_defined.h"
 #include "src/media_codec.h"
 
+#include <x264/include/x264.h>
+
 namespace LJMP {
     namespace Codec {
         class MediaCodecX264 : public MediaCodec {
@@ -21,6 +23,9 @@ namespace LJMP {
         protected:
             bool onInitialize(const std::shared_ptr<MediaConfig>& config) override;
             void onunInitialize() override;
+
+        private:
+            x264_param_t x264_param_;
         };
     }
 }
