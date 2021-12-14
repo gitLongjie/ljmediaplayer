@@ -9,6 +9,7 @@
 #include "ljmedia/error_code.h"
 
 #include "src/codec/media_codec_x264.h"
+#include "src/codec/media_codec_ffmpeg_decode.h"
 
 
 namespace LJMP {
@@ -36,6 +37,10 @@ namespace LJMP {
 
             CodecType type = MediaCodecX264::getType();
             MediaCodecFactory::Ptr factory = std::make_shared<MediaCodecFactoryImpl<MediaCodecX264> >(type);
+            addFactory(factory);
+
+            type = MediaCodecFFmpegDecode::getType();
+            factory = std::make_shared<MediaCodecFactoryImpl<MediaCodecFFmpegDecode> >(type);
             addFactory(factory);
 
             return true;

@@ -130,9 +130,9 @@ namespace LJMP {
                 return;
             }
             audio_code_id = audio_code_id ? audio_code_id : static_cast<int>(CodecType::Audio_AAC);
-            video_code_id = video_code_id ? video_code_id : static_cast<int>(CodecType::Video_X264);
+            video_code_id = video_code_id ? video_code_id : static_cast<int>(CodecType::Video_FFMpeg_Decode);
             if (video_code_id == 7) {
-                video_code_id = static_cast<int>(CodecType::Video_X264);
+                video_code_id = static_cast<int>(CodecType::Video_FFMpeg_Decode);
             }
 
             MediaConfig config = { audio_rate, audio_channel, audio_code_id,
