@@ -45,7 +45,7 @@ namespace LJMP {
             return;
         }
 
-        onunInitialize();
+        onUninitialize();
     }
 
 }

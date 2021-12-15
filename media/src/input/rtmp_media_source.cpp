@@ -109,9 +109,9 @@ namespace LJMP {
                 data, data_length, kAudioDatarate, sizeof(kAudioDatarate)));
             int audio_channel = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
                 data, data_length, kAudioChannel, sizeof(kAudioChannel)));
-            int audio_code_id = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+            int audio_codec_id = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
                 data, data_length, kAudioCodecId, sizeof(kAudioCodecId)));
-            LOGI("audio rate={} audio_channel={} audio code id= {}", audio_rate, audio_channel, audio_code_id);
+            LOGI("audio rate={} audio_channel={} audio code id= {}", audio_rate, audio_channel, audio_codec_id);
 
             int video_frame = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
                 data, data_length, kVideoFramerate, sizeof(kVideoFramerate)));
@@ -119,24 +119,24 @@ namespace LJMP {
                 data, data_length, kVideoWidth, sizeof(kVideoWidth)));
             int video_height = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
                 data, data_length, kVideoHeight, sizeof(kVideoHeight)));
-            int video_code_id = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
+            int video_codec_id = static_cast<int>(Rtmp::RtmpUtils::getAFMMetaDataByName(
                 data, data_length, kVideoCodecId, sizeof(kVideoCodecId)));
             LOGI("video frame={} video width={} video height={} video code id= {}", video_frame, video_width,
-                video_height, video_code_id);
+                video_height, video_codec_id);
 
             callbackFunc callback = getCallbackFunc();
             if (!callback) {
                 LOGE("callback is nullptr");
                 return;
             }
-            audio_code_id = audio_code_id ? audio_code_id : static_cast<int>(CodecType::Audio_AAC);
-            video_code_id = video_code_id ? video_code_id : static_cast<int>(CodecType::Video_FFMpeg_Decode);
-            if (video_code_id == 7) {
-                video_code_id = static_cast<int>(CodecType::Video_FFMpeg_Decode);
+            audio_codec_id = audio_codec_id ? audio_codec_id : static_cast<int>(CodecType::Audio_AAC);
+            video_codec_id = video_codec_id ? video_codec_id : static_cast<int>(CodecType::Video_FFMpeg_Decode_X264);
+            if (audio_codec_id == 7) {
+                audio_codec_id = static_cast<int>(CodecType::Video_FFMpeg_Decode_X264);
             }
 
-            MediaConfig config = { audio_rate, audio_channel, audio_code_id,
-                video_width, video_height, video_frame, video_code_id};
+            MediaConfig config = { audio_rate, audio_channel, audio_codec_id,
+                video_width, video_height, video_frame, video_codec_id };
             callback(DataType::Script, &config);
         }
 

@@ -22,6 +22,7 @@ include_directories(
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_BINARY_DIR}
     ${thirdparty_dir}
+    ${thirdparty_dir}/ffmpeg/include/
 )
 
 link_directories(
