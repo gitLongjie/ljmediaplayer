@@ -13,6 +13,13 @@ namespace LJMP {
 
         public:
             ~MediaCodecFFmpegDecode() override;
+
+        protected:
+            explicit MediaCodecFFmpegDecode(const TaskQueue::Ptr& task_queue);
+
+        protected:
+            bool onInitialize(const std::shared_ptr<MediaConfig>& config) override;
+            void onUninitialize() override;
         };
     }
 }

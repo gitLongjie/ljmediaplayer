@@ -43,7 +43,7 @@ namespace LJMP {
             return true;
         }        
 
-        void MediaCodecX264::onunInitialize() {
+        void MediaCodecX264::onUninitialize() {
 
         }
 

@@ -22,7 +22,7 @@ namespace LJMP {
 
         }
 
-        void MediaCodecFFmpegDecode::onunInitialize() {
+        void MediaCodecFFmpegDecode::onUninitialize() {
 
         }
 

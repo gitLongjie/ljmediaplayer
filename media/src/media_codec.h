@@ -20,7 +20,7 @@ namespace LJMP {
         explicit MediaCodec(const TaskQueue::Ptr& task_queue);
 
         virtual bool onInitialize(const std::shared_ptr<MediaConfig>& config) = 0;
-        virtual void onunInitialize() = 0;
+        virtual void onUninitialize() = 0;
 
     private:
         void initializeImpl(std::shared_ptr<MediaConfig> config, WPtr wThis);
