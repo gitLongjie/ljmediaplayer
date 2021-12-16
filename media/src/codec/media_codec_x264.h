@@ -25,7 +25,7 @@ namespace LJMP {
             void onUninitialize() override;
 
         private:
-            x264_param_t x264_param_;
+           // x264_param_t x264_param_;
         };
     }
 }

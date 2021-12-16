@@ -28,4 +28,10 @@ namespace LJMP {
         media_context_url_lists_.erase(url);
     }
 
+    void MediaContextManager::destroy() {
+        for (auto& item : media_context_url_lists_) {
+            item.second->destory();
+        }
+    }
+
 }

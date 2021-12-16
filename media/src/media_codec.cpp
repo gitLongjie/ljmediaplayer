@@ -33,7 +33,10 @@ namespace LJMP {
             return;
         }
 
-        onInitialize(config);
+        if (!onInitialize(config)) {
+            LOGE("initialize failed");
+            onUninitialize();
+        }
     }
 
     void MediaCodec::uninitializeImpl(WPtr wThis) {

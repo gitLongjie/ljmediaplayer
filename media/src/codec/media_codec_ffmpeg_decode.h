@@ -36,6 +36,8 @@ namespace LJMP {
 
         private:
             AVCodecContext* codec_context_ = nullptr;
+            AVPacket* av_packet_ = nullptr;
+            bool initialized = false;
         };
     }
 }

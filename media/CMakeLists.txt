@@ -27,6 +27,8 @@ include_directories(
 
 link_directories(
     ${CMAKE_BINARY_DIR} 
+    ${thirdparty_dir}/x264/lib/
+    ${thirdparty_dir}/ffmpeg/lib/
 )
 
 add_definitions(-DLJ_MEDIA_EXPORT )
@@ -75,5 +77,9 @@ target_link_libraries(
 	${PROJECT_NAME}
 	ws2_32
     Winmm
+    avutil
+    avcodec
+    postproc
+    avformat
 )
 endif (WIN32)

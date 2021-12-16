@@ -28,6 +28,8 @@ namespace LJMP {
         bool addMediaContext(const std::shared_ptr<MediaContext>& media_contxt, const std::string& url);
         void removeMediaContext(const std::string& url);
 
+        void destroy();
+
 
     protected:
         MediaContextManager() = default;

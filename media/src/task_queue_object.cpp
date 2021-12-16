@@ -166,10 +166,10 @@ namespace LJMP {
     void TaskQueueObject::destory() {
         LOG_ENTER;
 
-        spink_lock_.lock();
         WPtr wThis(shared_from_this());
         auto task = createTask(std::bind(&TaskQueueObject::onDestroyImpl, this, wThis));
         invoke(task);
+        spink_lock_.lock();
     }
 
     bool TaskQueueObject::invoke(const Task::Ptr& task) {
@@ -198,6 +198,7 @@ namespace LJMP {
         Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destructed");
+            spink_lock_.unlock();
             return;
         }
 

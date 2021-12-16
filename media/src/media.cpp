@@ -78,7 +78,11 @@ namespace LJMP {
 
     void Media::doUninitialize(MediaWPtr wThis) {
         LOG_ENTER;
-        media_context_manger_.reset();
+        if (media_context_manger_) {
+            media_context_manger_->destroy();
+            media_context_manger_.reset();
+        }
+        
 
         if (media_codec_manager_) {
             media_codec_manager_->uninitialize();
