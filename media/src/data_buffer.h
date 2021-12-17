@@ -2,6 +2,7 @@
 #define src_data_buffer_h_
 
 #include <memory>
+#include <queue>
 
 #include "src/lj_defined.h"
 
@@ -28,6 +29,11 @@ namespace LJMP {
         const char* getOffsetData() const { return data_ + offset_; }
         char* getOffsetData() { return data_ + offset_; }
 
+        void setTimeStamp(long long time_stamp) { time_stamp_ = time_stamp; }
+        long long timeStamp() const { return time_stamp_; }
+        void setTimeStampEx(long long time_stam_ex) { time_stamp_ex_ = time_stam_ex; }
+        long long timeStampEx() const { return time_stamp_ex_; }
+
 
     protected:
         explicit DataBuffer(unsigned int size);
@@ -38,6 +44,9 @@ namespace LJMP {
         unsigned int size_ = 0;
 
         unsigned int offset_ = 0;
+
+        long long time_stamp_ = 0;
+        long long time_stamp_ex_ = 0;
     };
 }
 

@@ -33,6 +33,7 @@ namespace LJMP {
         protected:
             bool onInitialize(const std::shared_ptr<MediaConfig>& config) override;
             void onUninitialize() override;
+            void onHandleDataBuffer(const DataBuffer::Ptr& data_buffer) override;
 
         private:
             AVCodecContext* codec_context_ = nullptr;

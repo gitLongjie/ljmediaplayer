@@ -94,6 +94,8 @@ namespace LJMP {
                     return;
                 }
 
+                data_buffer->setTimeStamp(tagHeader.getTimestamp());
+                data_buffer->setTimeStampEx(tagHeader.timestampex);
                 context->handleFlvData(tagHeader, data_buffer);
             }
 

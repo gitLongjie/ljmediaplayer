@@ -86,7 +86,7 @@ namespace LJMP {
 
         case DataType::Video: {
             const DataBuffer::Ptr* data_buffer = reinterpret_cast<const DataBuffer::Ptr*>(data);
-            auto task = createTask(std::bind(&MediaSourceChannel::onReciveVideo, this, data_buffer, wThis));
+            auto task = createTask(std::bind(&MediaSourceChannel::onReciveVideo, this, *data_buffer, wThis));
             invoke(task);
         }
         default:

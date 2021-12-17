@@ -23,6 +23,7 @@ namespace LJMP {
         protected:
             bool onInitialize(const std::shared_ptr<MediaConfig>& config) override;
             void onUninitialize() override;
+            void onHandleDataBuffer(const DataBuffer::Ptr& data_buffer) override;
 
         private:
            // x264_param_t x264_param_;

@@ -83,5 +83,35 @@ namespace LJMP {
             }
         }
 
+        void MediaCodecFFmpegDecode::onHandleDataBuffer(const DataBuffer::Ptr& data_buffer) {
+            if (!initialized) {
+                LOGE("is not initialize");
+                return;
+            }
+
+            av_packet_->stream_index = 0;
+            av_packet_->flags = 0;
+            av_packet_->data = reinterpret_cast<unsigned char*>(data_buffer->getData());
+            av_packet_->size = data_buffer->getSize();
+            av_packet_->dts = data_buffer->timeStamp();
+            av_packet_->pts = data_buffer->timeStampEx();
+
+            int ret = avcodec_send_packet(codec_context_, av_packet_);
+            if (0 != ret) {
+                LOGE("avcodec send packet failed");
+                return;
+            }
+
+            AVFrame av_frame;
+            while (true) {
+                ret = avcodec_receive_frame(codec_context_, &av_frame);
+                if (0 != ret) {
+                    break;
+                }
+
+                
+            }
+        }
+
     }
 }

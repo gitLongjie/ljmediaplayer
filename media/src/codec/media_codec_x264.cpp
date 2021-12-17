@@ -48,5 +48,9 @@ namespace LJMP {
 
         }
 
+        void MediaCodecX264::onHandleDataBuffer(const DataBuffer::Ptr& data_buffer) {
+
+        }
+
     }
 }
