@@ -12,6 +12,7 @@ namespace LJMP {
             disable_copy(RTMPMediaSource)
 
         public:
+            using Ptr = std::shared_ptr<RTMPMediaSource>;
             static const StringList& protocols();
             static bool checkProtocol(const std::string& protocol);
 
@@ -21,6 +22,7 @@ namespace LJMP {
             void errorCallback(int, const char*);
 
             void onHandleScripte(const DataBuffer::Ptr& data_buffer);
+            void OnHandleVideoData(const DataBuffer::Ptr& data_buffer);
 
         protected:
             explicit RTMPMediaSource(const std::string& url);

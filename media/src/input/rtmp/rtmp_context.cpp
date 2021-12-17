@@ -33,11 +33,12 @@ namespace LJMP {
             }
 
             RtmpContext::Ptr RtmpContext::create(const TaskQueue::Ptr& task_queue,
-                std::weak_ptr<MediaSource> media_source, const std::string& url) {
+                std::weak_ptr<RTMPMediaSource> media_source, const std::string& url) {
                 return createPtr<RtmpContext>(task_queue, media_source, url);
             }
 
-            RtmpContext::RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source, const std::string& url)
+            RtmpContext::RtmpContext(const TaskQueue::Ptr& task_queue,
+                std::weak_ptr<RTMPMediaSource> media_source, const std::string& url)
                 : TaskQueueObject(task_queue, false)
                 , media_source_(media_source)
                 , url_(url){
@@ -212,19 +213,23 @@ namespace LJMP {
             }
 
             void RtmpContext::doHandleScrpite(const DataBuffer::Ptr& data_buffer) {
-                MediaSource::Ptr media_source(media_source_.lock());
+                RTMPMediaSource::Ptr media_source(media_source_.lock());
                 if (!media_source) {
-                    LOGE("media source is destructed");
+                    LOG_DESTRUCT;
                     return;
                 }
 
-                std::shared_ptr<RTMPMediaSource> rtmp_source = std::dynamic_pointer_cast<RTMPMediaSource>(
-                    media_source);
-                if (!rtmp_source) {
-                    LOGE("meida source is not rtmp source");
+                media_source->onHandleScripte(data_buffer);
+            }
+
+            void RtmpContext::doHandleVideo(const DataBuffer::Ptr& data_buffer) {
+                RTMPMediaSource::Ptr media_source(media_source_.lock());
+                if (!media_source) {
+                    LOG_DESTRUCT;
                     return;
                 }
-                rtmp_source->onHandleScripte(data_buffer);
+
+                media_source->OnHandleVideoData(data_buffer);
             }
 
         }

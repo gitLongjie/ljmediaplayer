@@ -9,6 +9,8 @@ namespace LJMP {
     class MediaSource;
     class MediaSourceChannelDataRecive;
 
+    class DataBuffer;
+
     class MediaSourceChannel : public MediaChannel {
         disable_copy(MediaSourceChannel)
 
@@ -23,7 +25,7 @@ namespace LJMP {
         void unregistDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive>& data_recive);
         bool start();
 
-        void reciveData(DataType data_type, void* data, WPtr wThis);
+        void reciveData(DataType data_type, const void* data, WPtr wThis);
 
     protected:
         MediaSourceChannel(const std::shared_ptr<MediaSource>& media_source,
@@ -32,7 +34,8 @@ namespace LJMP {
         void onRegistDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive> data_recive, WPtr wThis);
         void onUnregistDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive> data_recive, WPtr wThis);
 
-        void onUpdateScript(const std::shared_ptr<MediaConfig>& config, WPtr wThis);
+        void onReciveScript(const std::shared_ptr<MediaConfig>& config, WPtr wThis);
+        void onReciveVideo(const std::shared_ptr<DataBuffer>& data_buffer, WPtr wThis);
 
         void onStart(WPtr wThis);
 

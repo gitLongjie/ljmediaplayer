@@ -14,7 +14,7 @@ namespace LJMP {
     class MediaSource : public TaskQueueObject {
     public:
         using Ptr = std::shared_ptr<MediaSource>;
-        using callbackFunc = std::function<void(DataType type, void* data)>;
+        using callbackFunc = std::function<void(DataType type, const void* data)>;
 
     public:
         ~MediaSource() override;

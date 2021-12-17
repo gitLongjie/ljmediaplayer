@@ -19,7 +19,8 @@ namespace LJMP {
     public:
         ~MediaCodecChannel() override;
 
-        void onUpdateScripte(const std::shared_ptr<MediaConfig>& config) override;
+        void onReciveScripte(const std::shared_ptr<MediaConfig>& config) override;
+        void onReciveVideo(const std::shared_ptr<DataBuffer>& data_buffer) override;
 
     public:
         void bindMediaSourceChannel(const std::shared_ptr<MediaSourceChannel>& source_channel);
@@ -28,11 +29,12 @@ namespace LJMP {
         explicit MediaCodecChannel(const TaskQueue::Ptr& task_queue);
 
         void onHandleScript(const std::shared_ptr<MediaConfig> config, WPtr wThis);
+        void onHandleVideo(const std::shared_ptr<DataBuffer> data_buffer, WPtr wThis);
 
         std::shared_ptr<MediaCodec> createMediaCodec(CodecType type);
 
     private:
-        std::shared_ptr<MediaCodec> vidoe_codec_;
+        std::shared_ptr<MediaCodec> video_codec_;
     };
 }
 

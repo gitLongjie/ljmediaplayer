@@ -5,6 +5,7 @@
 #include "src/media_source_channel.h"
 #include "src/media_codec.h"
 #include "src/media_codec_manager.h"
+#include "src/data_buffer.h"
 
 namespace LJMP {
 
@@ -21,20 +22,20 @@ namespace LJMP {
         LOG_DESTRUCT;
     }
 
-    void MediaCodecChannel::onUpdateScripte(const std::shared_ptr<MediaConfig>& config) {
+    void MediaCodecChannel::onReciveScripte(const std::shared_ptr<MediaConfig>& config) {
         LOG_ENTER;
 
         WPtr wThis(shared_from_this());
-        if (isCurrentThread()) {
-            onHandleScript(config, wThis);
-        }
-        else {
-            auto task = createTask(std::bind(&MediaCodecChannel::onHandleScript, this, config, wThis));
-            invoke(task);
-        }
-        
+        auto task = createTask(std::bind(&MediaCodecChannel::onHandleScript, this, config, wThis));
+        invoke(task);
     }
     
+    void MediaCodecChannel::onReciveVideo(const DataBuffer::Ptr& data_buffer) {
+        WPtr wThis(shared_from_this());
+        auto task = createTask(std::bind(&MediaCodecChannel::onHandleVideo, this, data_buffer, wThis));
+        invoke(task);
+    }
+
     void MediaCodecChannel::bindMediaSourceChannel(const MediaSourceChannel::Ptr& source_channel) {
         LOG_ENTER;
 
@@ -67,22 +68,38 @@ namespace LJMP {
 
         if (0 != config->vidoe_codec_id) {
             CodecType video_type = static_cast<CodecType>(config->vidoe_codec_id);
-            if (vidoe_codec_) {
-                vidoe_codec_->uninitialize();
-                vidoe_codec_->destory();
-                vidoe_codec_.reset();
+            if (video_codec_) {
+                video_codec_->uninitialize();
+                video_codec_->destory();
+                video_codec_.reset();
             }
 
-            vidoe_codec_ = createMediaCodec(video_type);
+            video_codec_ = createMediaCodec(video_type);
         }
-        if (!vidoe_codec_) {
+        if (!video_codec_) {
             LOGE("video codec is nullptr");
         }
         else {
-            vidoe_codec_->initialize(config);
+            video_codec_->initialize(config);
         }
 
         
+    }
+
+    void MediaCodecChannel::onHandleVideo(const DataBuffer::Ptr data_buffer, WPtr wThis) {
+        TaskQueueObject::Ptr self(wThis.lock());
+        if (!self) {
+            LOG_DESTRUCT;
+            return;
+        }
+
+        if (nullptr == video_codec_) {
+            LOGE("video cdec is nullptr");
+            return;
+        }
+
+        video_codec_->pushVideoDataBuffer(data_buffer);
+
     }
 
     std::shared_ptr<MediaCodec> MediaCodecChannel::createMediaCodec(CodecType type) {

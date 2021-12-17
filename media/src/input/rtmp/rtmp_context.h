@@ -13,9 +13,8 @@
 struct RTMP;
 
 namespace LJMP {
-    class MediaSource;
-
     namespace Input {
+        class RTMPMediaSource;
         namespace Rtmp {
 
             class RtmpReaderStatus;
@@ -26,8 +25,8 @@ namespace LJMP {
             public:
                 using Ptr = std::shared_ptr<RtmpContext>;
 
-                static std::shared_ptr<RtmpContext> create(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source,
-                    const std::string& url);
+                static std::shared_ptr<RtmpContext> create(const TaskQueue::Ptr& task_queue,
+                    std::weak_ptr<RTMPMediaSource> media_source, const std::string& url);
 
             public:
                 virtual ~RtmpContext();
@@ -42,7 +41,7 @@ namespace LJMP {
                 void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
 
             protected:
-                RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<MediaSource> media_source,
+                RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<RTMPMediaSource> media_source,
                     const std::string& url);
 
                 void reset();
@@ -54,10 +53,11 @@ namespace LJMP {
                 void doUpdateMedia(bool audio, bool video, WPtr wThis);
                 void doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis);
 
-                void doHandleScrpite(const DataBuffer::Ptr& dadata_bufferta);
+                void doHandleScrpite(const DataBuffer::Ptr& data_buffer);
+                void doHandleVideo(const DataBuffer::Ptr& data_buffer);
 
             private:
-                std::weak_ptr<MediaSource> media_source_;
+                std::weak_ptr<RTMPMediaSource> media_source_;
                 std::string url_;
 
                 Network::Channel::Ptr channel_;

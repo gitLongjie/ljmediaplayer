@@ -29,7 +29,9 @@ inline void invokeCallback(T func, V val) {
 }
 
 enum class DataType {
-    Script
+    Script,
+    Audio,
+    Video
 };
 
 enum class CodecType {

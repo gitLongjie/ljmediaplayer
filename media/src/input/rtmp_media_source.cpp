@@ -69,8 +69,8 @@ namespace LJMP {
                 rtmp_context_->uninitialzie();
             }
 
-            RTMPMediaSource::Ptr self = std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this());
-            rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), self, url);
+            std::weak_ptr<RTMPMediaSource> wThis(std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this()));
+            rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), wThis, url);
             if (!rtmp_context_->intialize()) {
                 LOGE("rtmp conext initialize failed");
                 return false;
@@ -140,7 +140,15 @@ namespace LJMP {
             callback(DataType::Script, &config);
         }
 
-
+        void RTMPMediaSource::OnHandleVideoData(const DataBuffer::Ptr& data_buffer) {
+            callbackFunc callback = getCallbackFunc();
+            if (!callback) {
+                LOGE("callback is nullptr");
+                return;
+            }
+           
+            callback(DataType::Video, static_cast<const void*>(&data_buffer));
+        }
 
     }
 }

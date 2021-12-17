@@ -2,6 +2,7 @@
 #define src_data_buffer_h_
 
 #include <memory>
+
 #include "src/lj_defined.h"
 
 namespace LJMP {
@@ -10,6 +11,7 @@ namespace LJMP {
 
     public:
         using Ptr = std::shared_ptr<DataBuffer>;
+        using Queue = std::queue<Ptr>;
 
         static Ptr create(unsigned int size);
         static Ptr create(const char* data, unsigned int size);

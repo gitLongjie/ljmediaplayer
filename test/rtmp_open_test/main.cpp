@@ -69,7 +69,6 @@ int main() {
         return -1;
     }
 
-    
     while (!_kbhit()) {
         //std::cout << "Hit me!!" << std::endl;
         Sleep(50);
