@@ -206,7 +206,8 @@ namespace LJMP {
 
                     break;
                 case FLVType::VIDEO:
-
+                    doHandleVideo(data_buffer);
+                    break;
                 default:
                     break;
                 }
