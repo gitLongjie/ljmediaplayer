@@ -36,9 +36,19 @@ namespace LJMP {
             void onHandleDataBuffer(const DataBuffer::Ptr& data_buffer) override;
 
         private:
+            bool initCodecContext(const DataBuffer::Ptr& data_buffer);
+            void uninitCodecContext();
+            void handleAFrame();
+
+        private:
+            std::shared_ptr<MediaConfig> config_;
             AVCodecContext* codec_context_ = nullptr;
+            bool codec_context_initialize_ = false;
             AVPacket* av_packet_ = nullptr;
-            bool initialized = false;
+            bool initialized_ = false;
+
+            AVFrame *av_frame_ = nullptr;
+            
         };
     }
 }

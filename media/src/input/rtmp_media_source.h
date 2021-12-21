@@ -34,6 +34,7 @@ namespace LJMP {
 
         private:
             Rtmp::RtmpContext::Ptr rtmp_context_;
+            int video_codec_id_ = -1;
         };
     }
 }

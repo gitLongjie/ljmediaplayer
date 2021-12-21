@@ -20,14 +20,16 @@ namespace LJMP {
     public:
         virtual ~DataBuffer();
 
-        unsigned int getSize() const { return size_; }
-        const char* getData() const { return data_; }
-        char* getData() { return data_; }
+        unsigned int getSize() const { return size_ - offset_; }
+        const char* getData() const { return data_bffer_; }
+        char* getData() { return data_bffer_; }
 
-        void setOffset(unsigned int offset) { offset_ = offset; }
+        void setOffset(unsigned int offset);
         unsigned int getOffset() const { return offset_; }
-        const char* getOffsetData() const { return data_ + offset_; }
-        char* getOffsetData() { return data_ + offset_; }
+
+        int getBaseSize() const { return size_; }
+        const char* getBaseData() const { return data_; }
+        char* getBaseData() { return data_; }
 
         void setTimeStamp(long long time_stamp) { time_stamp_ = time_stamp; }
         long long timeStamp() const { return time_stamp_; }
@@ -41,6 +43,7 @@ namespace LJMP {
         
     private:
         char* data_ = nullptr;
+        char* data_bffer_ = nullptr;
         unsigned int size_ = 0;
 
         unsigned int offset_ = 0;

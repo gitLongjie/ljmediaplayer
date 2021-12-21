@@ -1,5 +1,7 @@
 #include "src/data_buffer.h"
 
+#include <cassert>
+
 namespace LJMP {
 
     DataBuffer::Ptr DataBuffer::create(unsigned int size) {
@@ -22,6 +24,8 @@ namespace LJMP {
         }
 
         data_ = new char[size];
+        data_bffer_ = data_;
+          
         size_ = size;
     }
 
@@ -34,12 +38,21 @@ namespace LJMP {
         data_ = new char[size];
         size_ = size;
         memcpy(data_, data, size);
+        data_bffer_ = data_;
     }
 
     DataBuffer::~DataBuffer() {
         if (nullptr != data_) {
             delete []data_;
+            data_bffer_ = nullptr;
         }
+    }
+
+    void DataBuffer::setOffset(unsigned int offset) {
+        assert(data_ + offset < data_ + size_);
+
+        offset_ = offset;
+        data_bffer_ = data_ + offset;
     }
 
 }

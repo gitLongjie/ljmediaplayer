@@ -39,7 +39,7 @@ enum class CodecType {
     Audio_AAC,
 
     Video_X264,
-    Video_FFMpeg_Decode_X264,
+    Video_FFMpeg_Decode,
 };
 
 struct MediaConfig {

@@ -129,11 +129,10 @@ namespace LJMP {
                 LOGE("callback is nullptr");
                 return;
             }
+
+            video_codec_id_ = video_codec_id;
             audio_codec_id = audio_codec_id ? audio_codec_id : static_cast<int>(CodecType::Audio_AAC);
-            video_codec_id = video_codec_id ? video_codec_id : static_cast<int>(CodecType::Video_FFMpeg_Decode_X264);
-            if (audio_codec_id == 7) {
-                audio_codec_id = static_cast<int>(CodecType::Video_FFMpeg_Decode_X264);
-            }
+            video_codec_id = static_cast<int>(CodecType::Video_FFMpeg_Decode);
 
             MediaConfig config = { audio_rate, audio_channel, audio_codec_id,
                 video_width, video_height, video_frame, video_codec_id };
@@ -147,6 +146,14 @@ namespace LJMP {
                 return;
             }
            
+            const char* data = data_buffer->getData();
+            const FLVVideoTagHeader* video_tage_header = reinterpret_cast<const FLVVideoTagHeader*>(data);
+            if (video_codec_id_ != video_tage_header->codec_id) {
+                return;
+            }
+            int frame_type = video_tage_header->frame_type;
+            int len = sizeof(FLVVideoTagHeader);
+            data_buffer->setOffset(sizeof(FLVVideoTagHeader));
             callback(DataType::Video, static_cast<const void*>(&data_buffer));
         }
 

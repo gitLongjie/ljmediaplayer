@@ -63,14 +63,15 @@ int main() {
     unsigned int n = sizeof(FLVTagHeader);
     // const char* test = "rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp";
     //const char* test = "rtmp://ns8.indexforce.com/home/mystream";
-    const char* test = "rtmp://10.74.34.97/live/room";
+    // const char* test = "rtmp://10.74.34.97/live/room";
+    const char* test = "rtmp://39.107.224.142/live/stream1";
     if (0 != openUrl(test)) {
         uninitialzie();
         return -1;
     }
 
     while (!_kbhit()) {
-        //std::cout << "Hit me!!" << std::endl;
+        //std::cout << "Hit me!!" << std::endl; 
         Sleep(50);
     }
 

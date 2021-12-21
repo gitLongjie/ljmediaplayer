@@ -11,7 +11,7 @@ namespace LJMP {
             case CodecType::Audio_AAC:
                 break;
             case CodecType::Video_X264:
-            case CodecType::Video_FFMpeg_Decode_X264:
+            case CodecType::Video_FFMpeg_Decode:
                 return AV_CODEC_ID_H264;
             default:
                 break;

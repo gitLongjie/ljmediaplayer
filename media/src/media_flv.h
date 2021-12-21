@@ -46,6 +46,19 @@ namespace LJMP {
             return Utils::ntohl(size) >> 8;;
         }
 	};
+
+    struct FLVVideoTagHeader {
+        unsigned char codec_id : 4;
+        unsigned char frame_type : 4;
+
+		unsigned int avc_packet_type : 8;
+		unsigned int composition_time : 24; // H.264-AVC-ISO_IEC_14496-15 5.2.4.1 
+    };
+
+    struct FLVAudioTagHeader {
+        unsigned char codecID : 4;
+        unsigned char frameType : 4;
+    };
 #pragma pack()
 }
 
