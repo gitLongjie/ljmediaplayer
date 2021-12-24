@@ -127,8 +127,9 @@ namespace LJMP {
 
                 rtmp_reader_status_ = RtmpReadFLVHeaderStatus::create(std::dynamic_pointer_cast<RtmpContext>(self));
 
-                Network::Socket::Ptr s = Network::Socket::create(rtmp_->m_sb.sb_socket, Network::Socket::Model::TCP);
-                channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), s);
+                Network::Socket::Ptr socket = Network::Socket::create(rtmp_->m_sb.sb_socket, Network::Socket::Model::TCP);
+                //socket->enableBlock(false);
+                channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), socket);
                 channel_->setReadCallbackHandle(std::bind(&RtmpContext::readDataCallback, this, wThis));
             }
 

@@ -540,6 +540,151 @@ RTMP_SetupStream(RTMP *r,
     }
 }
 
+void RTMP_ConnectAsyn(RTMP* r, int sb_socket) {
+	struct sockaddr_in service;
+	if (!r->Link.hostname.av_len)
+		return FALSE;
+
+	memset(&service, 0, sizeof(struct sockaddr_in));
+	service.sin_family = AF_INET;
+
+	if (r->Link.socksport)
+	{
+		/* Connect via SOCKS */
+		if (!add_addr_info(&service, &r->Link.sockshost, r->Link.socksport))
+			return FALSE;
+	}
+	else
+	{
+		/* Connect directly */
+		if (!add_addr_info(&service, &r->Link.hostname, r->Link.port))
+			return FALSE;
+	}
+
+	if (!RTMP_ConnectAsyn0(r, sb_socket, (struct sockaddr*)&service))
+		return FALSE;
+
+	r->m_bSendCounter = TRUE;
+
+	return TRUE;
+}
+
+int RTMP_ConnectAsyn0(RTMP* r, int sb_socket, struct sockaddr* service) {
+	r->m_sb.sb_timedout = FALSE;
+	r->m_pausing = 0;
+	r->m_fDuration = 0.0;
+
+	r->m_sb.sb_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (r->m_sb.sb_socket != -1)
+    {
+        if (connect(r->m_sb.sb_socket, service, sizeof(struct sockaddr)) < 0)
+        {
+            int err = GetSockError();
+            if (err != EWOULDBLOCK) {
+                RTMP_Log(RTMP_LOGERROR, "%s, failed to connect socket. %d (%s)",
+                    __FUNCTION__, err, strerror(err));
+                RTMP_Close(r);
+                return FALSE;
+            }
+
+        }
+    }
+
+	return TRUE;
+}
+
+int RTMP_ConnectAsyn0Callback(RTMP* r, RTMPPacket* cp) {
+
+	if (r->Link.socksport)
+	{
+		RTMP_Log(RTMP_LOGDEBUG, "%s ... SOCKS negotiation", __FUNCTION__);
+		if (!SocksNegotiate(r))
+		{
+			RTMP_Log(RTMP_LOGERROR, "%s, SOCKS negotiation failed.", __FUNCTION__);
+			RTMP_Close(r);
+			return FALSE;
+		}
+	}
+	else
+	{
+	    RTMP_Log(RTMP_LOGERROR, "%s, failed to create socket. Error: %d", __FUNCTION__,
+		    GetSockError());
+	    return FALSE;
+	}
+
+	/* set timeout */
+	{
+		SET_RCVTIMEO(tv, r->Link.timeout);
+		if (setsockopt
+		(r->m_sb.sb_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv))) {
+			RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",
+				__FUNCTION__, r->Link.timeout);
+		}
+	}
+    int on = 1;
+	setsockopt(r->m_sb.sb_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&on, sizeof(on));
+
+	r->m_bSendCounter = TRUE;
+
+	return RTMP_Connect1Asyn(r, cp);
+}
+
+int RTMP_Connect1Asyn(RTMP* r, RTMPPacket* cp) {
+	if (r->Link.protocol & RTMP_FEATURE_SSL)
+	{
+#if defined(CRYPTO) && !defined(NO_SSL)
+		TLS_client(RTMP_TLS_ctx, r->m_sb.sb_ssl);
+		TLS_setfd(r->m_sb.sb_ssl, r->m_sb.sb_socket);
+		if (TLS_connect(r->m_sb.sb_ssl) < 0)
+		{
+			RTMP_Log(RTMP_LOGERROR, "%s, TLS_Connect failed", __FUNCTION__);
+			RTMP_Close(r);
+			return FALSE;
+		}
+#else
+		RTMP_Log(RTMP_LOGERROR, "%s, no SSL/TLS support", __FUNCTION__);
+		RTMP_Close(r);
+		return FALSE;
+
+#endif
+	}
+	if (r->Link.protocol & RTMP_FEATURE_HTTP)
+	{
+		r->m_msgCounter = 1;
+		r->m_clientID.av_val = NULL;
+		r->m_clientID.av_len = 0;
+		HTTP_Post(r, RTMPT_OPEN, "", 1);
+		if (HTTP_read(r, 1) != 0)
+		{
+			r->m_msgCounter = 0;
+			RTMP_Log(RTMP_LOGDEBUG, "%s, Could not connect for handshake", __FUNCTION__);
+			RTMP_Close(r);
+			return 0;
+		}
+		r->m_msgCounter = 0;
+	}
+	RTMP_Log(RTMP_LOGDEBUG, "%s, ... connected, handshaking", __FUNCTION__);
+	if (!HandShake(r, TRUE))
+	{
+		RTMP_Log(RTMP_LOGERROR, "%s, handshake failed.", __FUNCTION__);
+		RTMP_Close(r);
+		return FALSE;
+	}
+	RTMP_Log(RTMP_LOGDEBUG, "%s, handshaked", __FUNCTION__);
+
+	if (!SendConnectPacket(r, cp))
+	{
+		RTMP_Log(RTMP_LOGERROR, "%s, RTMP connect failed.", __FUNCTION__);
+		RTMP_Close(r);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+int RTMP_HandShakCallback(RTMP* r) {
+
+}
+
 enum { OPT_STR=0, OPT_INT, OPT_BOOL, OPT_CONN };
 static const char *optinfo[] = {
 	"string", "integer", "boolean", "AMF" };

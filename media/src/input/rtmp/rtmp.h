@@ -309,10 +309,16 @@ extern "C"
 			int dStart,
 			int dStop, int bLiveStream, long int timeout);
 
-  int RTMP_Connect(RTMP *r, RTMPPacket *cp);
   struct sockaddr;
-  int RTMP_Connect0(RTMP *r, struct sockaddr *svc);
-  int RTMP_Connect1(RTMP *r, RTMPPacket *cp);
+  void RTMP_ConnectAsyn(RTMP* r, int sb_socket);
+  int RTMP_ConnectAsyn0(RTMP* r, int sb_socket, struct sockaddr* svc);
+  int RTMP_ConnectAsyn0Callback(RTMP* r, RTMPPacket* cp);
+  int RTMP_Connect1Asyn(RTMP* r, RTMPPacket* cp);
+  int RTMP_HandShakCallback(RTMP* r);
+
+  int RTMP_Connect(RTMP *r, RTMPPacket *cp);
+  int RTMP_Connect0(RTMP* r, struct sockaddr* svc);
+  int RTMP_Connect1(RTMP* r, RTMPPacket* cp);
   int RTMP_Serve(RTMP *r);
   int RTMP_TLS_Accept(RTMP *r, void *ctx);
 

@@ -56,7 +56,7 @@ namespace LJMP {
         }
 
         bool Socket::enableNoDelay(bool enable) {
-            if (-1 != socket_) {
+            if (-1 == socket_) {
                 return false;
             }
 
@@ -69,11 +69,11 @@ namespace LJMP {
         }
 
         bool Socket::enableBlock(bool enable) {
-            if (-1 != socket_) {
+            if (-1 == socket_) {
                 return false;
             }
 #ifdef WIN32
-            unsigned long ul = enable;
+            unsigned long ul = !enable;
             int ret = ioctlsocket(socket_, FIONBIO, (unsigned long*)&ul);
             if (SOCKET_ERROR == ret) {
                 return false;
@@ -83,7 +83,7 @@ namespace LJMP {
         }
 
         bool Socket::enableTimeout(bool enable, int time) {
-            if (-1 != socket_) {
+            if (-1 == socket_) {
                 return false;
             }
 

@@ -70,7 +70,16 @@ namespace LJMP {
             invoke(task);
         }
 
-        void NetworkManagerStd::doInitialize(WPtr wThis) {
+		void NetworkManagerStd::addConnectChannel(const std::shared_ptr<Channel>& channel)
+		{
+			LOG_ENTER;
+
+			WPtr wThis(shared_from_this());
+			auto task = createTask(std::bind(&NetworkManagerStd::doAddConnectChannel, this, channel, wThis));
+			invoke(task);
+		}
+
+		void NetworkManagerStd::doInitialize(WPtr wThis) {
             LOG_ENTER;
             TaskQueueObject::Ptr self(wThis.lock());
             if (!self) {
@@ -143,7 +152,29 @@ namespace LJMP {
             channels_.erase(sc->getSocket());
         }
 
-        void NetworkManagerStd::select(unsigned long long dely) {
+		void NetworkManagerStd::doAddConnectChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
+			LOG_ENTER;
+
+			TaskQueueObject::Ptr self(wThis.lock());
+			if (!self) {
+                LOG_DESTRUCT;
+				return;
+			}
+
+			if (!channel) {
+				LOGE("channel is nullptr");
+				return;
+			}
+
+			SocketPtr sc = channel->getSocket();
+			if (!sc) {
+				LOGE("channel is nullptr");
+				return;
+			}
+			connect_channels_[sc->getSocket()] = channel;
+		}
+
+		void NetworkManagerStd::select(unsigned long long dely) {
             if (stop_) {
                 LOGI("stop this select");
                 return;
@@ -169,10 +200,15 @@ namespace LJMP {
 
             fd_set reads;
             FD_ZERO(&reads);
-            FD_SET(channels_.begin()->first, &reads);
 
+            for (auto& item : channels_) {
+                FD_SET(item.first, &reads);
+            }
            
-            timeval timeout = { 1, 0 };
+            struct timeval timeout;
+            timeout.tv_sec = 3 * 60;
+            timeout.tv_usec = 100; // { 3 * 60, 0 };
+
             int ret = ::select(count, &reads, nullptr, nullptr, &timeout);
             if (ret < 0) {
                 LOGE("select end");

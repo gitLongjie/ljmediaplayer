@@ -29,6 +29,7 @@ namespace LJMP {
 
             void updateChannel(const std::shared_ptr<Channel>& channel);
             void removeChannel(const std::shared_ptr<Channel>& channel);
+            void addConnectChannel(const std::shared_ptr<Channel>& channel);
 
         protected:
             explicit NetworkManagerStd(const TaskQueue::Ptr& taskQueue);
@@ -38,6 +39,7 @@ namespace LJMP {
 
             void doUpdateChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
             void doRemoveChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
+            void doAddConnectChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
 
             void select(unsigned long long dely);
             void doSelect(WPtr wThis);
@@ -48,6 +50,8 @@ namespace LJMP {
 
             using ChannelList = std::map<socket_t, std::shared_ptr<Channel>>;
             ChannelList channels_;
+
+            ChannelList connect_channels_;
         };
         
     }
