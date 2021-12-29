@@ -8,7 +8,7 @@
 namespace LJMP {
 
     MediaSource::MediaSource(const std::string& url, const TaskQueue::Ptr& task_queue)
-        : TaskQueueObject(task_queue, false), url_(url){
+        : TaskObject(task_queue, false), url_(url){
         LOG_CREATER;
     }
 
@@ -50,7 +50,7 @@ namespace LJMP {
 
     void MediaSource::openSource(std::string url, WPtr wThis) {
         LOGI("open url {}", url);
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct {}", (long long)this);
             std::string msg("open url failed url=");
@@ -66,7 +66,7 @@ namespace LJMP {
     }
 
     void MediaSource::closeSource(WPtr wThis) {
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct {}", (long long)this);
             return;
@@ -79,7 +79,7 @@ namespace LJMP {
     void MediaSource::onSetCallbackFunc(callbackFunc callback, WPtr wThis) {
         LOG_ENTER;
 
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct");
             return;

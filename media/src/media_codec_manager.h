@@ -1,13 +1,13 @@
 #ifndef src_codec_codec_manager
 #define src_codec_codec_manager
 
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 
 #include "src/media_codec_factory.h"
 
 namespace LJMP {
 
-    class MediaCodecManager : public TaskQueueObject {
+    class MediaCodecManager : public TaskObject {
         disable_copy(MediaCodecManager)
 
     public:
@@ -24,7 +24,7 @@ namespace LJMP {
         static long long getCodecIndex();
 
     protected:
-        explicit MediaCodecManager(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, false){}
+        explicit MediaCodecManager(const TaskQueue::Ptr& task_queue) : TaskObject(task_queue, false){}
     };
 }
 #endif // !src_codec_codec_manager

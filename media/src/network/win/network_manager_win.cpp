@@ -44,7 +44,7 @@ namespace LJMP {
         void NetworkManagerWin::doUninitialize(WPtr wThis) {
             LOG_ENTER;
 
-            TaskQueueObject::Ptr self(wThis.lock());
+            TaskObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGW("this object is destruct");
                 return;

@@ -5,7 +5,7 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 
 #include "src/media_flv.h"
 #include "src/network/channel.h"
@@ -19,7 +19,7 @@ namespace LJMP {
 
             class RtmpReaderStatus;
 
-            class RtmpContext : public TaskQueueObject {
+            class RtmpContext : public TaskObject {
                 disable_copy(RtmpContext)
 
             public:

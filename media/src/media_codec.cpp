@@ -3,7 +3,7 @@
 #include "src/log.h"
 
 namespace LJMP {
-    MediaCodec::MediaCodec(const TaskQueue::Ptr& task_queue) : TaskQueueObject(task_queue, true) {
+    MediaCodec::MediaCodec(const TaskQueue::Ptr& task_queue) : TaskObject(task_queue, true) {
     }
 
     MediaCodec::~MediaCodec() {
@@ -57,7 +57,7 @@ namespace LJMP {
     void MediaCodec::initializeImpl(std::shared_ptr<MediaConfig> config, WPtr wThis) {
         LOG_ENTER;
 
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOG_OBJECT_DESTORYED;
             return;
@@ -72,7 +72,7 @@ namespace LJMP {
     void MediaCodec::uninitializeImpl(WPtr wThis) {
         LOG_ENTER;
 
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOG_OBJECT_DESTORYED;
             return;
@@ -82,7 +82,7 @@ namespace LJMP {
     }
 
     void MediaCodec::handleDataBuffer(WPtr wThis) {
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOG_OBJECT_DESTORYED;
             return;

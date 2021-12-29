@@ -3,11 +3,11 @@
 
 #include <queue>
 
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 #include "src/data_buffer.h"
 
 namespace LJMP {
-    class MediaCodec : public TaskQueueObject {
+    class MediaCodec : public TaskObject {
         disable_copy(MediaCodec)
 
     public:

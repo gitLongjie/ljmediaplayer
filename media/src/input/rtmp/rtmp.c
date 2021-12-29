@@ -682,7 +682,7 @@ int RTMP_Connect1Asyn(RTMP* r, RTMPPacket* cp) {
 }
 
 int RTMP_HandShakCallback(RTMP* r) {
-
+    return 0;
 }
 
 enum { OPT_STR=0, OPT_INT, OPT_BOOL, OPT_CONN };

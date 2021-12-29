@@ -9,7 +9,7 @@ namespace LJMP {
     }
 
     MediaContext::MediaContext(const TaskQueue::Ptr& task_queue)
-        : TaskQueueObject(task_queue, false) {
+        : TaskObject(task_queue, false) {
         LOG_CREATER;
     }
 
@@ -40,7 +40,7 @@ namespace LJMP {
     void MediaContext::onUpdateMediaConfig(const MediaConfig config, WPtr wThis) {
         LOG_ENTER;
 
-        TaskQueueObject::Ptr self(wThis.lock());
+        TaskObject::Ptr self(wThis.lock());
         if (!self) {
             LOGE("{} is destructed", (long long)this);
             return;

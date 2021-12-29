@@ -5,13 +5,13 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 #include "src/spin_lock.h"
 
 namespace LJMP {
     class MediaSourceChannel;
 
-    class MediaSource : public TaskQueueObject {
+    class MediaSource : public TaskObject {
     public:
         using Ptr = std::shared_ptr<MediaSource>;
         using callbackFunc = std::function<void(DataType type, const void* data)>;

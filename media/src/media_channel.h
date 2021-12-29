@@ -1,10 +1,10 @@
 #ifndef src_media_channel_h_
 #define src_media_channel_h_
 
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 
 namespace LJMP {
-    class MediaChannel : public TaskQueueObject {
+    class MediaChannel : public TaskObject {
         disable_copy(MediaChannel)
 
     public:

@@ -5,7 +5,7 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 #include "src/data_buffer.h"
 
 namespace LJMP {
@@ -13,7 +13,7 @@ namespace LJMP {
         class Socket;
         using SocketPtr = std::shared_ptr<Socket>;
 
-        class Channel : public TaskQueueObject {
+        class Channel : public TaskObject {
             disable_copy(Channel)
 
         public:

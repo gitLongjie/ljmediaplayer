@@ -4,14 +4,14 @@
 #include <memory>
 
 #include "src/lj_defined.h"
-#include "src/task_queue_object.h"
+#include "src/task_object.h"
 #include "src/media_channel.h"
 
 namespace LJMP {
     class MediaChannel;
     class MediaCodec;
 
-    class MediaContext : public TaskQueueObject {
+    class MediaContext : public TaskObject {
         disable_copy(MediaContext)
 
     public:

@@ -26,7 +26,7 @@ namespace LJMP {
         }
 
         Channel::Channel(const TaskQueue::Ptr& task_queue, const SocketPtr& s)
-            : TaskQueueObject(task_queue, false)
+            : TaskObject(task_queue, false)
             , socket_(s){
             LOGI("actor {}", (long long)this);
             
@@ -81,7 +81,7 @@ namespace LJMP {
         }
 
         void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, WPtr wThis) {
-            TaskQueueObject::Ptr self(wThis.lock());
+            TaskObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct {}", (long long)this);
                 return;
@@ -91,7 +91,7 @@ namespace LJMP {
         }
 
         void Channel::doWrite(const DataBuffer::Ptr data_buffer, WriteStatusCallback callback, WPtr wThis) {
-            TaskQueueObject::Ptr self(wThis.lock());
+            TaskObject::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct");
                 return;

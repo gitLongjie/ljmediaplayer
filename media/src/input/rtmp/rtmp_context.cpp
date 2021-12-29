@@ -39,7 +39,7 @@ namespace LJMP {
 
             RtmpContext::RtmpContext(const TaskQueue::Ptr& task_queue,
                 std::weak_ptr<RTMPMediaSource> media_source, const std::string& url)
-                : TaskQueueObject(task_queue, false)
+                : TaskObject(task_queue, false)
                 , media_source_(media_source)
                 , url_(url){
                 LOGI("actor {} url={}", (long long)this, url);
@@ -88,7 +88,7 @@ namespace LJMP {
                     return;
                 }
 
-                TaskQueueObject::Ptr self(wThis.lock());
+                TaskObject::Ptr self(wThis.lock());
                 if (!self) {
                     LOGE("rtmp context is desturct {}", (long long)this);
                     return;
@@ -117,7 +117,7 @@ namespace LJMP {
             void RtmpContext::doConnected(std::shared_ptr<RTMP> rtmp, WPtr wThis) {
                 LOG_ENTER;
 
-                TaskQueueObject::Ptr self(wThis.lock());
+                TaskObject::Ptr self(wThis.lock());
                 if (!self) {
                     LOGE("this object is destructed");
                     return;
@@ -177,7 +177,7 @@ namespace LJMP {
             }
 
             void RtmpContext::readDataCallback(WPtr wThis) {
-                TaskQueueObject::Ptr self(wThis.lock());
+                TaskObject::Ptr self(wThis.lock());
                 if (!self) {
                     return;
                 }
@@ -185,7 +185,7 @@ namespace LJMP {
             }
 
             void RtmpContext::doUpdateMedia(bool audio, bool video, WPtr wThis) {
-                TaskQueueObject::Ptr self(wThis.lock());
+                TaskObject::Ptr self(wThis.lock());
                 if (!self) {
                     return;
                 }
@@ -194,7 +194,7 @@ namespace LJMP {
             }
 
             void RtmpContext::doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis) {
-                TaskQueueObject::Ptr self(wThis.lock());
+                TaskObject::Ptr self(wThis.lock());
                 if (!self) {
                     return;
                 }
