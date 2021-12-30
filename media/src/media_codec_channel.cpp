@@ -60,7 +60,7 @@ namespace LJMP {
             return;
         }
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is nullptr");
             return;
@@ -87,7 +87,7 @@ namespace LJMP {
     }
 
     void MediaCodecChannel::onHandleVideo(const DataBuffer::Ptr data_buffer, WPtr wThis) {
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOG_DESTRUCT;
             return;

@@ -88,7 +88,7 @@ namespace LJMP {
                     return;
                 }
 
-                TaskObject::Ptr self(wThis.lock());
+                ObjectPtr::Ptr self(wThis.lock());
                 if (!self) {
                     LOGE("rtmp context is desturct {}", (long long)this);
                     return;
@@ -117,7 +117,7 @@ namespace LJMP {
             void RtmpContext::doConnected(std::shared_ptr<RTMP> rtmp, WPtr wThis) {
                 LOG_ENTER;
 
-                TaskObject::Ptr self(wThis.lock());
+                ObjectPtr::Ptr self(wThis.lock());
                 if (!self) {
                     LOGE("this object is destructed");
                     return;
@@ -177,7 +177,7 @@ namespace LJMP {
             }
 
             void RtmpContext::readDataCallback(WPtr wThis) {
-                TaskObject::Ptr self(wThis.lock());
+                ObjectPtr::Ptr self(wThis.lock());
                 if (!self) {
                     return;
                 }
@@ -185,7 +185,7 @@ namespace LJMP {
             }
 
             void RtmpContext::doUpdateMedia(bool audio, bool video, WPtr wThis) {
-                TaskObject::Ptr self(wThis.lock());
+                ObjectPtr::Ptr self(wThis.lock());
                 if (!self) {
                     return;
                 }
@@ -194,7 +194,7 @@ namespace LJMP {
             }
 
             void RtmpContext::doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis) {
-                TaskObject::Ptr self(wThis.lock());
+                ObjectPtr::Ptr self(wThis.lock());
                 if (!self) {
                     return;
                 }

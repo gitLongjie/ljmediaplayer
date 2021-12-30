@@ -3,23 +3,22 @@
 
 #include <memory>
 
-#include "src/lj_defined.h"
+#include "src/object_sptr.h"
 #include "src/task_queue.h"
 #include "src/spin_lock.h"
 
 namespace LJMP {
     class TaskObjectImpl;
 
-    class TaskObject : public std::enable_shared_from_this<TaskObject> {
+    class TaskObject : public ObjectPtr {
         disable_copy(TaskObject)
 
     public:
         using Ptr = std::shared_ptr<TaskObject>;
-        using WPtr = std::weak_ptr<TaskObject>;
 
     public:
-        virtual ~TaskObject();
-        void destory();
+        virtual ~TaskObject() override;
+        void destory() override;
 
     protected:
         TaskObject(const TaskQueue::Ptr& task_queue, bool own_thread);

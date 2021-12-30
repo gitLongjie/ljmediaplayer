@@ -65,7 +65,7 @@ namespace LJMP {
     }
 
     void MediaSourceChannel::reciveData(DataType data_type, const void* data, WPtr wThis) {
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destructed");
             return;
@@ -98,7 +98,7 @@ namespace LJMP {
     void MediaSourceChannel::onRegistDataRecive(const std::shared_ptr<MediaSourceChannelDataRecive> data_recive,
         WPtr wThis) {
         LOG_ENTER;
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct");
             return;
@@ -116,7 +116,7 @@ namespace LJMP {
         WPtr wThis) {
         LOG_ENTER;
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct");
             return;
@@ -133,7 +133,7 @@ namespace LJMP {
     void MediaSourceChannel::onReciveScript(const std::shared_ptr<MediaConfig>& config, WPtr wThis) {
         LOG_ENTER;
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is desturct");
             return;
@@ -145,7 +145,7 @@ namespace LJMP {
     }
 
     void MediaSourceChannel::onReciveVideo(const DataBuffer::Ptr& data_buffer, WPtr wThis) {
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOG_DESTRUCT;
             return;
@@ -159,7 +159,7 @@ namespace LJMP {
     void MediaSourceChannel::onStart(WPtr wThis) {
         LOG_ENTER;
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destruct");
             return;

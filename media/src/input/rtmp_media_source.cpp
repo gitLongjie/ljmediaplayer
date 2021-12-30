@@ -93,7 +93,7 @@ namespace LJMP {
 
             Media::getInstance()->errorCallbak(code, msg.c_str());
 
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object destructed");
                 return;

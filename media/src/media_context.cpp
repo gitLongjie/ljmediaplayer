@@ -40,7 +40,7 @@ namespace LJMP {
     void MediaContext::onUpdateMediaConfig(const MediaConfig config, WPtr wThis) {
         LOG_ENTER;
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("{} is destructed", (long long)this);
             return;

@@ -81,7 +81,7 @@ namespace LJMP {
 
 		void NetworkManagerStd::doInitialize(WPtr wThis) {
             LOG_ENTER;
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("self is nullptr");
                 return;
@@ -93,7 +93,7 @@ namespace LJMP {
 
         void NetworkManagerStd::doUninitialize(WPtr wThis) {
             LOG_ENTER;
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("self is nullptr");
                 return;
@@ -107,7 +107,7 @@ namespace LJMP {
         void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
             LOG_ENTER;
 
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is desturcted {}", (long long)this);
                 return;
@@ -131,7 +131,7 @@ namespace LJMP {
         void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
             LOG_ENTER;
 
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is desturcted {}", (long long)this);
                 return;
@@ -155,7 +155,7 @@ namespace LJMP {
 		void NetworkManagerStd::doAddConnectChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
 			LOG_ENTER;
 
-			TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
 			if (!self) {
                 LOG_DESTRUCT;
 				return;
@@ -185,7 +185,7 @@ namespace LJMP {
         }
 
         void NetworkManagerStd::doSelect(WPtr wThis) {
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct {}", (long long)this);
                 return;

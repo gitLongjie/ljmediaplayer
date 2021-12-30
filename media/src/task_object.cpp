@@ -195,7 +195,7 @@ namespace LJMP {
     void TaskObject::onDestroyImpl(WPtr wThis) {
         LOG_ENTER;
 
-        Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOGE("this object is destructed");
             spink_lock_.unlock();

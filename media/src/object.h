@@ -6,6 +6,8 @@ namespace LJMP {
     public:
         virtual ~Object() = default;
 
+        virtual void destory() = 0;
+
     protected:
         Object() = default;
 

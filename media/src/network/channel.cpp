@@ -81,7 +81,7 @@ namespace LJMP {
         }
 
         void Channel::doSetCallbackHandle(ReadCallbackHandle read_call_handle, WPtr wThis) {
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct {}", (long long)this);
                 return;
@@ -91,7 +91,7 @@ namespace LJMP {
         }
 
         void Channel::doWrite(const DataBuffer::Ptr data_buffer, WriteStatusCallback callback, WPtr wThis) {
-            TaskObject::Ptr self(wThis.lock());
+            ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("this object is destruct");
                 return;

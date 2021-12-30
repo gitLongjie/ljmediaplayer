@@ -6,10 +6,6 @@ namespace LJMP {
 	namespace Input{
 		namespace Rtmp {
 
-			RtmpNet::RtmpNet(const char* url)
-			{
-
-			}
 
 		}
 	}

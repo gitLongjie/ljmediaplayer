@@ -57,7 +57,7 @@ namespace LJMP {
     void MediaCodec::initializeImpl(std::shared_ptr<MediaConfig> config, WPtr wThis) {
         LOG_ENTER;
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOG_OBJECT_DESTORYED;
             return;
@@ -72,7 +72,7 @@ namespace LJMP {
     void MediaCodec::uninitializeImpl(WPtr wThis) {
         LOG_ENTER;
 
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOG_OBJECT_DESTORYED;
             return;
@@ -82,7 +82,7 @@ namespace LJMP {
     }
 
     void MediaCodec::handleDataBuffer(WPtr wThis) {
-        TaskObject::Ptr self(wThis.lock());
+        ObjectPtr::Ptr self(wThis.lock());
         if (!self) {
             LOG_OBJECT_DESTORYED;
             return;
