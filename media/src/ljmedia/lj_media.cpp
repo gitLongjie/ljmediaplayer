@@ -4,7 +4,7 @@
 #include <mutex>
 
 #include "src/media.h"
-#include "src/log.h"
+#include "src/core/log.h"
 
 std::mutex g_mutex;
 LogPtr g_log;

@@ -1,7 +1,7 @@
 #include "src/network/tcp_socket.h"
 
 #include "src/network/network_utils.h"
-#include "src/log.h"
+#include "src/core/log.h"
 
 
 namespace LJMP {

@@ -5,7 +5,7 @@
 
 #include "src/lj_defined.h"
 #include "src/network/lj_network_define.h"
-#include "src/data_buffer.h"
+#include "src/core/data_buffer.h"
 
 namespace LJMP {
     namespace Network {

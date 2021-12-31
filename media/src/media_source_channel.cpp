@@ -1,9 +1,9 @@
 #include "src/media_source_channel.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media_source.h"
 #include "src/media_source_channel_data_recive.h"
-#include "src/data_buffer.h"
+#include "src/core/data_buffer.h"
 
 namespace LJMP {
     MediaSourceChannel::Ptr MediaSourceChannel::create(const MediaSource::Ptr& media_source,

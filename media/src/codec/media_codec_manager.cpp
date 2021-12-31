@@ -4,7 +4,7 @@
 #include <functional>
 
 #include "src/utils.h"
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
 

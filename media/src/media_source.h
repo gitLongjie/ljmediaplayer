@@ -5,8 +5,8 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_object.h"
-#include "src/spin_lock.h"
+#include "src/core/task_object.h"
+#include "src/core/spin_lock.h"
 
 namespace LJMP {
     class MediaSourceChannel;

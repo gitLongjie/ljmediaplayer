@@ -1,11 +1,11 @@
 #include "src/media_codec_channel.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media.h"
 #include "src/media_source_channel.h"
 #include "src/media_codec.h"
 #include "src/media_codec_manager.h"
-#include "src/data_buffer.h"
+#include "src/core/data_buffer.h"
 
 namespace LJMP {
 

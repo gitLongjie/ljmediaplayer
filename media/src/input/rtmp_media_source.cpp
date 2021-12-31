@@ -1,7 +1,7 @@
 #include "src/input/rtmp_media_source.h"
 
 #include "src/utils.h"
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media.h"
 #include "src/media_source_channel.h"
 #include "ljmedia/error_code.h"

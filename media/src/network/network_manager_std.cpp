@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "src/log.h"
+#include "src/core/log.h"
 
 #ifdef WIN32
 #include "src/network/win/network_manager_win.h"

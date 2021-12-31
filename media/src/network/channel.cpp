@@ -1,6 +1,6 @@
 #include "src/network/channel.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/network/socket.h"
 
 #include "src/network/network_manager_std.h"

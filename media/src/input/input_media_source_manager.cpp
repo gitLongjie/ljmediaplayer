@@ -6,7 +6,7 @@
 #include "src/utils.h"
 #include "src/input/rtsp_media_source.h"
 #include "src/input/rtmp_media_source.h"
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
 

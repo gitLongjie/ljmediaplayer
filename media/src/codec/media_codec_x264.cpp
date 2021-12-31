@@ -2,7 +2,7 @@
 
 #include <x264/include/x264.h>
 
-#include "src/log.h"
+#include "src/core/log.h"
 
 namespace LJMP {
     namespace Codec {

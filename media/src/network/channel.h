@@ -5,8 +5,8 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_object.h"
-#include "src/data_buffer.h"
+#include "src/core/task_object.h"
+#include "src/core/data_buffer.h"
 
 namespace LJMP {
     namespace Network {

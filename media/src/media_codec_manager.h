@@ -1,7 +1,7 @@
 #ifndef src_codec_codec_manager
 #define src_codec_codec_manager
 
-#include "src/task_object.h"
+#include "src/core/task_object.h"
 
 #include "src/media_codec_factory.h"
 

@@ -5,7 +5,7 @@
 #include <string>
 
 #include "src/lj_defined.h"
-#include "src/task_object.h"
+#include "src/core/task_object.h"
 
 #include "src/media_flv.h"
 #include "src/network/channel.h"

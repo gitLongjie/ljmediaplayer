@@ -1,6 +1,6 @@
 #include "src/media_context.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 
 namespace LJMP {
 

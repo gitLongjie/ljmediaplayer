@@ -1,6 +1,6 @@
 #include "src/media_channel_factory.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 
 #include "src/media_source.h"
 #include "src/media_source_channel.h"

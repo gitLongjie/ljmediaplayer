@@ -3,7 +3,7 @@
 #include <WinSock2.h>
 #include <windows.h>
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
 

@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "src/lj_defined.h"
-#include "src/task_queue.h"
+#include "src/core/task_queue.h"
 
 namespace LJMP {
     class MediaCodec;

@@ -1,6 +1,6 @@
 #include "src/media_codec.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 
 namespace LJMP {
     MediaCodec::MediaCodec(const TaskQueue::Ptr& task_queue) : TaskObject(task_queue, true) {

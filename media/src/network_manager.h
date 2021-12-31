@@ -7,7 +7,7 @@
 
 #include "src/lj_defined.h"
 
-#include "src/task_object.h"
+#include "src/core/task_object.h"
 
 namespace LJMP {
     class NetworkManager : public TaskObject {

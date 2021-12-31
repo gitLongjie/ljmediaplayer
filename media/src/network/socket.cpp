@@ -8,7 +8,7 @@
 
 #endif // WIN32
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/network/network_utils.h"
 
 #include "src/network/tcp_socket.h"

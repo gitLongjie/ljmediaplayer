@@ -1,6 +1,6 @@
 #include "src/input/rtmp/rtmp_status.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media_flv.h"
 #include "src/input/rtmp/rtmp_context.h"
 

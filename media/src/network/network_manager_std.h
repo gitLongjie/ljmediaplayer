@@ -7,8 +7,8 @@
 #include "src/lj_defined.h"
 
 #include "src/network_manager.h"
-#include "src/spin_lock.h"
-#include "src/task_queue.h"
+#include "src/core/spin_lock.h"
+#include "src/core/task_queue.h"
 #include "src/network/lj_network_define.h"
 
 namespace LJMP {

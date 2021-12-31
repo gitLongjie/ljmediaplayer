@@ -1,6 +1,6 @@
 #include "src/codec/media_codec_ffmpeg_decode.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/codec/codec_utils.h"
 
 namespace LJMP {

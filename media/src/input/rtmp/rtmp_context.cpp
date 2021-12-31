@@ -3,11 +3,11 @@
 #include <functional>
 
 #include "ljmedia/error_code.h"
-#include "src/log.h"
+#include "src/core/log.h"
 #include "src/media_flv.h"
 #include "src/network/socket.h"
 #include "src/media.h"
-#include "src/thread_pools.h"
+#include "src/core/thread_pools.h"
 
 #include "src/utils.h"
 #include "src/media_source.h"

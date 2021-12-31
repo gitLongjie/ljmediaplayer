@@ -1,6 +1,6 @@
 #include "src/media_channel.h"
 
-#include "src/log.h"
+#include "src/core/log.h"
 
 namespace LJMP {
     MediaChannel::MediaChannel(const TaskQueue::Ptr& task_queue) : TaskObject(task_queue, false) {

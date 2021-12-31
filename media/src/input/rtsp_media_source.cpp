@@ -1,7 +1,7 @@
 #include "src/input/rtsp_media_source.h"
 
 #include "src/utils.h"
-#include "src/log.h"
+#include "src/core/log.h"
 
 namespace LJMP {
     namespace Input {
