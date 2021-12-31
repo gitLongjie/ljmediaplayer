@@ -1,5 +1,5 @@
-#ifndef src_task_object_h_
-#define src_task_object_h_
+#ifndef src_core_task_object_h_
+#define src_core_task_object_h_
 
 #include <memory>
 
@@ -42,5 +42,5 @@ namespace LJMP {
     };
 }
 
-#endif // !src_task_object_h_
+#endif // !src_core_task_object_h_
 

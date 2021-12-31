@@ -1,5 +1,5 @@
-#ifndef src_media_thread_pool_h_
-#define src_media_thread_pool_h_
+#ifndef src_core_thread_pool_h_
+#define src_core_thread_pool_h_
 
 #include <atomic>
 #include <condition_variable>
@@ -108,4 +108,4 @@ namespace LJMP {
     using ThreadPoolPtr = std::shared_ptr<ThreadPool>;
 }
 
-#endif // !src_media_thread_pool_h_
+#endif // !src_core_thread_pool_h_

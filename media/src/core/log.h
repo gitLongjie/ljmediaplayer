@@ -1,6 +1,6 @@
 //  Copyright 2020 LJ
-#ifndef src_log_h_
-#define src_log_h_
+#ifndef src_core_log_h_
+#define src_core_log_h_
 
 #include <functional>
 #include <memory>
@@ -73,4 +73,4 @@ private:
 
 using LogPtr = std::shared_ptr<LJMP::Log>;
 
-#endif // !src_log_h_
+#endif // !src_core_log_h_

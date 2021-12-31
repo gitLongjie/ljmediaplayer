@@ -1,5 +1,5 @@
-﻿#ifndef src_task_queue_h_
-#define src_task_queue_h_
+﻿#ifndef src_core_task_queue_h_
+#define src_core_task_queue_h_
 
 #include <thread>
 #include <atomic>
@@ -89,4 +89,4 @@ private:
     std::thread::id m_currentId = std::this_thread::get_id();
 };
 
-#endif // src_task_queue_h_
+#endif // src_core_task_queue_h_

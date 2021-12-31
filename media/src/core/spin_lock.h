@@ -1,5 +1,5 @@
-#ifndef src_spin_lock_h_
-#define src_spin_lock_h_
+#ifndef src_core_spin_lock_h_
+#define src_core_spin_lock_h_
 
 #include <atomic>
 
@@ -21,5 +21,5 @@ namespace LJMP {
     };
 }
 
-#endif // !src_spin_lock_h_
+#endif // !src_core_spin_lock_h_
 

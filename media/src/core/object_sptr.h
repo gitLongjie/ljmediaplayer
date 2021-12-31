@@ -1,5 +1,5 @@
-#ifndef src_object_sptr_h_
-#define src_object_sptr_h_
+#ifndef src_core_object_sptr_h_
+#define src_core_object_sptr_h_
 
 #include <memory>
 
@@ -24,4 +24,4 @@ namespace LJMP {
     };
 
 }
-#endif // !src_object_sptr_h_
+#endif // !src_core_object_sptr_h_

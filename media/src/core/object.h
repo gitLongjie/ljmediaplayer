@@ -1,5 +1,5 @@
-#ifndef src_object_h_
-#define src_object_h_
+#ifndef src_core_object_h_
+#define src_core_object_h_
 
 namespace LJMP {
     class Object {
@@ -15,5 +15,5 @@ namespace LJMP {
 
 }
 
-#endif // !src_object_h_
+#endif // !src_core_object_h_
 

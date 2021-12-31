@@ -1,5 +1,5 @@
-#ifndef src_data_buffer_h_
-#define src_data_buffer_h_
+#ifndef src_core_data_buffer_h_
+#define src_core_data_buffer_h_
 
 #include <memory>
 #include <queue>
@@ -53,4 +53,4 @@ namespace LJMP {
     };
 }
 
-#endif // !src_data_buffer_h_
+#endif // !src_core_data_buffer_h_
