@@ -37,7 +37,7 @@ namespace LJMP {
 		LOGI("error code={}", code);
 
 		ObjectPtr::WPtr wThis(shared_from_this());
-		Task::Ptr task = createTask(std::bind(&IOEventStd::doErrorCallback, this, code, wThis));
+		Task::Ptr task = createTaskNoCallback(&IOEventStd::doErrorCallback, this, code, wThis);
 		invoke(task);
 	}
 

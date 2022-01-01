@@ -51,6 +51,12 @@ Task::Ptr createTask(F function, C callback = nullptr) {
     return std::make_shared<TaskImpl<F, C>>(function, callback);
 }
 
+template <class Fx, typename... Args>
+Task::Ptr createTaskNoCallback(Fx&& function, Args&&... args) {
+    auto func = std::bind(std::forward<Fx>(function), std::forward<Args>(args)...);
+    return std::make_shared<TaskImpl<decltype(func)>>(func, nullptr);
+}
+
 class TaskQueue {
 public:
     using Ptr = std::shared_ptr<TaskQueue>;
