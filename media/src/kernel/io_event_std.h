@@ -46,6 +46,10 @@ namespace LJMP {
 			return writer_channels_;
 		}
 
+		size_t getCount() const {
+			return list_channels_.size();
+		}
+
 	private:
 		void doSetErrorCallback(ErrorCallback callback, ObjectPtr::WPtr wThis);
 		void doInitialize(ObjectPtr::WPtr wThis);
