@@ -6,20 +6,23 @@
 
 #include "src/lj_defined.h"
 
-#include "src/network_manager.h"
+#include "src/core/task_object.h"
 #include "src/core/spin_lock.h"
 #include "src/core/task_queue.h"
+
+#include "src/kernel/io_event.h"
+#include "src/kernel/network_manager.h"
 #include "src/network/lj_network_define.h"
 
 namespace LJMP {
     namespace Network {
         class Channel;
 
-        class NetworkManagerStd : public NetworkManager {
+        class NetworkManagerStd : public TaskObject, public INetworkManager {
             disable_copy(NetworkManagerStd)
 
         public:
-            static NetworkManagerStd::Ptr create(const TaskQueue::Ptr& task_queue);
+            static INetworkManager::Ptr create(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue);
 
         public:
             ~NetworkManagerStd() override;
@@ -32,21 +35,20 @@ namespace LJMP {
             void addConnectChannel(const std::shared_ptr<Channel>& channel);
 
         protected:
-            explicit NetworkManagerStd(const TaskQueue::Ptr& taskQueue);
+            NetworkManagerStd(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue);
 
-            virtual void doInitialize(WPtr wThis);
-            virtual void doUninitialize(WPtr wThis);
+            virtual void doInitialize(ObjectPtr::WPtr wThis);
+            virtual void doUninitialize(ObjectPtr::WPtr wThis);
 
-            void doUpdateChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
-            void doRemoveChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
-            void doAddConnectChannel(const std::shared_ptr<Channel>& channel, WPtr wThis);
-
-            void select(unsigned long long dely);
-            void doSelect(WPtr wThis);
+            void doUpdateChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis);
+            void doRemoveChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis);
+            void doAddConnectChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis);
 
         private:
             SpinLock spin_lock_;
             bool stop_ = true;
+
+            IIOEvent::Ptr io_event_;
 
             using ChannelList = std::map<socket_t, std::shared_ptr<Channel>>;
             ChannelList channels_;

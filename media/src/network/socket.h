@@ -4,12 +4,13 @@
 #include <memory>
 
 #include "src/lj_defined.h"
+#include "src/core/object_sptr.h"
+#include "src/kernel/read_writer.h"
 #include "src/network/lj_network_define.h"
-#include "src/core/data_buffer.h"
 
 namespace LJMP {
     namespace Network {
-        class Socket {
+        class Socket : public ObjectPtr, public IReadWriter {
         public:
             enum class Model {
                 Unknow,
@@ -25,8 +26,6 @@ namespace LJMP {
             virtual ~Socket();
 
             virtual bool connect(const std::string& address, short port) = 0;
-            virtual int read(DataBuffer::Ptr& buffer) = 0;
-            virtual int write(const DataBuffer::Ptr& buffer) = 0;
 
             bool isTcp() const { return model_ == Model::TCP; }
             void close();

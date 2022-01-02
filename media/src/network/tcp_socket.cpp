@@ -57,15 +57,15 @@ namespace LJMP {
             return true;
         }
 
-        int TcpSocket::read(DataBuffer::Ptr& buffer) {
+        int TcpSocket::read(unsigned char* buffer, unsigned int size) {
             socket_t sc = getSocket();
             if (-1 == sc) {
                 LOGE("cont write data sc={}", sc);
                 return 0;
             }
 
-            char* p = buffer->getData();
-            int len = buffer->getSize();
+            char* p = reinterpret_cast<char*>(buffer);
+            int len = size;
             int readed = 0;
             do 
             {
@@ -82,15 +82,15 @@ namespace LJMP {
             return readed;
         }
 
-        int TcpSocket::write(const DataBuffer::Ptr& buffer) {
+        int TcpSocket::write(const unsigned char* buffer, unsigned int size) {
             socket_t sc = getSocket();
             if (-1 == sc) {
                 LOGE("cont write data sc={}", sc);
                 return 0;
             }
             
-            const char* p = buffer->getData();
-            int len = buffer->getSize();
+            const char* p = reinterpret_cast<const char*>(buffer);
+            int len = size;
             int sended = 0;
             do {
                 int ret = ::send(sc, p, len, 0);

@@ -1,6 +1,7 @@
 #include "src/kernel/io_event_std.h"
 
 #include "src/core/log.h"
+#include "src/core/enum_operator.h"
 
 namespace LJMP {
 	
@@ -30,6 +31,16 @@ namespace LJMP {
 
 		ObjectPtr::WPtr wThis(shared_from_this());
 		Task::Ptr task = createTask(std::bind(&IOEventStd::doUninitialize, this, wThis));
+		invoke(task);
+	}
+
+	void IOEventStd::updateChannel(const IChannel::Ptr& channel, Event event) {
+		if (IIOEvent::Event::E_Unknown == event || !channel) {
+			return;
+		}
+
+		ObjectPtr::WPtr wThis(shared_from_this());
+		Task::Ptr task = createTaskNoCallback(&IOEventStd::doUpdateChannel, this, channel, event, wThis);
 		invoke(task);
 	}
 
@@ -89,6 +100,57 @@ namespace LJMP {
 		if (!error_callback_) {
 			error_callback_(code);
 		}
+	}
+
+	void IOEventStd::doUpdateChannel(const IChannel::Ptr& channel, Event event, ObjectPtr::WPtr wThis) {
+		LOGI("event =", event);
+
+		ObjectPtr::Ptr self(wThis.lock());
+		if (!self) {
+			LOG_DESTRUCT;
+			return;
+		}
+
+		if (enum_cast(event & IIOEvent::Event::E_Remove) != 0) {
+			LOGD("remove event={}", event);
+			removeChannel(channel);
+			return;
+		}
+		else if (enum_cast(event & IIOEvent::Event::E_Add) != 0) {
+			addChannel(channel);
+		}
+
+		if (enum_cast(event & IIOEvent::Event::E_ReadEable) != 0) {
+			read_channels_.emplace_back(channel);
+		}
+
+		if (enum_cast(event & IIOEvent::Event::E_WriteEable) != 0) {
+			writer_channels_.emplace_back(channel);
+		}
+	}
+
+	bool IOEventStd::addChannel(const IChannel::Ptr& channel) {
+		LOGI("add channel");
+
+		if (!channel) {
+			LOGD("channel is nullptr");
+			return false;
+		}
+
+		FD fd = channel->getFD();
+		list_channels_[fd] = channel;
+		return true;
+	}
+
+	void IOEventStd::removeChannel(const IChannel::Ptr& channel) {
+		LOG_ENTER;
+
+		if (!channel) {
+			LOGD("channel is nullptr");
+			return;
+		}
+
+		list_channels_.erase(channel->getFD());
 	}
 
 }

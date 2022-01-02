@@ -10,16 +10,12 @@
 namespace LJMP {
     namespace Network {
 
-        NetworkManager::Ptr NetworkManagerWin::create(const TaskQueue::Ptr& task_queue) {
-            struct Creator : public NetworkManagerWin {
-                Creator(const TaskQueue::Ptr task_queue) : NetworkManagerWin(task_queue) {}
-                ~Creator() override = default;
-            };
-            return std::make_shared<Creator>(task_queue);
+        INetworkManager::Ptr NetworkManagerWin::create(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue) {
+            return createPtr<NetworkManagerWin>(io_event, task_queue);
         }
 
-        NetworkManagerWin::NetworkManagerWin(const TaskQueue::Ptr& task_queue)
-            : NetworkManagerStd(task_queue) {
+        NetworkManagerWin::NetworkManagerWin(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue)
+            : NetworkManagerStd(io_event, task_queue) {
             LOGI("actor {}", (long long)this);
         }
 
@@ -27,7 +23,7 @@ namespace LJMP {
             LOGI("dctor {}", (long long)this);
         }
 
-        void NetworkManagerWin::doInitialize(WPtr wThis) {
+        void NetworkManagerWin::doInitialize(ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             LOGI("init network");
@@ -41,7 +37,7 @@ namespace LJMP {
             NetworkManagerStd::doInitialize(wThis);
         }
 
-        void NetworkManagerWin::doUninitialize(WPtr wThis) {
+        void NetworkManagerWin::doUninitialize(ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());

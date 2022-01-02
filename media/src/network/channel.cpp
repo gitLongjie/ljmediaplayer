@@ -45,7 +45,7 @@ namespace LJMP {
         }
 
         int Channel::read(DataBuffer::Ptr& data_buffer) {
-            return socket_->read(data_buffer);
+            return 0;//socket_->read(data_buffer);
         }
 
         bool Channel::write(const DataBuffer::Ptr& data_buffer, WriteStatusCallback callback) {
@@ -103,7 +103,7 @@ namespace LJMP {
                 return;
             }
 
-            int ret = socket_->write(data_buffer);
+            int ret = 0;// socket_->write(data_buffer);
             invokeCallback(callback, data_buffer->getSize() == ret);
         }
 

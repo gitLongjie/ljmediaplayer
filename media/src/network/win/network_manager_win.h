@@ -9,16 +9,16 @@ namespace LJMP {
             disable_copy(NetworkManagerWin)
 
         public:
-            static NetworkManager::Ptr create(const TaskQueue::Ptr& task_queue);
+            static INetworkManager::Ptr create(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue);
 
         public:
             ~NetworkManagerWin() override;
 
         protected:
-            explicit NetworkManagerWin(const TaskQueue::Ptr& task_queue);
+            NetworkManagerWin(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue);
 
-            void doInitialize(WPtr wThis);
-            void doUninitialize(WPtr wThis);
+            void doInitialize(ObjectPtr::WPtr wThis);
+            void doUninitialize(ObjectPtr::WPtr wThis);
         };
     }
 }

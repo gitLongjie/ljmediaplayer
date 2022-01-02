@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+using FD = unsigned long long;
+
 using StringList = std::vector<std::string>;
 
 #define disable_copy(class_name)                            \

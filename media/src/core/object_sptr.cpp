@@ -2,4 +2,8 @@
 
 namespace LJMP {
     ObjectPtr::~ObjectPtr() { }
+    
+    void ObjectPtr::destory() {
+        
+    }
 }

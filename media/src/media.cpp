@@ -19,6 +19,8 @@
 #include "src/media_channel_factory.h"
 #include "src/media_codec_manager.h"
 
+#include "src/kernel/io_event_factory.h"
+
 namespace LJMP {
     Media* s_media = nullptr;
 
@@ -61,7 +63,13 @@ namespace LJMP {
         }
         media_codec_manager_->initialize();
 
-        network_manger_ = Network::NetworkManagerStd::create(io_task_queue_);
+        IOEventFactory factory;
+        IIOEvent::Ptr io_event = factory.createSelectEvent(io_task_queue_, false);
+        if (!io_event) {
+            LOGE("io event create failed");
+            return;
+        }
+        network_manger_ = Network::NetworkManagerStd::create(io_event, io_task_queue_);
         if (!network_manger_->initialize()) {
             LOGE("net work manager initialize failed");
             return;

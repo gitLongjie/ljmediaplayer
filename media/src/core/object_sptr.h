@@ -19,6 +19,8 @@ namespace LJMP {
     public:
         ~ObjectPtr() override;
 
+        void destory() override;
+
     protected:
         ObjectPtr() noexcept = default;
     };

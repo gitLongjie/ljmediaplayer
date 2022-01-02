@@ -15,19 +15,17 @@
 namespace LJMP {
     namespace Network {
         
-        NetworkManager::Ptr NetworkManagerStd::create(const TaskQueue::Ptr& task_queue) {
+        INetworkManager::Ptr NetworkManagerStd::create(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue) {
 #ifdef WIN32
-            return NetworkManagerWin::create(task_queue);
+            return NetworkManagerWin::create(io_event, task_queue);
 #endif // WIN32
-
-            struct Creator : public NetworkManagerStd {
-                Creator(const TaskQueue::Ptr& task_queue) : NetworkManagerStd(task_queue) {}
-                ~Creator() override = default;
-            };
-            return std::make_shared<Creator>(task_queue);
+            
+            return createPtr<NetworkManagerStd>(io_event, task_queue);
         }
 
-        NetworkManagerStd::NetworkManagerStd(const TaskQueue::Ptr& task_queue) : NetworkManager(task_queue) {
+        NetworkManagerStd::NetworkManagerStd(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue)
+            : TaskObject(task_queue, false)
+            , io_event_(io_event) {
             LOG_CREATER;
         }
 
@@ -38,7 +36,7 @@ namespace LJMP {
         bool NetworkManagerStd::initialize() {
             LOG_ENTER;
 
-            WPtr wThis(shared_from_this());
+            ObjectPtr::WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doInitialize, this, wThis));
             invoke(task);
             return true;
@@ -47,7 +45,7 @@ namespace LJMP {
         void NetworkManagerStd::uninitialize() {
             LOG_ENTER;
 
-            WPtr wThis(shared_from_this());
+            ObjectPtr::WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doUninitialize, this, wThis));
             invoke(task);
 
@@ -57,7 +55,7 @@ namespace LJMP {
         void NetworkManagerStd::updateChannel(const std::shared_ptr<Channel>& channel) {
             LOG_ENTER;
 
-            WPtr wThis(shared_from_this());
+            ObjectPtr::WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, wThis));
             invoke(task);
         }
@@ -65,7 +63,7 @@ namespace LJMP {
         void NetworkManagerStd::removeChannel(const std::shared_ptr<Channel>& channel) {
             LOG_ENTER;
 
-            WPtr wThis(shared_from_this());
+            ObjectPtr::WPtr wThis(shared_from_this());
             auto task = createTask(std::bind(&NetworkManagerStd::doRemoveChannel, this, channel, wThis));
             invoke(task);
         }
@@ -74,24 +72,30 @@ namespace LJMP {
 		{
 			LOG_ENTER;
 
-			WPtr wThis(shared_from_this());
+            ObjectPtr::WPtr wThis(shared_from_this());
 			auto task = createTask(std::bind(&NetworkManagerStd::doAddConnectChannel, this, channel, wThis));
 			invoke(task);
 		}
 
-		void NetworkManagerStd::doInitialize(WPtr wThis) {
+		void NetworkManagerStd::doInitialize(ObjectPtr::WPtr wThis) {
             LOG_ENTER;
             ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
                 LOGE("self is nullptr");
                 return;
+            }
+
+            if (io_event_) {
+                io_event_->initialize();
+            }
+            else {
+                LOGD("io event is nullptr");
             }
 
             stop_ = false;
-            select(0);
         }
 
-        void NetworkManagerStd::doUninitialize(WPtr wThis) {
+        void NetworkManagerStd::doUninitialize(ObjectPtr::WPtr wThis) {
             LOG_ENTER;
             ObjectPtr::Ptr self(wThis.lock());
             if (!self) {
@@ -99,12 +103,18 @@ namespace LJMP {
                 return;
             }
 
+            if (io_event_) {
+                io_event_->uninitialize();
+            }
+            else {
+                LOGD("io event is nullptr");
+            }
             stop_ = true;
 
             spin_lock_.unlock();
         }
 
-        void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
+        void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -128,7 +138,7 @@ namespace LJMP {
 
         }
 
-        void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
+        void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -152,7 +162,7 @@ namespace LJMP {
             channels_.erase(sc->getSocket());
         }
 
-		void NetworkManagerStd::doAddConnectChannel(const std::shared_ptr<Channel>& channel, WPtr wThis) {
+		void NetworkManagerStd::doAddConnectChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis) {
 			LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -173,65 +183,5 @@ namespace LJMP {
 			}
 			connect_channels_[sc->getSocket()] = channel;
 		}
-
-		void NetworkManagerStd::select(unsigned long long dely) {
-            if (stop_) {
-                LOGI("stop this select");
-                return;
-            }
-            WPtr wThis(shared_from_this());
-            auto task = createTask(std::bind(&NetworkManagerStd::doSelect, this, wThis));
-            invoke(task, dely);
-        }
-
-        void NetworkManagerStd::doSelect(WPtr wThis) {
-            ObjectPtr::Ptr self(wThis.lock());
-            if (!self) {
-                LOGE("this object is destruct {}", (long long)this);
-                return;
-            }
-
-            if (channels_.empty()) {
-                select(10);
-                return;
-            }
-
-            int count = static_cast<int>(channels_.size()) + 1;
-
-            fd_set reads;
-            FD_ZERO(&reads);
-
-            for (auto& item : channels_) {
-                FD_SET(item.first, &reads);
-            }
-           
-            struct timeval timeout;
-            timeout.tv_sec = 3 * 60;
-            timeout.tv_usec = 100; // { 3 * 60, 0 };
-
-            int ret = ::select(count, &reads, nullptr, nullptr, &timeout);
-            if (ret < 0) {
-                LOGE("select end");
-                return;
-            }
-            else if (0 == ret) {
-                select(10);
-                return;
-            }
-
-            std::vector<std::shared_ptr<Channel> > temp;
-            for (const auto& item : channels_) {
-                if (FD_ISSET(item.first, &reads)) {
-                    temp.emplace_back(item.second);
-                }
-            }
-
-            for (const auto& item : temp) {
-                item->handleRead();
-            }
-
-            select(0);
-        }
-
     }
 }
