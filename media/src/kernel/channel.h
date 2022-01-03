@@ -15,6 +15,9 @@ namespace LJMP {
 	public:
 		virtual ~IChannel() = default;
 		virtual FD getFD() const = 0;
+
+		virtual void readEnable() = 0;
+		virtual void writeEnable() = 0;
 	};
 
 }

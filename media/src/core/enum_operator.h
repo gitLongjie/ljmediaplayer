@@ -46,11 +46,6 @@ namespace LJMP {
 	constexpr std::enable_if_t<std::is_enum<E>::value, E> operator~ (E op) noexcept {
 		return E(~enum_cast(op));
 	}
-
-	template <typename E, typename T>
-	constexpr bool operator==(E e, T rhs) noexcept {
-		return static_cast<T>(e) == rhs;
-	}
 }
 
 #endif // ! src_core_enum_operator_h_

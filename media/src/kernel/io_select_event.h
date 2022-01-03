@@ -18,6 +18,8 @@ namespace LJMP {
         void onInitialize() override;
         void onUninitialize() override;
 
+        int onProcess() override;
+
 
     protected:
         void select();

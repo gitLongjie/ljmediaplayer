@@ -52,6 +52,13 @@ namespace LJMP {
 		invoke(task);
 	}
 
+	void IOEventStd::process(unsigned long delay) {
+		ObjectPtr::WPtr wThis(shared_from_this());
+
+		auto task = createTaskNoCallback(&IOEventStd::doProcess, this, wThis);
+		invoke(task, delay);
+	}
+
 	void IOEventStd::doSetErrorCallback(ErrorCallback callback, ObjectPtr::WPtr wThis) {
 		LOG_ENTER;
 
@@ -126,6 +133,26 @@ namespace LJMP {
 
 		if (enum_cast(event & IIOEvent::Event::E_WriteEable) != 0) {
 			writer_channels_.emplace_back(channel);
+		}
+	}
+
+	void IOEventStd::doProcess(ObjectPtr::WPtr wThis) {
+		ObjectPtr::Ptr self(wThis.lock());
+		if (!self) {
+			LOG_DESTRUCT;
+			return;
+		}
+
+		int ret = onProcess();
+		if (ret == -2) {
+			LOGE("on prcess error");
+			return;
+		}
+		else if (ret == -1) {
+			process(1);
+		}
+		else {
+			process(0);
 		}
 	}
 

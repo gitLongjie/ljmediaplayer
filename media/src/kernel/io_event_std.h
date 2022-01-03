@@ -50,12 +50,17 @@ namespace LJMP {
 			return list_channels_.size();
 		}
 
+		void process(unsigned long delay);
+
+		virtual int onProcess() { return 0; }
+
 	private:
 		void doSetErrorCallback(ErrorCallback callback, ObjectPtr::WPtr wThis);
 		void doInitialize(ObjectPtr::WPtr wThis);
 		void doUninitialize(ObjectPtr::WPtr wThis);
 		void doErrorCallback(int code, ObjectPtr::WPtr wThis);
 		void doUpdateChannel(const IChannel::Ptr& channel, Event event, ObjectPtr::WPtr wThis);
+		void doProcess(ObjectPtr::WPtr wThis);
 
 		bool addChannel(const IChannel::Ptr& channel);
 		void removeChannel(const IChannel::Ptr& channel);
