@@ -13,5 +13,33 @@ namespace LJMP {
 	ChannelStd::~ChannelStd() {
 		LOG_DESTRUCT;
 	}
+
+	void ChannelStd::readEnable() {
+		if (!read_writer_) {
+			LOGE("read writer is nullptr");
+			return;
+		}
+
+		if (!read_write_callback_) {
+			LOGD("read write callback is nullptr");
+			return;
+		}
+
+		read_write_callback_->onRead(read_writer_);
+	}
+
+	void ChannelStd::writeEnable() {
+		if (!read_writer_) {
+			LOGE("read writer is nullptr");
+			return;
+		}
+
+		if (!read_write_callback_) {
+			LOGD("read write callback is nullptr");
+			return;
+		}
+
+		read_write_callback_->onWrite(read_writer_);
+	}
 	
 }

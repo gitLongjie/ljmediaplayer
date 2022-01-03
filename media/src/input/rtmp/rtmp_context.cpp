@@ -69,10 +69,6 @@ namespace LJMP {
             void RtmpContext::uninitialzie() {
                 LOG_ENTER;
 
-                if (channel_) {
-                    channel_->disconnect();
-                    channel_.reset();
-                }
 
             }
 
@@ -129,8 +125,8 @@ namespace LJMP {
 
                 Network::Socket::Ptr socket = Network::Socket::create(rtmp_->m_sb.sb_socket, Network::Socket::Model::TCP);
                 //socket->enableBlock(false);
-                channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), socket);
-                channel_->setReadCallbackHandle(std::bind(&RtmpContext::readDataCallback, this, wThis));
+               // channel_ = Network::Channel::create(Media::getInstance()->getIOTaskQueue(), socket);
+               // channel_->setReadCallbackHandle(std::bind(&RtmpContext::readDataCallback, this, wThis));
             }
 
             void RtmpContext::errorCallback(int code, const char* msg) {
@@ -164,17 +160,17 @@ namespace LJMP {
                 invoke(task);
             }
 
-            void RtmpContext::handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer) {
-                MediaSource::Ptr media_source(media_source_.lock());
-                if (!media_source) {
-                    LOGE("media source is destruct");
-                    return;
-                }
+            //void RtmpContext::handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer) {
+            //    MediaSource::Ptr media_source(media_source_.lock());
+            //    if (!media_source) {
+            //        LOGE("media source is destruct");
+            //        return;
+            //    }
 
-                WPtr wThis(shared_from_this());
-                auto task = createTask(std::bind(&RtmpContext::doHandleFlvData, this, FLVType(tagHeader.type), data_buffer, wThis));
-                invoke(task);
-            }
+            //    WPtr wThis(shared_from_this());
+            //    auto task = createTask(std::bind(&RtmpContext::doHandleFlvData, this, FLVType(tagHeader.type), data_buffer, wThis));
+            //    invoke(task);
+            //}
 
             void RtmpContext::readDataCallback(WPtr wThis) {
                 ObjectPtr::Ptr self(wThis.lock());
@@ -192,7 +188,7 @@ namespace LJMP {
                 is_containe_audio_ = audio;
                 is_containe_video_ = video;
             }
-
+/*
             void RtmpContext::doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis) {
                 ObjectPtr::Ptr self(wThis.lock());
                 if (!self) {
@@ -201,13 +197,13 @@ namespace LJMP {
                 
                 switch (flv_type) {
                 case FLVType::SCRIPTE:
-                    doHandleScrpite(data_buffer);
+                 //   doHandleScrpite(data_buffer);
                     break;
                 case FLVType::AUDIO:
 
                     break;
                 case FLVType::VIDEO:
-                    doHandleVideo(data_buffer);
+                   // doHandleVideo(data_buffer);
                     break;
                 default:
                     break;
@@ -232,7 +228,7 @@ namespace LJMP {
                 }
 
                 media_source->OnHandleVideoData(data_buffer);
-            }
+            }*/
 
         }
     }

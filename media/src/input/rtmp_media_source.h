@@ -3,6 +3,7 @@
 
 #include "src/media_source.h"
 #include "src/media_source_factory.h"
+#include "src/kernel/channel.h"
 
 #include "src/input/rtmp/rtmp_context.h"
 
@@ -21,8 +22,8 @@ namespace LJMP {
 
             void errorCallback(int, const char*);
 
-            void onHandleScripte(const DataBuffer::Ptr& data_buffer);
-            void OnHandleVideoData(const DataBuffer::Ptr& data_buffer);
+ //           void onHandleScripte(const DataBuffer::Ptr& data_buffer);
+ //           void OnHandleVideoData(const DataBuffer::Ptr& data_buffer);
 
         protected:
             explicit RTMPMediaSource(const std::string& url);
@@ -33,6 +34,7 @@ namespace LJMP {
             void doErrorCallback(int code, std::string msg, WPtr wThis);
 
         private:
+            IChannel::Ptr channel_;
             Rtmp::RtmpContext::Ptr rtmp_context_;
             int video_codec_id_ = -1;
         };

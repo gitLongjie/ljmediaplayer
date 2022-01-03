@@ -12,11 +12,11 @@
 
 #include "src/kernel/io_event.h"
 #include "src/kernel/network_manager.h"
+#include "src/kernel/channel.h"
 #include "src/network/lj_network_define.h"
 
 namespace LJMP {
     namespace Network {
-        class Channel;
 
         class NetworkManagerStd : public TaskObject, public INetworkManager {
             disable_copy(NetworkManagerStd)
@@ -30,9 +30,9 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
 
-            void updateChannel(const std::shared_ptr<Channel>& channel);
-            void removeChannel(const std::shared_ptr<Channel>& channel);
-            void addConnectChannel(const std::shared_ptr<Channel>& channel);
+            void updateChannel(const IChannel::Ptr& channel, IIOEvent::Event event);
+            void removeChannel(const IChannel::Ptr& channel);
+            void addConnectChannel(const IChannel::Ptr& channel);
 
         protected:
             NetworkManagerStd(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue);
@@ -40,20 +40,15 @@ namespace LJMP {
             virtual void doInitialize(ObjectPtr::WPtr wThis);
             virtual void doUninitialize(ObjectPtr::WPtr wThis);
 
-            void doUpdateChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis);
-            void doRemoveChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis);
-            void doAddConnectChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis);
+            void doUpdateChannel(const IChannel::Ptr& channel, IIOEvent::Event event, ObjectPtr::WPtr wThis);
+            void doRemoveChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis);
+            void doAddConnectChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis);
 
         private:
             SpinLock spin_lock_;
             bool stop_ = true;
 
             IIOEvent::Ptr io_event_;
-
-            using ChannelList = std::map<socket_t, std::shared_ptr<Channel>>;
-            ChannelList channels_;
-
-            ChannelList connect_channels_;
         };
         
     }

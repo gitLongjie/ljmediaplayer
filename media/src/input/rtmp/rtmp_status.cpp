@@ -86,17 +86,17 @@ namespace LJMP {
                 }
 
                 const unsigned int data_size = tagHeader.getTagSize();
-                DataBuffer::Ptr data_buffer = DataBuffer::create(data_size);
-                ret = RTMP_Read(rtmp, data_buffer->getData(), data_size);
-                if (data_size != ret) {
-                    LOGE("read flv data failed, ret={}, data size={}", ret, data_size);
-                    context->errorCallback(error_code_read_network_data_failed, "read network data failed");
-                    return;
-                }
-
-                data_buffer->setTimeStamp(tagHeader.getTimestamp());
-                data_buffer->setTimeStampEx(tagHeader.timestampex);
-                context->handleFlvData(tagHeader, data_buffer);
+////                DataBuffer::Ptr data_buffer = DataBuffer::create(data_size);
+//                ret = RTMP_Read(rtmp, data_buffer->getData(), data_size);
+//                if (data_size != ret) {
+//                    LOGE("read flv data failed, ret={}, data size={}", ret, data_size);
+//                    context->errorCallback(error_code_read_network_data_failed, "read network data failed");
+//                    return;
+//                }
+//
+//                data_buffer->setTimeStamp(tagHeader.getTimestamp());
+//                data_buffer->setTimeStampEx(tagHeader.timestampex);
+//                context->handleFlvData(tagHeader, data_buffer);
             }
 
         }

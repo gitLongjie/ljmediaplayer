@@ -8,10 +8,6 @@
 #include "src/network/win/network_manager_win.h"
 #endif // WIN32
 
-#include "src/network/channel.h"
-#include "src/network/socket.h"
-
-
 namespace LJMP {
     namespace Network {
         
@@ -52,15 +48,15 @@ namespace LJMP {
             spin_lock_.lock();
         }
 
-        void NetworkManagerStd::updateChannel(const std::shared_ptr<Channel>& channel) {
+        void NetworkManagerStd::updateChannel(const IChannel::Ptr& channel, IIOEvent::Event event) {
             LOG_ENTER;
 
             ObjectPtr::WPtr wThis(shared_from_this());
-            auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, wThis));
+            auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, event, wThis));
             invoke(task);
         }
 
-        void NetworkManagerStd::removeChannel(const std::shared_ptr<Channel>& channel) {
+        void NetworkManagerStd::removeChannel(const IChannel::Ptr& channel) {
             LOG_ENTER;
 
             ObjectPtr::WPtr wThis(shared_from_this());
@@ -68,7 +64,7 @@ namespace LJMP {
             invoke(task);
         }
 
-		void NetworkManagerStd::addConnectChannel(const std::shared_ptr<Channel>& channel)
+		void NetworkManagerStd::addConnectChannel(const IChannel::Ptr& channel)
 		{
 			LOG_ENTER;
 
@@ -114,7 +110,7 @@ namespace LJMP {
             spin_lock_.unlock();
         }
 
-        void NetworkManagerStd::doUpdateChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis) {
+        void NetworkManagerStd::doUpdateChannel(const IChannel::Ptr& channel, IIOEvent::Event event, ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -123,22 +119,10 @@ namespace LJMP {
                 return;
             }
 
-            if (!channel) {
-                LOGE("channel is nullptr");
-                return;
-            }
-
-            SocketPtr sc = channel->getSocket();
-            if (!sc) {
-                LOGE("channel is nullptr");
-                return;
-            }
-
-            channels_[sc->getSocket()] = channel;
-
+            io_event_->updateChannel(channel, event);
         }
 
-        void NetworkManagerStd::doRemoveChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis) {
+        void NetworkManagerStd::doRemoveChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -146,23 +130,10 @@ namespace LJMP {
                 LOGE("this object is desturcted {}", (long long)this);
                 return;
             }
-
-            if (!channel) {
-                LOGE("channel is nullptr");
-                return;
-            }
-
-            SocketPtr sc = channel->getSocket();
-            if (!sc) {
-                LOGE("channel is nullptr");
-                return;
-            }
-
-            sc->close();
-            channels_.erase(sc->getSocket());
+            io_event_->updateChannel(channel, IIOEvent::Event::E_Remove);
         }
 
-		void NetworkManagerStd::doAddConnectChannel(const std::shared_ptr<Channel>& channel, ObjectPtr::WPtr wThis) {
+		void NetworkManagerStd::doAddConnectChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis) {
 			LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -176,12 +147,7 @@ namespace LJMP {
 				return;
 			}
 
-			SocketPtr sc = channel->getSocket();
-			if (!sc) {
-				LOGE("channel is nullptr");
-				return;
-			}
-			connect_channels_[sc->getSocket()] = channel;
+            io_event_->updateChannel(channel, IIOEvent::Event::E_WriteEable);
 		}
     }
 }

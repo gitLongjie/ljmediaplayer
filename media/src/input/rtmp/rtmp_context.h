@@ -8,7 +8,6 @@
 #include "src/core/task_object.h"
 
 #include "src/media_flv.h"
-#include "src/network/channel.h"
 
 struct RTMP;
 
@@ -38,7 +37,7 @@ namespace LJMP {
                 void switchReaderStatus(std::shared_ptr<RtmpReaderStatus> status) { rtmp_reader_status_ = status; }
 
                 void handleFlvHeader(const FLVHeader& header);
-                void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
+               // void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
 
             protected:
                 RtmpContext(const TaskQueue::Ptr& task_queue, std::weak_ptr<RTMPMediaSource> media_source,
@@ -51,16 +50,15 @@ namespace LJMP {
 
                 void readDataCallback(WPtr wThis);
                 void doUpdateMedia(bool audio, bool video, WPtr wThis);
-                void doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis);
+               // void doHandleFlvData(FLVType flv_type, DataBuffer::Ptr data_buffer, WPtr wThis);
 
-                void doHandleScrpite(const DataBuffer::Ptr& data_buffer);
-                void doHandleVideo(const DataBuffer::Ptr& data_buffer);
+              /*  void doHandleScrpite(const DataBuffer::Ptr& data_buffer);
+                void doHandleVideo(const DataBuffer::Ptr& data_buffer);*/
 
             private:
                 std::weak_ptr<RTMPMediaSource> media_source_;
                 std::string url_;
 
-                Network::Channel::Ptr channel_;
                 std::shared_ptr<RTMP> rtmp_;
 
                 std::shared_ptr<RtmpReaderStatus> rtmp_reader_status_;

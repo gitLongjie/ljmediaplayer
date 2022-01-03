@@ -6,7 +6,8 @@
 #include "src/lj_defined.h"
 
 namespace LJMP {
-	
+	class IReadWriterCallback;
+
 	class IChannel {
 	public:
 		using Ptr = std::shared_ptr<IChannel>;
@@ -15,7 +16,7 @@ namespace LJMP {
 	public:
 		virtual ~IChannel() = default;
 		virtual FD getFD() const = 0;
-
+		virtual void setReadWriteCallback(const std::shared_ptr<IReadWriterCallback>& callback) = 0;
 		virtual void readEnable() = 0;
 		virtual void writeEnable() = 0;
 	};

@@ -69,6 +69,7 @@ namespace LJMP {
                 rtmp_context_->uninitialzie();
             }
 
+            
             std::weak_ptr<RTMPMediaSource> wThis(std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this()));
             rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), wThis, url);
             if (!rtmp_context_->intialize()) {
@@ -101,7 +102,7 @@ namespace LJMP {
 
             doClose();
         }
-
+/*
         void RTMPMediaSource::onHandleScripte(const DataBuffer::Ptr& data_buffer) {
             const char* data = data_buffer->getData();
             const unsigned int data_length = data_buffer->getSize();
@@ -156,6 +157,6 @@ namespace LJMP {
             data_buffer->setOffset(sizeof(FLVVideoTagHeader));
             callback(DataType::Video, static_cast<const void*>(&data_buffer));
         }
-
+        */
     }
 }
