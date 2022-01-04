@@ -28,7 +28,7 @@ namespace LJMP {
 		virtual void setErrorCallback(ErrorCallback callback) = 0;
 		virtual void initialize() = 0;
 		virtual void uninitialize() = 0;
-		virtual void updateChannel(const std::shared_ptr<IChannel>& channel, Event event) = 0;
+		virtual void updateChannel(const std::shared_ptr<IChannel>& channel, unsigned int event) = 0;
 	};
 }
 

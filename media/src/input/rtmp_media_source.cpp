@@ -2,7 +2,9 @@
 
 #include "src/utils.h"
 #include "src/core/log.h"
+#include "src/core/enum_operator.h"
 #include "src/kernel/channel.h"
+#include "src/kernel/network_manager.h"
 #include "src/media.h"
 #include "src/media_source_channel.h"
 #include "ljmedia/error_code.h"
@@ -69,6 +71,12 @@ namespace LJMP {
 
 
         bool RTMPMediaSource::doOpen(const std::string& url) {
+            INetworkManager::Ptr network_manager = Media::getInstance()->getNetworkManager();
+            if (!network_manager) {
+                LOGE("network manger is nullptr");
+                return false;
+            }
+
             if (!Utils::checkProtocol(url, protocols())) {
                 LOGE("protocol is not suppot");
                 return false;
@@ -98,7 +106,10 @@ namespace LJMP {
             channel_ = channel_factory.create(socket, callback);
             
 
-            socket->connect(host, port);
+            if (Network::Socket::ConnectStatus::Connecting == socket->connect(host, port)) {
+                Media::getInstance()->getNetworkManager()->updateChannel(channel_,
+                    enum_cast(IIOEvent::Event::E_Add) | enum_cast(IIOEvent::Event::E_WriteEable));
+            }
 
 
             

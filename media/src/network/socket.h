@@ -20,6 +20,13 @@ namespace LJMP {
                 UDP
             };
 
+            enum class ConnectStatus {
+                Unknow,
+                Failed,
+                Connecting,
+                Success
+            };
+
             using Ptr = std::shared_ptr<Socket>;
 
             static Ptr create(Socket::Model model);
@@ -28,7 +35,8 @@ namespace LJMP {
             virtual ~Socket();
 
             FD getFD() const override { return socket_; }
-            virtual bool connect(const std::string& address, short port) = 0;
+            // -1 is failed, 0 noblock 1 sucess
+            virtual ConnectStatus connect(const std::string& address, short port) = 0;
 
             bool isTcp() const { return model_ == Model::TCP; }
             void close();
@@ -37,19 +45,21 @@ namespace LJMP {
             bool enableBlock(bool enable);
             bool enableTimeout(bool enable, int time);
 
-            const std::string& getSessionName() const { return seesion_; }
+            const std::string& getSessionName() const { return session_; }
             FD getSocket() const { return socket_; }
 
         protected:
             explicit Socket(Model model);
             Socket(FD socket, Model model);
 
-            bool doConnect(const struct sockaddr& service);
+            ConnectStatus doConnect(const struct sockaddr& service);
+
+            void updateSession();
 
         private:
             Model model_ = Model::Unknow;
             FD socket_ = -1;
-            std::string seesion_;
+            std::string session_;
         };
     }
 }

@@ -94,13 +94,23 @@ namespace LJMP {
             return true;
         }
 
-        bool Socket::doConnect(const struct sockaddr& service) {
+        Socket::ConnectStatus Socket::doConnect(const struct sockaddr& service) {
             LOG_ENTER;
-
+            int err = 0;
             if (::connect(socket_, &service, sizeof(sockaddr)) < 0) {
+                err = NetworkUtils::getSocketError();
+                if (WSAEWOULDBLOCK == err) {
+                    return ConnectStatus::Connecting;
+                }
                 LOGE("do connect failed, err = {}", NetworkUtils::getSocketError());
-                return false;
+                return ConnectStatus::Failed;
             }
+            updateSession();
+            return ConnectStatus::Success;
+        }
+
+        void Socket::updateSession() {
+            LOG_ENTER;
 
             struct sockaddr_in sa;
             int len = sizeof(sa);
@@ -108,10 +118,8 @@ namespace LJMP {
                 std::string name = inet_ntoa(sa.sin_addr);
                 short port = ntohs(sa.sin_port);
 
-                seesion_ = name + "_" + std::to_string(port);
+                session_ = name + "_" + std::to_string(port);
             }
-
-            return true;
         }
 
     }

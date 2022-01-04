@@ -48,11 +48,11 @@ namespace LJMP {
             spin_lock_.lock();
         }
 
-        void NetworkManagerStd::updateChannel(const IChannel::Ptr& channel, IIOEvent::Event event) {
+        void NetworkManagerStd::updateChannel(const IChannel::Ptr& channel, unsigned int io_event) {
             LOG_ENTER;
 
             ObjectPtr::WPtr wThis(shared_from_this());
-            auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, event, wThis));
+            auto task = createTask(std::bind(&NetworkManagerStd::doUpdateChannel, this, channel, io_event, wThis));
             invoke(task);
         }
 
@@ -110,7 +110,8 @@ namespace LJMP {
             spin_lock_.unlock();
         }
 
-        void NetworkManagerStd::doUpdateChannel(const IChannel::Ptr& channel, IIOEvent::Event event, ObjectPtr::WPtr wThis) {
+        void NetworkManagerStd::doUpdateChannel(const IChannel::Ptr& channel,
+            unsigned int io_event, ObjectPtr::WPtr wThis) {
             LOG_ENTER;
 
             ObjectPtr::Ptr self(wThis.lock());
@@ -119,7 +120,7 @@ namespace LJMP {
                 return;
             }
 
-            io_event_->updateChannel(channel, event);
+            io_event_->updateChannel(channel, io_event);
         }
 
         void NetworkManagerStd::doRemoveChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis) {
@@ -130,7 +131,7 @@ namespace LJMP {
                 LOGE("this object is desturcted {}", (long long)this);
                 return;
             }
-            io_event_->updateChannel(channel, IIOEvent::Event::E_Remove);
+            io_event_->updateChannel(channel, static_cast<unsigned int>(IIOEvent::Event::E_Remove));
         }
 
 		void NetworkManagerStd::doAddConnectChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis) {
@@ -147,7 +148,7 @@ namespace LJMP {
 				return;
 			}
 
-            io_event_->updateChannel(channel, IIOEvent::Event::E_WriteEable);
+            io_event_->updateChannel(channel, static_cast<unsigned int>(IIOEvent::Event::E_WriteEable));
 		}
     }
 }

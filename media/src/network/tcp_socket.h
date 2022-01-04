@@ -15,7 +15,7 @@ namespace LJMP {
         public:
             ~TcpSocket() override;
 
-            bool connect(const std::string& address, short port) override;
+            ConnectStatus connect(const std::string& address, short port) override;
 
             int read(unsigned char* buffer, unsigned int size) override;
             int write(const unsigned char* buffer, unsigned int size) override;

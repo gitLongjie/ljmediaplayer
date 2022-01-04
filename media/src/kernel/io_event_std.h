@@ -20,7 +20,7 @@ namespace LJMP {
 		void setErrorCallback(ErrorCallback callback) override;
 		void initialize() override;
 		void uninitialize() override;
-		void updateChannel(const IChannel::Ptr& channel, Event event) override;
+		void updateChannel(const IChannel::Ptr& channel, unsigned int event) override;
 
 	protected:
 		IOEventStd(const TaskQueue::Ptr& task_queue, bool own_thread) noexcept;
@@ -59,7 +59,7 @@ namespace LJMP {
 		void doInitialize(ObjectPtr::WPtr wThis);
 		void doUninitialize(ObjectPtr::WPtr wThis);
 		void doErrorCallback(int code, ObjectPtr::WPtr wThis);
-		void doUpdateChannel(const IChannel::Ptr& channel, Event event, ObjectPtr::WPtr wThis);
+		void doUpdateChannel(const IChannel::Ptr& channel, unsigned int event, ObjectPtr::WPtr wThis);
 		void doProcess(ObjectPtr::WPtr wThis);
 
 		bool addChannel(const IChannel::Ptr& channel);

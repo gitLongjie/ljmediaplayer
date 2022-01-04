@@ -39,7 +39,7 @@ namespace LJMP {
 
         }
 
-        bool TcpSocket::connect(const std::string& address, short port) {
+        Socket::ConnectStatus TcpSocket::connect(const std::string& address, short port) {
             LOG_ENTER;
 
             struct sockaddr_in service;
@@ -48,13 +48,10 @@ namespace LJMP {
 
             if (!NetworkUtils::fillService(address.c_str(), port, &service)) {
                 LOGE("fill service failed");
-                return false;
+                return ConnectStatus::Failed;
             }
 
-            if (!doConnect(*(struct sockaddr*)&service)) {
-                return false;
-            }
-            return true;
+            return doConnect(*(struct sockaddr*)&service);
         }
 
         int TcpSocket::read(unsigned char* buffer, unsigned int size) {

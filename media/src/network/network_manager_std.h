@@ -10,9 +10,7 @@
 #include "src/core/spin_lock.h"
 #include "src/core/task_queue.h"
 
-#include "src/kernel/io_event.h"
 #include "src/kernel/network_manager.h"
-#include "src/kernel/channel.h"
 #include "src/network/lj_network_define.h"
 
 namespace LJMP {
@@ -30,9 +28,9 @@ namespace LJMP {
             bool initialize() override;
             void uninitialize() override;
 
-            void updateChannel(const IChannel::Ptr& channel, IIOEvent::Event event);
-            void removeChannel(const IChannel::Ptr& channel);
-            void addConnectChannel(const IChannel::Ptr& channel);
+            void updateChannel(const IChannel::Ptr& channel, unsigned int io_event) override;
+            void removeChannel(const IChannel::Ptr& channel) override;
+            void addConnectChannel(const IChannel::Ptr& channel) override;
 
         protected:
             NetworkManagerStd(const IIOEvent::Ptr& io_event, const TaskQueue::Ptr& task_queue);
@@ -40,7 +38,7 @@ namespace LJMP {
             virtual void doInitialize(ObjectPtr::WPtr wThis);
             virtual void doUninitialize(ObjectPtr::WPtr wThis);
 
-            void doUpdateChannel(const IChannel::Ptr& channel, IIOEvent::Event event, ObjectPtr::WPtr wThis);
+            void doUpdateChannel(const IChannel::Ptr& channel, unsigned int io_event, ObjectPtr::WPtr wThis);
             void doRemoveChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis);
             void doAddConnectChannel(const IChannel::Ptr& channel, ObjectPtr::WPtr wThis);
 

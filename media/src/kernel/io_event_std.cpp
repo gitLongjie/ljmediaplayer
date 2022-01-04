@@ -34,8 +34,8 @@ namespace LJMP {
 		invoke(task);
 	}
 
-	void IOEventStd::updateChannel(const IChannel::Ptr& channel, Event event) {
-		if (IIOEvent::Event::E_Unknown == event || !channel) {
+	void IOEventStd::updateChannel(const IChannel::Ptr& channel, unsigned int event) {
+		if (enum_cast(IIOEvent::Event::E_Unknown) == event || !channel) {
 			return;
 		}
 
@@ -109,7 +109,7 @@ namespace LJMP {
 		}
 	}
 
-	void IOEventStd::doUpdateChannel(const IChannel::Ptr& channel, Event event, ObjectPtr::WPtr wThis) {
+	void IOEventStd::doUpdateChannel(const IChannel::Ptr& channel, unsigned int event, ObjectPtr::WPtr wThis) {
 		LOGI("event =", event);
 
 		ObjectPtr::Ptr self(wThis.lock());
@@ -118,20 +118,20 @@ namespace LJMP {
 			return;
 		}
 
-		if (enum_cast(event & IIOEvent::Event::E_Remove) != 0) {
+		if ((event & enum_cast(IIOEvent::Event::E_Remove)) != 0) {
 			LOGD("remove event={}", event);
 			removeChannel(channel);
 			return;
 		}
-		else if (enum_cast(event & IIOEvent::Event::E_Add) != 0) {
+		else if ((event & enum_cast(IIOEvent::Event::E_Add)) != 0) {
 			addChannel(channel);
 		}
 
-		if (enum_cast(event & IIOEvent::Event::E_ReadEable) != 0) {
+		if ((event & enum_cast(IIOEvent::Event::E_ReadEable)) != 0) {
 			read_channels_.emplace_back(channel);
 		}
 
-		if (enum_cast(event & IIOEvent::Event::E_WriteEable) != 0) {
+		if ((event & enum_cast(IIOEvent::Event::E_WriteEable)) != 0) {
 			writer_channels_.emplace_back(channel);
 		}
 	}
