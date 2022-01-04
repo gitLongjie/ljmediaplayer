@@ -13,6 +13,9 @@ namespace LJMP {
 	public:
 		~ReadWriterCallbackStd() override;
 
+		bool onRead(const IReader::Ptr& reader) override { return false; }
+		bool onWrite(const IWriter::Ptr& writer) override { return false; }
+
 	protected:
 		ReadWriterCallbackStd();
 	};

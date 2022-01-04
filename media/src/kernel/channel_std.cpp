@@ -3,15 +3,22 @@
 #include "src/core/log.h"
 
 namespace LJMP {
-	ChannelStd::ChannelStd(const IIOEvent::Ptr& io_event, const IReadWriter::Ptr& read_writer)
+	ChannelStd::ChannelStd(const IReadWriter::Ptr& read_writer, const IReadWriterCallback::Ptr& callback)
 		: ObjectPtr()
-		, io_event_(io_event)
-		, read_writer_(read_writer) {
+		, read_writer_(read_writer)
+		, read_write_callback_(callback){
 		LOG_CREATER;
 	}
 
 	ChannelStd::~ChannelStd() {
 		LOG_DESTRUCT;
+	}
+
+	FD ChannelStd::getFD() const {
+		if (!read_writer_) {
+			return -1;
+		}
+		return read_writer_->getFD();;
 	}
 
 	void ChannelStd::readEnable() {

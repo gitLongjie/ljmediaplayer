@@ -10,7 +10,7 @@ namespace LJMP {
 
         public:
             static Socket::Ptr create();
-            static Socket::Ptr create(socket_t socket);
+            static Socket::Ptr create(FD socket);
 
         public:
             ~TcpSocket() override;
@@ -22,7 +22,7 @@ namespace LJMP {
 
         protected:
             TcpSocket();
-            TcpSocket(socket_t socket);
+            TcpSocket(FD socket);
         };
     }
 }

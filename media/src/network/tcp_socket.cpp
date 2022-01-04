@@ -16,9 +16,9 @@ namespace LJMP {
             return std::make_shared<Creator>();
         }
 
-        Socket::Ptr TcpSocket::create(socket_t socket) {
+        Socket::Ptr TcpSocket::create(FD socket) {
             struct Creator : public TcpSocket {
-                explicit Creator(socket_t socket) : TcpSocket(socket) {}
+                explicit Creator(FD socket) : TcpSocket(socket) {}
                 ~Creator() override {}
             };
 
@@ -30,7 +30,7 @@ namespace LJMP {
 
         }
 
-        TcpSocket::TcpSocket(socket_t socket)
+        TcpSocket::TcpSocket(FD socket)
             : Socket(socket, Socket::Model::TCP) {
 
         }
@@ -58,7 +58,7 @@ namespace LJMP {
         }
 
         int TcpSocket::read(unsigned char* buffer, unsigned int size) {
-            socket_t sc = getSocket();
+            FD sc = getSocket();
             if (-1 == sc) {
                 LOGE("cont write data sc={}", sc);
                 return 0;
@@ -71,7 +71,7 @@ namespace LJMP {
             {
                 int ret = ::recv(sc, p, len, 0);
                 if (ret == -1) {
-                   int err = getSockError();
+                    int err = 0;//  getSockError();
                    LOGE("recv error, err={}", err);
                    return 0;
                 }
@@ -83,7 +83,7 @@ namespace LJMP {
         }
 
         int TcpSocket::write(const unsigned char* buffer, unsigned int size) {
-            socket_t sc = getSocket();
+            FD sc = getSocket();
             if (-1 == sc) {
                 LOGE("cont write data sc={}", sc);
                 return 0;

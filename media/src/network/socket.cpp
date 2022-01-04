@@ -24,7 +24,7 @@ namespace LJMP {
             return nullptr;
         }
 
-        Socket::Ptr Socket::create(socket_t socket, Socket::Model model) {
+        Socket::Ptr Socket::create(FD socket, Socket::Model model) {
             if (Socket::Model::TCP == model) {
                 return TcpSocket::create(socket);
             }
@@ -39,7 +39,7 @@ namespace LJMP {
             
         }
 
-        Socket::Socket(socket_t socket, Model model)
+        Socket::Socket(FD socket, Model model)
             : model_(model)
             , socket_(socket){
 

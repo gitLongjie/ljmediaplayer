@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "src/lj_defined.h"
+
 namespace LJMP {
     class IReader {
     public:
@@ -30,6 +32,8 @@ namespace LJMP {
 
     public:
         ~IReadWriter() override = default;
+
+        virtual FD getFD() const = 0;
     };
 }
 

@@ -2,9 +2,16 @@
 
 #include "src/utils.h"
 #include "src/core/log.h"
+#include "src/kernel/channel.h"
 #include "src/media.h"
 #include "src/media_source_channel.h"
 #include "ljmedia/error_code.h"
+
+#include "src/network/network_utils.h"
+#include "src/network/socket_factory.h"
+#include "src/kernel/channel_factory.h"
+
+#include "src/input/rtmp/rtmp_read_writer_callback.h"
 
 #include "src/input/rtmp/rtmp_utils.h"
 
@@ -16,6 +23,8 @@ static const char kVideoFramerate[] = "framerate";
 static const char kVideoWidth[] = "width";
 static const char kVideoHeight[] = "height";
 static const char kVideoCodecId[] = "videocodecid";
+
+short kDefaultPort = 1935;
 
 namespace LJMP {
     namespace Input {
@@ -68,6 +77,29 @@ namespace LJMP {
             if (rtmp_context_) {
                 rtmp_context_->uninitialzie();
             }
+
+            std::string host;
+            short port = kDefaultPort;
+            if (!Network::NetworkUtils::splitHostPort(url, &host, &port)) {
+                LOGE("splict host port failed");
+                return false;
+            }
+            if (port == 0) {
+                port = kDefaultPort;
+            }
+
+            Network::SocketFactory factory;
+            Network::Socket::Ptr socket = factory.createTcp();
+            socket->enableBlock(false);
+
+            std::shared_ptr<Rtmp::RtmpReadWriteCallback> callback = createPtr<Rtmp::RtmpReadWriteCallback>();
+
+            ChannelFactory channel_factory;
+            channel_ = channel_factory.create(socket, callback);
+            
+
+            socket->connect(host, port);
+
 
             
             std::weak_ptr<RTMPMediaSource> wThis(std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this()));

@@ -3,7 +3,7 @@
 
 #ifdef WIN32
 
-#include <WinSock2.h>
+//#include <WinSock2.h>
 
 #endif // WIN32
 
@@ -13,9 +13,7 @@ namespace LJMP {
 
 //#include <WinSock2.h>
 
-        using socket_t = SOCKET;
-
-#define getSockError()	WSAGetLastError()
+//#define getSockError()	WSAGetLastError()
 
 #endif // WIN32
     }

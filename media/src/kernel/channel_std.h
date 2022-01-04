@@ -14,17 +14,17 @@ namespace LJMP{
 	public:
 		~ChannelStd() override;
 
-		void setReadWriteCallback(const std::shared_ptr<IReadWriterCallback>& callback) override {
+		FD getFD() const override;
+		void setReadWriteCallback(const IReadWriterCallback::Ptr& callback) override {
 			read_write_callback_ = callback;
 		}
 		void readEnable() override;
 		void writeEnable() override;
 
 	protected:
-		ChannelStd(const IIOEvent::Ptr& io_event, const IReadWriter::Ptr& read_writer);
+		ChannelStd( const IReadWriter::Ptr& read_writer, const IReadWriterCallback::Ptr& callback);
 
 	private:
-		IIOEvent::WPtr io_event_;
 		IReadWriter::Ptr read_writer_;
 		IReadWriterCallback::Ptr read_write_callback_;
 	};

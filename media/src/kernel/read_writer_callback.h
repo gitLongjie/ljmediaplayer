@@ -21,7 +21,7 @@ namespace LJMP {
 
 	public:
 		virtual ~IWriterCallback() = default;
-		virtual bool onWrite(const IWriter::Ptr& reader) = 0;
+		virtual bool onWrite(const IWriter::Ptr& writer) = 0;
 	};
 
 	class IReadWriterCallback : public IReaderCallback, public IWriterCallback {
