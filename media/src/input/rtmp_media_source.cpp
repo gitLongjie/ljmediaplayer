@@ -107,12 +107,9 @@ namespace LJMP {
             
 
             if (Network::Socket::ConnectStatus::Connecting == socket->connect(host, port)) {
-                Media::getInstance()->getNetworkManager()->updateChannel(channel_,
-                    enum_cast(IIOEvent::Event::E_Add) | enum_cast(IIOEvent::Event::E_WriteEable));
+                Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
             }
 
-
-            
             std::weak_ptr<RTMPMediaSource> wThis(std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this()));
             rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), wThis, url);
             if (!rtmp_context_->intialize()) {
