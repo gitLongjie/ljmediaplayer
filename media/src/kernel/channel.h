@@ -17,6 +17,7 @@ namespace LJMP {
 		virtual ~IChannel() = default;
 		virtual FD getFD() const = 0;
 		virtual void setReadWriteCallback(const std::shared_ptr<IReadWriterCallback>& callback) = 0;
+		virtual void updateEvent(unsigned int io_event) = 0;
 		virtual void readEnable() = 0;
 		virtual void writeEnable() = 0;
 	};

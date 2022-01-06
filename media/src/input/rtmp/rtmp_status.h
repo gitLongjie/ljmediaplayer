@@ -5,6 +5,7 @@
 
 #include "src/lj_defined.h"
 
+#include "src/kernel/channel.h"
 #include "src/input/rtmp/rtmp.h"
 
 namespace LJMP {
@@ -34,6 +35,7 @@ namespace LJMP {
                 
             private:
                 std::weak_ptr<RtmpContext> rtmp_context_;
+                IChannel::Ptr channel_;
             };
 
             class RtmpConnectStatus : public RtmpStatus {

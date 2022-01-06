@@ -18,6 +18,7 @@ namespace LJMP{
 		void setReadWriteCallback(const IReadWriterCallback::Ptr& callback) override {
 			read_write_callback_ = callback;
 		}
+		void updateEvent(unsigned int io_event) override;
 		void readEnable() override;
 		void writeEnable() override;
 

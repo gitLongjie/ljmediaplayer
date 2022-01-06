@@ -1,6 +1,8 @@
 #include "src/kernel/channel_std.h"
 
 #include "src/core/log.h"
+#include "src/kernel/network_manager.h"
+#include "src/media.h"
 
 namespace LJMP {
 	ChannelStd::ChannelStd(const IReadWriter::Ptr& read_writer, const IReadWriterCallback::Ptr& callback)
@@ -19,6 +21,13 @@ namespace LJMP {
 			return -1;
 		}
 		return read_writer_->getFD();;
+	}
+
+	void ChannelStd::updateEvent(unsigned int io_event) {
+		LOG_ENTER;
+
+		IChannel::Ptr self = std::dynamic_pointer_cast<IChannel>(shared_from_this());
+		Media::getInstance()->getNetworkManager()->updateChannel(self, io_event);
 	}
 
 	void ChannelStd::readEnable() {
