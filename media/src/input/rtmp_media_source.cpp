@@ -104,7 +104,7 @@ namespace LJMP {
             std::weak_ptr<RTMPMediaSource> wThis(std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this()));
             rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), wThis, url);
             if (!rtmp_context_->intialize()) {
-                LOGE("rtmp conext initialize failed");
+                LOGE("rtmp conext initialize failed, url={}", url);
                 return false;
             }
 
@@ -112,13 +112,18 @@ namespace LJMP {
 
             ChannelFactory channel_factory;
             channel_ = channel_factory.create(socket, callback);
-            
-            if (Network::Socket::ConnectStatus::Connecting == socket->connect(host, port)) {
+            Network::Socket::ConnectStatus connect_status = socket->connect(host, port);
+            if (Network::Socket::ConnectStatus::Connecting == connect_status) {
                 rtmp_context_->switchStatus(createPtr<Rtmp::RtmpConnectStatus>(rtmp_context_));
                 Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
             }
-
-            
+            else if (Network::Socket::ConnectStatus::Success == connect_status) {
+                rtmp_context_->switchStatus(createPtr<Rtmp::RtmpHandSharkStauts>(rtmp_context_));
+            }
+            else {
+                LOGE("connect failed url={}", url);
+                return false;
+            }
             return true;
         }
 

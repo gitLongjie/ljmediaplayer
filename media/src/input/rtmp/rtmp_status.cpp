@@ -29,6 +29,15 @@ namespace LJMP {
                 LOG_DESTRUCT;
             }
 
+            RtmpHandSharkStauts::RtmpHandSharkStauts(const std::shared_ptr<RtmpContext>& rtmp_context) noexcept
+                : RtmpStatus(rtmp_context) {
+                LOG_CREATER;
+            }
+
+            RtmpHandSharkStauts::~RtmpHandSharkStauts() {
+                LOG_DESTRUCT;
+            }
+
 
             RtmpReaderStatus::RtmpReaderStatus(const RtmpContext::Ptr& rtmp_context) :RtmpStatus(rtmp_context) {
 

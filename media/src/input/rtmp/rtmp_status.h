@@ -46,6 +46,16 @@ namespace LJMP {
                 explicit RtmpConnectStatus(const std::shared_ptr<RtmpContext>& rtmp_context) noexcept;
             };
 
+            class RtmpHandSharkStauts : public RtmpStatus {
+                disable_copy(RtmpHandSharkStauts);
+
+            protected:
+                ~RtmpHandSharkStauts() override;
+
+            public:
+                explicit RtmpHandSharkStauts(const std::shared_ptr<RtmpContext>& rtmp_context) noexcept;
+            };
+
             class RtmpReaderStatus : public RtmpStatus {
                 disable_copy(RtmpReaderStatus)
 
