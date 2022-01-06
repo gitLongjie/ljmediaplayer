@@ -121,7 +121,7 @@ namespace LJMP {
 
                 rtmp_ = std::move(rtmp);
 
-                rtmp_reader_status_ = RtmpReadFLVHeaderStatus::create(std::dynamic_pointer_cast<RtmpContext>(self));
+                rtmp_status_ = RtmpReadFLVHeaderStatus::create(std::dynamic_pointer_cast<RtmpContext>(self));
 
                 Network::Socket::Ptr socket = Network::Socket::create(rtmp_->m_sb.sb_socket, Network::Socket::Model::TCP);
                 //socket->enableBlock(false);
@@ -177,7 +177,7 @@ namespace LJMP {
                 if (!self) {
                     return;
                 }
-                rtmp_reader_status_->read(rtmp_.get());
+               // rtmp_status_->read(rtmp_.get());
             }
 
             void RtmpContext::doUpdateMedia(bool audio, bool video, WPtr wThis) {

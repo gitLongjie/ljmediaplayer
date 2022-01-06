@@ -16,7 +16,7 @@ namespace LJMP {
         class RTMPMediaSource;
         namespace Rtmp {
 
-            class RtmpReaderStatus;
+            class RtmpStatus;
 
             class RtmpContext : public TaskObject {
                 disable_copy(RtmpContext)
@@ -34,7 +34,7 @@ namespace LJMP {
                 void uninitialzie();
 
                 void errorCallback(int code, const char* msg);
-                void switchReaderStatus(const std::shared_ptr<RtmpReaderStatus>& status) { rtmp_reader_status_ = status; }
+                void switchStatus(const std::shared_ptr<RtmpStatus>& status) { rtmp_status_ = status; }
 
                 void handleFlvHeader(const FLVHeader& header);
                // void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
@@ -61,7 +61,7 @@ namespace LJMP {
 
                 std::shared_ptr<RTMP> rtmp_;
 
-                std::shared_ptr<RtmpReaderStatus> rtmp_reader_status_;
+                std::shared_ptr<RtmpStatus> rtmp_status_;
                 bool is_containe_audio_ = false;
                 bool is_containe_video_ = false;
             };

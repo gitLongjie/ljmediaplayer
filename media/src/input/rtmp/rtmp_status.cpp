@@ -20,6 +20,15 @@ namespace LJMP {
                 LOGI("dctor {}", (long long)this);
             }
 
+            RtmpConnectStatus::RtmpConnectStatus(const std::shared_ptr<RtmpContext>& rtmp_context) noexcept
+                : RtmpStatus(rtmp_context) {
+                LOG_CREATER;
+            }
+
+            RtmpConnectStatus::~RtmpConnectStatus() {
+                LOG_DESTRUCT;
+            }
+
 
             RtmpReaderStatus::RtmpReaderStatus(const RtmpContext::Ptr& rtmp_context) :RtmpStatus(rtmp_context) {
 
@@ -57,7 +66,7 @@ namespace LJMP {
                     flvHeader.isContainsVideo(), duration / 1000000);
 
                 context->handleFlvHeader(flvHeader);
-                context->switchReaderStatus(RtmpReadFLVTagDataStatus::create(context));
+                context->switchStatus(RtmpReadFLVTagDataStatus::create(context));
             }
 
             RtmpReaderStatus::Ptr RtmpReadFLVTagDataStatus::create(const RtmpContext::Ptr& rtmp_context) {
@@ -98,6 +107,9 @@ namespace LJMP {
 //                data_buffer->setTimeStampEx(tagHeader.timestampex);
 //                context->handleFlvData(tagHeader, data_buffer);
             }
+
+            
+
 
         }
     }

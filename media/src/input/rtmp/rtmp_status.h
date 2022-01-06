@@ -36,6 +36,16 @@ namespace LJMP {
                 std::weak_ptr<RtmpContext> rtmp_context_;
             };
 
+            class RtmpConnectStatus : public RtmpStatus {
+                disable_copy(RtmpConnectStatus);
+
+            protected:
+                ~RtmpConnectStatus() override;
+
+            public:
+                explicit RtmpConnectStatus(const std::shared_ptr<RtmpContext>& rtmp_context) noexcept;
+            };
+
             class RtmpReaderStatus : public RtmpStatus {
                 disable_copy(RtmpReaderStatus)
 

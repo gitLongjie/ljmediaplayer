@@ -16,6 +16,7 @@
 #include "src/input/rtmp/rtmp_read_writer_callback.h"
 
 #include "src/input/rtmp/rtmp_utils.h"
+#include "src/input/rtmp/rtmp_status.h"
 
 static const char kAudioDatarate[] = "audiodatarate";
 static const char kAudioChannel[] = "audiochannel";
@@ -113,6 +114,7 @@ namespace LJMP {
             channel_ = channel_factory.create(socket, callback);
             
             if (Network::Socket::ConnectStatus::Connecting == socket->connect(host, port)) {
+                rtmp_context_->switchStatus(createPtr<Rtmp::RtmpConnectStatus>(rtmp_context_));
                 Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
             }
 
