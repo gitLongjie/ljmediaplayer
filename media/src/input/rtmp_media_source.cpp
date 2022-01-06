@@ -100,16 +100,6 @@ namespace LJMP {
             Network::Socket::Ptr socket = factory.createTcp();
             socket->enableBlock(false);
 
-            std::shared_ptr<Rtmp::RtmpReadWriteCallback> callback = createPtr<Rtmp::RtmpReadWriteCallback>();
-
-            ChannelFactory channel_factory;
-            channel_ = channel_factory.create(socket, callback);
-            
-
-            if (Network::Socket::ConnectStatus::Connecting == socket->connect(host, port)) {
-                Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
-            }
-
             std::weak_ptr<RTMPMediaSource> wThis(std::dynamic_pointer_cast<RTMPMediaSource>(shared_from_this()));
             rtmp_context_ = Rtmp::RtmpContext::create(getTaskQueue(), wThis, url);
             if (!rtmp_context_->intialize()) {
@@ -117,6 +107,16 @@ namespace LJMP {
                 return false;
             }
 
+            std::shared_ptr<Rtmp::RtmpReadWriteCallback> callback = createPtr<Rtmp::RtmpReadWriteCallback>(rtmp_context_);
+
+            ChannelFactory channel_factory;
+            channel_ = channel_factory.create(socket, callback);
+            
+            if (Network::Socket::ConnectStatus::Connecting == socket->connect(host, port)) {
+                Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
+            }
+
+            
             return true;
         }
 

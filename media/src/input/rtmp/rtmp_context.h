@@ -34,7 +34,7 @@ namespace LJMP {
                 void uninitialzie();
 
                 void errorCallback(int code, const char* msg);
-                void switchReaderStatus(std::shared_ptr<RtmpReaderStatus> status) { rtmp_reader_status_ = status; }
+                void switchReaderStatus(const std::shared_ptr<RtmpReaderStatus>& status) { rtmp_reader_status_ = status; }
 
                 void handleFlvHeader(const FLVHeader& header);
                // void handleFlvData(const FLVTagHeader& tagHeader, const DataBuffer::Ptr& data_buffer);
