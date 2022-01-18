@@ -112,10 +112,10 @@ namespace LJMP {
 
             ChannelFactory channel_factory;
             channel_ = channel_factory.create(socket, callback);
+            Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
             Network::Socket::ConnectStatus connect_status = socket->connect(host, port);
             if (Network::Socket::ConnectStatus::Connecting == connect_status) {
                 rtmp_context_->switchStatus(createPtr<Rtmp::RtmpConnectStatus>(rtmp_context_));
-                Media::getInstance()->getNetworkManager()->addConnectChannel(channel_);
             }
             else if (Network::Socket::ConnectStatus::Success == connect_status) {
                 rtmp_context_->switchStatus(createPtr<Rtmp::RtmpHandSharkStauts>(rtmp_context_));
