@@ -13,7 +13,7 @@ namespace LJMP {
         virtual ~TaskObjectImpl() = default;
 
         virtual bool invoke(const Task::Ptr& task) = 0;
-        virtual bool invoke(const Task::Ptr& task, uint16_t delay) = 0;
+        virtual bool invoke(const Task::Ptr& task, long long delay) = 0;
         virtual bool isCurrentThread() const = 0;
         virtual TaskQueue::Ptr getTaskQueue() const = 0;
 
@@ -52,7 +52,7 @@ namespace LJMP {
             return true;
         }
 
-        bool invoke(const Task::Ptr& task, uint16_t delay) override {
+        bool invoke(const Task::Ptr& task, long long delay) override {
             TaskQueue::Ptr task_queue(task_queue_.lock());
             if (!task_queue) {
                 LOGE("this task queue is destruct");
@@ -114,7 +114,7 @@ namespace LJMP {
             return true;
         }
 
-        bool invoke(const Task::Ptr& task, uint16_t delay) override {
+        bool invoke(const Task::Ptr& task, long long delay) override {
             if (!task_queue_) {
                 LOGE("this task queue is destruct");
                 return false;
@@ -176,7 +176,7 @@ namespace LJMP {
         return impl_->invoke(task);
     }
 
-    bool TaskObject::invoke(const Task::Ptr& task, uint16_t delay) {
+    bool TaskObject::invoke(const Task::Ptr& task, long long delay) {
         return impl_->invoke(task, delay);
     }
 

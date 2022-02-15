@@ -24,7 +24,7 @@ namespace LJMP {
         TaskObject(const TaskQueue::Ptr& task_queue, bool own_thread);
 
         bool invoke(const Task::Ptr& task);
-        bool invoke(const Task::Ptr& task, uint16_t delay);
+        bool invoke(const Task::Ptr& task, long long delay);
         bool isCurrentThread();
 
         TaskQueue::Ptr getTaskQueue() const;

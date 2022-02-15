@@ -78,7 +78,7 @@ void TaskQueue::push(Task::Ptr task) {
     m_condition_variable.notify_one();
 }
 
-void TaskQueue::push(Task::Ptr task, uint16_t delay) {
+void TaskQueue::push(Task::Ptr task, long long delay) {
     if (m_terminated) {
         return;
     }

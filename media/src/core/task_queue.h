@@ -68,7 +68,7 @@ public:
     ~TaskQueue();
 
     void push(Task::Ptr task);
-    void push(Task::Ptr task, uint16_t delay);
+    void push(Task::Ptr task, long long delay);
 
     bool isCurrentThread() const;
 

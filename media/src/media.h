@@ -36,7 +36,7 @@ namespace LJMP {
         void uninitialize();
 
         void invoke(const Task::Ptr& task);
-        void invoke(const Task::Ptr& task, uint16_t delay);
+        void invoke(const Task::Ptr& task, long long delay);
 
         void errorCallbak(int code, const std::string& msg);
         
