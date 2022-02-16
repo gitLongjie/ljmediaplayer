@@ -20,7 +20,9 @@ include_directories(
 )
 
 link_directories(
-    ${CMAKE_BINARY_DIR} 
+    ${CMAKE_BINARY_DIR}
+    ${thirdparty_dir}/x264/lib/
+    ${thirdparty_dir}/ffmpeg/lib/
 )
 
 file(GLOB src_code ${CMAKE_CURRENT_LIST_DIR}/*.h ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
@@ -55,6 +57,6 @@ target_link_libraries(${PROJECT_NAME} ljmedia)
 add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E 
-        copy "${PROJECT_BINARY_DIR}/../../media/Debug/ljmedia.dll" "${PROJECT_BINARY_DIR}/Debug"
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory  "${thirdparty_dir}/ffmpeg/bin/" "${PROJECT_BINARY_DIR}/$<CONFIG>"
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/../../media/Debug/ljmedia.dll" "${PROJECT_BINARY_DIR}/$<CONFIG>"
 )
