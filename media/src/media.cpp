@@ -177,7 +177,7 @@ namespace LJMP {
         main_task_queue_.push(task);
     }
 
-    void Media::invoke(const Task::Ptr& task, uint16_t delay) {
+    void Media::invoke(const Task::Ptr& task, long long delay) {
         main_task_queue_.push(task, delay);
     }
 
