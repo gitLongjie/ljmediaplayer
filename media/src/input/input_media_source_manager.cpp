@@ -9,6 +9,7 @@
 #include "src/core/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
+#include "src/network/url.h"
 
 namespace LJMP {
     namespace Input {
@@ -45,6 +46,7 @@ namespace LJMP {
         }
     
         MediaSource::Ptr InputMediaSourceManager::getMediaSource(const std::string& url) {
+            Url t(url);
             std::string protocol = Utils::getProtocol(url);
             auto itor = std::find_if(media_source_factory_.begin(), media_source_factory_.end(),
                 [=](const auto& item)->bool {
