@@ -17,8 +17,21 @@ static size_t find(const char* str, size_t len, size_t offset, char dest) {
 		return len;
 	}
 
-	const char* s = str;
+	const char* s = str + offset;
 	while (*s != dest && offset < len) {
+		++s;
+		++offset;
+	}
+	return offset;
+}
+
+static rsize_t jumpWhenEque(const char* src, size_t len, size_t offset, char dest) {
+	if (offset >= len) {
+		return len;
+	}
+
+	const char* s = src + offset;
+	while (*s == dest && offset < len) {
 		++s;
 		++offset;
 	}
@@ -47,10 +60,22 @@ bool Url::parse() {
 		return false;
 	}
 
-	if (parseProtocol(url, len, offset)) {
-		
+	parseProtocol(url, len, offset);
+	if (offset >= len) {
+		return false;
 	}
 
+	offset = jumpWhenEque(url, len, offset, ':');
+	if (offset >= len) {
+		return false;
+	}
+
+	offset = jumpWhenEque(url, len, offset, '/');
+	if (offset >= len) {
+		return false;
+	}
+
+	parseHost(url, len, offset);
 	return false;
 }
 
@@ -68,4 +93,31 @@ bool Url::parseProtocol(const char* url, size_t len, size_t& offset) {
 	m_protocol = m_url.substr(offset, pos - offset);
 	offset = pos;
 	return false;
+}
+
+bool Url::parseHost(const char* url, size_t len, size_t& offset) {
+	if (offset >= len) {
+		return false;
+	}
+
+	size_t pos = find(url, len, offset, '/');
+	if (pos >= len) {
+		offset = pos;
+		return false;
+	}
+
+	std::string host = m_url.substr(offset, pos - offset);
+	offset = pos;
+
+	pos = host.find(":");
+	if ( std::string::npos == pos) {
+		m_port = 80;
+		m_host = host;
+	}
+	else {
+		m_host = host.substr(pos);
+		std::string port = host.substr(pos + 1);
+		m_port = atoi(port.c_str());
+	}
+	return true;
 }
