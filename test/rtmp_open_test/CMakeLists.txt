@@ -54,12 +54,3 @@ my_add_executable(
 )
 
 target_link_libraries(${PROJECT_NAME} ljmedia)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${cmake_current_list_dir}/bin)
-
-add_custom_command(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory  "${thirdparty_dir}/ffmpeg/bin/" "${PROJECT_BINARY_DIR}/$<CONFIG>"
-    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${PROJECT_BINARY_DIR}/../../media/Debug/ljmedia.dll" "${PROJECT_BINARY_DIR}/$<CONFIG>"
-)

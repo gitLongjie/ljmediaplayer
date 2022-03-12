@@ -64,7 +64,6 @@ function(my_add_library)
 	ADD_LIBRARY(${ARGV})
 endfunction(my_add_library)
 
-
 my_add_library(
     ${PROJECT_NAME}
     SHARED

@@ -8,6 +8,9 @@ public:
 	explicit Url(const char* url) noexcept;
 	explicit Url(const std::string& url) noexcept;
 
+	const std::string& getHost() const noexcept { return m_host; }
+	int getPort() const noexcept { return m_port; }
+
 private:
 	bool parse();
 	bool parseProtocol(const char* url, size_t len, size_t& offset);

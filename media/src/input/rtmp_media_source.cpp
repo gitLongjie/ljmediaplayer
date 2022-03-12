@@ -18,6 +18,8 @@
 #include "src/input/rtmp/rtmp_utils.h"
 #include "src/input/rtmp/rtmp_status.h"
 
+#include "src/core/url.h"
+
 static const char kAudioDatarate[] = "audiodatarate";
 static const char kAudioChannel[] = "audiochannel";
 static const char kAudioCodecId[] = "audiocodecid";
@@ -87,12 +89,10 @@ namespace LJMP {
                 rtmp_context_->uninitialzie();
             }
 
-            std::string host;
-            short port = kDefaultPort;
-            if (!Network::NetworkUtils::splitHostPort(url, &host, &port)) {
-                LOGE("splict host port failed");
-                return false;
-            }
+            Url urlParse(url);
+            const std::string& host = urlParse.getHost();
+            short port = urlParse.getPort();
+           
             if (port == 0) {
                 port = kDefaultPort;
             }

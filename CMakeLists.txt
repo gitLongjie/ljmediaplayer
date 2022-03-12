@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project(ljplayer)
 
+message("" ${CMAKE_CURRENT_LIST_DIR}/OUT)
+
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/OUT)
+
 set(CMAKE_C_FLAGS "-g -Wall")
 
 include(CheckCXXCompilerFlag)
@@ -22,6 +28,3 @@ if (APPLE)
 add_subdirectory(macos)
 endif ()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)
-#set(cmake_runtime_output_directory ${cmake_current_list_dir}/bin)
