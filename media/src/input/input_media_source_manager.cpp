@@ -9,7 +9,7 @@
 #include "src/core/log.h"
 #include "src/media.h"
 #include "ljmedia/error_code.h"
-#include "src/network/url.h"
+#include "src/core/url.h"
 
 namespace LJMP {
     namespace Input {

@@ -55,6 +55,8 @@ my_add_executable(
 
 target_link_libraries(${PROJECT_NAME} ljmedia)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${cmake_current_list_dir}/bin)
+
 add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD

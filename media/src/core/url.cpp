@@ -1,4 +1,4 @@
-#include "src/network/url.h"
+#include "src/core/url.h"
 
 static size_t firstNoSpace(const char* str, size_t len, size_t offset) {
 	if (offset >= len) {

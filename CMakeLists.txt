@@ -21,3 +21,7 @@ add_subdirectory(test)
 if (APPLE)
 add_subdirectory(macos)
 endif ()
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)
+#set(cmake_runtime_output_directory ${cmake_current_list_dir}/bin)
